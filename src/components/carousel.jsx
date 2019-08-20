@@ -103,6 +103,8 @@ class CarouselCustom extends Component {
                     activeIndex={activeIndex}
                     next={this.next}
                     previous={this.previous}
+                    autoPlay={true}
+                    ride="carousel"
                 >
                     <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
                     {slides}
