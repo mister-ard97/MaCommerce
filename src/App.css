@@ -1,33 +1,191 @@
-.App {
-  text-align: center;
+/* Navbar */
+.navbarContainer {
+  /* background-color: #1a1a1a !important; */
+  box-shadow: 0px 7px 5px 0px rgba(0, 0, 0, 0.20) !important;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+/* .navbar {
+  background-color: #1a1a1a !important;
+} */
+
+.navbar-brand {
+  font-family: 'Kaushan Script', cursive, sans-serif !important;
+  font-size: 32px !important;
+  color: #a6a5a4;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.navbar-brand span {
+  color: #ff9500;
 }
 
-.App-link {
-  color: #61dafb;
+/* #Header {
+ 
+} */
+
+
+/* 
+Untuk mengganti background select
+.navbar-brand span, .custom-select {
+  color: #ff9500;
+} */
+
+/* .custom-select {
+  background-color: transparent !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.custom-select option {
+  background-color: #1a1a1a;
+  position: relative;
+  top: 10%;
+} 
+Sampai sini
+*/
+
+/*------------ Header 2 ------------*/
+
+/* 
+ketika input button di click
+#SearchProductLgHome:focus {
+    border: 1px solid orange;
+    background-color: grey;
+    color:white;
+} */
+
+/* Navbar Header */
+.SearchCategory .dropdown a.dropdown-toggle.nav-link::after, 
+.navbar-nav-cust .dropdown a.dropdown-toggle.nav-link::after,
+.SearchCategorySm.dropdown a.dropdown-toggle.nav-link::after {
+  content: none !important;
+}
+
+.dropdown .dropdown-menu {
+  margin-top: 15px;
+  min-width: 20rem !important;
+}
+
+.navbar-nav-cust {
+  flex-direction: row;
+}
+
+.showText {
+  opacity: 0;
+}
+
+.searchIcon:focus>.showText,
+.searchIcon:hover>.showText {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.collapse svg {
+  font-size: 18px;
+}
+
+/* Carousel */
+.carousel-custom {
+  margin-top: -100px;
+  z-index: -3;
+}
+
+.carousel-custom .custom-items {
+    height: 600px;
+    background: grey;
+}
+
+.opacity-carousel-items div.bg-light {
+  width: 400px;
+  opacity: 0.8;
+  color: #2b201f !important;
+  float: left;
+}
+
+.slick-prev:before, .slick-next:before {
+  color: #000000 !important;
+}
+
+.slick-slide>div {
+  margin: 20px 15px !important;
+}
+
+.slick-next {
+  right: -25px !important;
+}
+
+.slick-prev {
+  left: -25px !important; 
+}
+
+a.card {
+  color: black !important;
+}
+
+a.card:hover {
+  color: black !important;
+  text-decoration: none;
+}
+
+/* Login Page */
+.loginPage {
+  align-content: center;
+  height: 100%;
+}
+
+@media only screen and (max-width: 1025px) {
+  
+  .navbar-brand {
+    font-size: 24px !important;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media only screen and (max-width: 992px) {
+  .navbar-brand {
+    font-size: 18px !important;
+  }
+
+  .carousel-custom {
+    margin-top: 0px;
+    z-index: -3;
+  }
+  .carousel-custom .custom-items {
+    height: 450px;
+    background: grey;
+  }
+} 
+
+/* Register */
+.userImage {
+  object-fit: cover;
+  width: 200px;
+}
+
+@media only screen and (max-width: 991px) {
+    .navbar-brand {
+    font-size: 32px !important;
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .carousel-custom .custom-items {
+    height: 350px;
+    background: grey;
+  }
+  .slick-slide>div {
+    margin: 20px 10px !important;
+  }
+
+  .opacity-carousel-items .display-4 {
+    font-size: 1.75rem !important;
+    font-weight: bold;
+  }
+} 
+
+@media only screen and (max-width: 580px) {
+  .slick-next {
+    right: -1px !important;
+  }
+
+  .slick-prev {
+    left: -1px !important; 
+    z-index: 2;
+  }
+} 
