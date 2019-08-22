@@ -2,7 +2,9 @@ import Axios from 'axios';
 import {
    AUTH_LOGIN_ERROR,
    AUTH_LOGIN_LOADING,
-   USER_LOGIN_SUCCESS
+   USER_LOGIN_SUCCESS,
+   VERIFICATION_SUCCESS,
+   VERIFICATION_FAILED
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -46,7 +48,6 @@ export const onUserRegister = (data) => {
                 let formData = new FormData();
                 var headers = {
                     headers: {
-                        // 'Authorization': `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 }
@@ -61,7 +62,8 @@ export const onUserRegister = (data) => {
 
                 Axios.post(URL_API + '/user/userRegister', formData, headers)
                     .then((res) => {
-                        console.log(res)
+                        localStorage.setItem('token', res.data.token);
+                        dispatch({ type: USER_LOGIN_SUCCESS, payload: res.data })
                     })
                     .catch((err) => {
                         dispatch({
@@ -71,9 +73,44 @@ export const onUserRegister = (data) => {
                         })
                     })
             }
-        
-            
-
-
     }      
+}
+
+export const EmailVerification = () => {
+    return (dispatch) => {
+        dispatch({ type: AUTH_LOGIN_LOADING });
+        const token = localStorage.getItem('token');
+        console.log(token)
+        const headers = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        }
+        Axios.put(URL_API + '/user/userEmailVerification', {}, headers)
+            .then((res) => {
+                console.log('berhasil')
+                dispatch({ type: VERIFICATION_SUCCESS });
+            })
+            .catch((err) => {
+                console.log('Gagal');
+                dispatch({ type: VERIFICATION_FAILED });
+            })
+    }
+}
+
+export const resendEmailVerification = (username, email) => {
+    return (dispatch) => {
+        dispatch({ type: AUTH_LOGIN_LOADING });
+        
+        Axios.post(URL_API + '/user/resendEmailVer', {
+            username,
+            email
+        })
+        .then((res) => {
+
+        })
+        .catch((err) => {
+
+        })
+    }
 }

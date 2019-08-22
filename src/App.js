@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import WaitingVerification from './pages/WaitingVerification';
+import Verified from './pages/Verified';
  
 class App extends Component {
   componentDidMount() {
@@ -17,6 +19,8 @@ class App extends Component {
           <Route path='/productDetail' component={ProductDetail} />
           <Route path='/login' component={Login} exact />
           <Route path='/register' component={Register} exact />
+          <Route path='/waitingverification' component={WaitingVerification} />
+          <Route path='/verified' component={Verified} />
         </div>
     )
   }

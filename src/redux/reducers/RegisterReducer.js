@@ -1,16 +1,19 @@
 import {
     USER_LOGIN_SUCCESS,
     AUTH_LOGIN_ERROR,
-    AUTH_LOGIN_LOADING
+    AUTH_LOGIN_LOADING,
+    VERIFICATION_FAILED,
+    VERIFICATION_SUCCESS
 } from '../actions/types'
 
 const INITIAL_STATE = {
-    FirstName: '',
-    LastName: '',
     username: '',
     email: '',
+    token: '',
+    status: '',
     loading: false,
     error: '',
+    statusVerification: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -21,6 +24,10 @@ export default (state = INITIAL_STATE, action) => {
             return {...state, loading: true, error: ''}
         case AUTH_LOGIN_ERROR:
             return { ...INITIAL_STATE, error: action.payload.error }
+        case VERIFICATION_SUCCESS: 
+            return {...state, statusVerification:'Success', loading: false}
+        case VERIFICATION_FAILED: 
+            return { ...state, statusVerification:'Failed', loading: false}
         default:
             return INITIAL_STATE
     }
