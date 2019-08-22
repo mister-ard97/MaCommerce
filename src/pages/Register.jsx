@@ -9,7 +9,7 @@ import { onUserRegister } from '../redux/actions';
 class Register extends Component {
     state = {
         UserImageName: 'Select Image',
-        UserImageFile: 'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+        UserImageFile: 'http://localhost:2002/defaultPhoto/defaultUser.png',
         UserImageDB: undefined
     }
 
@@ -20,9 +20,6 @@ class Register extends Component {
 
     handleSubmitRegister = (e) => {
         e.preventDefault();
-        if(!this.state.UserImageDB) {
-            this.setState({ UserImageDB: 'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png'})
-        }
 
         let objUserReg = {
             username: this.Username.value,
@@ -32,7 +29,7 @@ class Register extends Component {
             LastName: this.LastName.value,
             email: this.Email.value,
             address: this.Address.value,
-            UserImage: this.state.UserImageDB,
+            UserImage: this.state.UserImageDB
         }
 
         this.props.onUserRegister(objUserReg);
@@ -49,7 +46,7 @@ class Register extends Component {
         } else {
             this.setState({ 
                 UserImageName: 'Select Image', 
-                UserImageFile: 'https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png' ,
+                UserImageFile: 'http://localhost:2002/defaultPhoto/defaultUser.png' ,
                 UserImageDB: undefined
             })
         }

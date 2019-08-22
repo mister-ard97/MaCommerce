@@ -18,10 +18,17 @@
   color: #ff9500;
 }
 
-/* #Header {
- 
-} */
+.link-white svg, .link-white a {
+  color: #FFFFFF !important;
+}
 
+.link-white a.navbar-brand {
+  color: #000000 !important;
+}
+
+.link-white #loginDropdown a {
+  color: #007bff !important;
+}
 
 /* 
 Untuk mengganti background select
@@ -140,6 +147,18 @@ a.card:hover {
 @media only screen and (max-width: 992px) {
   .navbar-brand {
     font-size: 18px !important;
+  }
+
+  .link-white svg, .link-white a {
+    color: rgba(0,0,0,.5) !important;
+  }
+
+  .link-white a.navbar-brand {
+    color: #000000 !important;
+  }
+
+  .link-white #loginDropdown a {
+    color: #007bff !important;
   }
 
   .carousel-custom {

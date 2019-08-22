@@ -1,7 +1,7 @@
 import {
-    USER_LOGIN_SUCCESS, 
-    USER_LOGIN_LOADING, 
-    USER_LOGIN_ERROR
+    USER_LOGIN_SUCCESS,
+    AUTH_LOGIN_ERROR,
+    AUTH_LOGIN_LOADING
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -17,9 +17,9 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case USER_LOGIN_SUCCESS:
             return {...INITIAL_STATE, ...action.payload}
-        case USER_LOGIN_LOADING:
+        case AUTH_LOGIN_LOADING:
             return {...state, loading: true, error: ''}
-        case USER_LOGIN_ERROR:
+        case AUTH_LOGIN_ERROR:
             return { ...INITIAL_STATE, error: action.payload.error }
         default:
             return INITIAL_STATE

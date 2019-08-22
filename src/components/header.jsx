@@ -39,11 +39,14 @@ class Header2 extends Component {
             if (this.props.status === 'Home') {
                 if (window.scrollY >= 10) {
                     document.getElementById('Header').classList.add('bg-light')
+                    document.getElementById('CollapseMaCommerce').classList.remove('link-white')
                 } else {
                     document.getElementById('Header').classList.remove('bg-light')
+                    document.getElementById('CollapseMaCommerce').classList.add('link-white')
                 }
             } else {
                 document.getElementById('Header').classList.add('bg-light')
+                document.getElementById('CollapseMaCommerce').classList.remove('link-white')
             }
         } else {
             return null;
@@ -106,7 +109,7 @@ class Header2 extends Component {
                                 }
 
                             </DropdownToggle>
-                            <DropdownMenu right={true} className='px-2'>
+                            <DropdownMenu right={true} className='px-2' id='loginDropdown'>
                                 {
                                     this.state.login ?
                                         <p>Selamat Datang Reza</p>
@@ -245,7 +248,7 @@ class Header2 extends Component {
                             </div>
                         </Nav>
 
-                        <Collapse isOpen={this.state.isOpen} navbar>
+                        <Collapse id="CollapseMaCommerce" isOpen={this.state.isOpen} navbar className='link-white'>
                             <Nav className="mr-auto" navbar>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
                                     <DropdownToggle nav caret>
