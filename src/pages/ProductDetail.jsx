@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import { checkBg } from '../helpers/stylefunction';
@@ -7,6 +8,7 @@ class ProductDetail extends Component {
     componentDidMount() {
         window.scrollTo(0, 0);
         document.getElementById('Header').classList.add('bg-light')
+        document.getElementById('CollapseMaCommerce').classList.remove('link-white')
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
     }
@@ -14,7 +16,7 @@ class ProductDetail extends Component {
     render() {
         return (
             <div>
-                <Header status='ProductDetail' />
+                <Header statusPage='ProductDetail' />
                 <div className='container text-center'>
                     <div className='row'>
                         <div className="col-12 mt-5">
@@ -51,4 +53,4 @@ class ProductDetail extends Component {
     }
 }
 
-export default ProductDetail;
+export default connect()(ProductDetail);

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { checkBg } from '../helpers/stylefunction';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-
+import { Redirect, Link } from 'react-router-dom';
 import { resendEmailVerification } from '../redux/actions';
+import { checkBg } from '../helpers/stylefunction';;
+
 
 class WaitingVerification extends Component {
     componentDidMount() {
@@ -41,6 +40,20 @@ class WaitingVerification extends Component {
                                  </Link>
                                 </div>
                                 <div className="card p-3">
+                                    {
+                                        this.props.statusVer === 'Failed' ?
+                                            <div className="alert alert-danger" role="alert">
+                                                Resend Email Verification is {this.props.statusVer}
+                                            </div>
+                                            : null
+                                    }
+                                    {
+                                        this.props.statusVer === 'Success' ?
+                                            <div className="alert alert-success" role="alert">
+                                                Resend Email Verification is {this.props.statusVer}
+                                            </div>
+                                            : null
+                                    }
                                     <h5>Waiting Verification</h5>
                                     <p>We have send email to: <span className='font-weight-bold'>{this.props.email}</span></p>
                                     <p>If there isn't an Email Verification from MaCommerce Admin, don't worry just click resend Email Verification</p>
@@ -61,7 +74,9 @@ const mapStateToProps = (state) => {
     return {
         username: state.register.username,
         email: state.register.email,
-        loading: state.register.loading
+        loading: state.register.loading,
+        statusVer: state.register.statusVerification,
+        status: state.register.status
     }
 }
 

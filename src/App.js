@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import {Route, Switch, withRouter} from 'react-router-dom'
+import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { KeepLogin } from './redux/actions';
 import './App.css';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
@@ -9,9 +11,11 @@ import WaitingVerification from './pages/WaitingVerification';
 import Verified from './pages/Verified';
  
 class App extends Component {
+  
   componentDidMount() {
-    
+    this.props.KeepLogin();
   }
+
   render() {
     return (
         <div>
@@ -26,4 +30,4 @@ class App extends Component {
   }
 } 
 
-export default App;
+export default connect(null, { KeepLogin })(App);

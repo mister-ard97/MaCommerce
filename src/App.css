@@ -99,6 +99,16 @@ ketika input button di click
     background: grey;
 }
 
+.carousel-custom-user .custom-items {
+    height: 300px;
+    background: grey;
+}
+
+.carousel-custom-user .opacity-carousel-items .display-4 {
+    font-size: 1.75rem !important;
+    font-weight: bold;
+  }
+
 .opacity-carousel-items div.bg-light {
   width: 400px;
   opacity: 0.8;

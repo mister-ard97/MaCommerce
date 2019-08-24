@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { checkBg } from '../helpers/stylefunction';
 import { CustomInput } from 'reactstrap';
 
 import { connect } from 'react-redux';
 import { onUserRegister } from '../redux/actions';
 
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 class Register extends Component {
     state = {
         UserImageName: 'Select Image',
         UserImageFile: 'http://localhost:2002/defaultPhoto/defaultUser.png',
-        UserImageDB: undefined
+        UserImageDB: undefined,
+        NextPage: false
     }
 
     componentDidMount() {
@@ -78,7 +78,10 @@ class Register extends Component {
     }
 
     render() {
-      if(this.props.token === '') {
+        if(this.props.NextPage) {
+            return <Redirect to='/waitingverification' />
+        }
+      if(localStorage.getItem('token') === null) {
           return (
               <div id='RegisterPage' >
                   <div className='container py-1'>
@@ -142,9 +145,10 @@ class Register extends Component {
                   </div>
               </div>
           )
+      } else {
+          return <Redirect to='/' />
       }
 
-        return <Redirect to='/waitingverification' />
     }
 }
 
@@ -152,7 +156,8 @@ const mapStateToProps = (state) => {
     return {
         loading: state.register.loading,
         error: state.register.error,
-        token: state.register.token
+        token: state.register.token,
+        NextPage: state.register.NextPage
     }
 }
 

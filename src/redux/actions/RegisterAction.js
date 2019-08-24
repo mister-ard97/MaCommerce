@@ -3,6 +3,7 @@ import {
    AUTH_LOGIN_ERROR,
    AUTH_LOGIN_LOADING,
    USER_LOGIN_SUCCESS,
+   USER_LOGOUT,
    VERIFICATION_SUCCESS,
    VERIFICATION_FAILED
 } from './types';
@@ -62,8 +63,20 @@ export const onUserRegister = (data) => {
 
                 Axios.post(URL_API + '/user/userRegister', formData, headers)
                     .then((res) => {
-                        localStorage.setItem('token', res.data.token);
-                        dispatch({ type: USER_LOGIN_SUCCESS, payload: res.data })
+                        let {FirstName, LastName, username, email, token, status} = res.data
+                        localStorage.setItem('token', token);
+                        dispatch({ type: USER_LOGIN_SUCCESS, payload: {
+                                FirstName,
+                                LastName,
+                                username,
+                                email,
+                                token,
+                                status,
+                                justRegister: true,
+                                loginChecked: true,
+                                NextPage: true
+                            } 
+                        })
                     })
                     .catch((err) => {
                         dispatch({
@@ -80,19 +93,30 @@ export const EmailVerification = () => {
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
         const token = localStorage.getItem('token');
-        console.log(token)
-        const headers = {
+        const options = {
             headers: {
                 'Authorization': `Bearer ${token}`,
             }
         }
-        Axios.put(URL_API + '/user/userEmailVerification', {}, headers)
+        Axios.put(URL_API + '/user/userEmailVerification', { token }, options)
             .then((res) => {
-                console.log('berhasil')
+                let { FirstName, LastName, username, email, token, status } = res.data
+                localStorage.setItem('token', token);
+                dispatch({
+                    type: USER_LOGIN_SUCCESS, payload: {
+                        FirstName,
+                        LastName,
+                        username,
+                        email,
+                        token,
+                        status,
+                        justRegister: true,
+                        loginChecked: true
+                    }
+                })
                 dispatch({ type: VERIFICATION_SUCCESS });
             })
             .catch((err) => {
-                console.log('Gagal');
                 dispatch({ type: VERIFICATION_FAILED });
             })
     }
@@ -101,16 +125,92 @@ export const EmailVerification = () => {
 export const resendEmailVerification = (username, email) => {
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
-        
-        Axios.post(URL_API + '/user/resendEmailVer', {
+        const token = localStorage.getItem('token');
+        Axios.post(URL_API + '/user/userResendEmailVerification', {
             username,
-            email
+            email,
+            token
         })
         .then((res) => {
-
+            let { FirstName, LastName, username, email, token, status } = res.data
+            localStorage.setItem('token', token);
+            dispatch({
+                type: USER_LOGIN_SUCCESS, payload: {
+                    FirstName,
+                    LastName,
+                    username,
+                    email,
+                    token,
+                    status,
+                    justRegister: true,
+                    loginChecked: true
+                }
+            })
+            dispatch({ type: VERIFICATION_SUCCESS });
         })
         .catch((err) => {
-
+            dispatch({ type: VERIFICATION_FAILED });
         })
     }
+}
+
+export const userLogin = (username, password) => {
+    return (dispatch) => {
+        dispatch({ type: AUTH_LOGIN_LOADING });
+
+        Axios.post(URL_API + '/user/userLogin', {
+            username, password
+        })
+        .then((res) => {
+            let { FirstName, LastName, username, email, token, status } = res.data
+            localStorage.setItem('token', token);
+            dispatch({
+                type: USER_LOGIN_SUCCESS, payload: {
+                    FirstName,
+                    LastName,
+                    username,
+                    email,
+                    token,
+                    status,
+                    loginChecked: true
+                }
+            })
+        })
+        .catch((err) => {
+            dispatch({
+                type: AUTH_LOGIN_ERROR, payload: {
+                    error: err.response.data.message,
+                }
+            })
+        })
+    }
+}
+
+export const KeepLogin = (req, res) => {
+   return (dispatch) => {
+       dispatch({ type: AUTH_LOGIN_LOADING });
+       const token = localStorage.getItem('token');
+       const options = {
+           headers: {
+               'Authorization': `Bearer ${token}`,
+           }
+       }
+
+       Axios.post(URL_API + '/user/userKeepLogin', {}, options)
+           .then((res) => {
+               localStorage.setItem('token', res.data.token);
+               dispatch({ type: USER_LOGIN_SUCCESS, payload: res.data })
+           })
+           .catch((err) => {
+               localStorage.removeItem('token');
+               dispatch({ type: USER_LOGOUT });
+           })
+    }
+}
+
+export const userLogOut = () => {
+        localStorage.removeItem('token');
+        return { 
+            type: USER_LOGOUT 
+        };
 }

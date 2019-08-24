@@ -10,10 +10,12 @@ import {
     DropdownItem
 } from 'reactstrap';
 import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { userLogOut } from '../redux/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
-class Header2 extends Component {
+class Header extends Component {
     state = {
         isOpen: false,
         login: false,
@@ -31,12 +33,16 @@ class Header2 extends Component {
     }
 
     componentDidMount() {
+        if(this.props.statusPage === 'UserLogin') {
+            document.getElementById('Header').classList.add('bg-light')
+            document.getElementById('CollapseMaCommerce').classList.remove('link-white')
+        }
         window.addEventListener('scroll', this.navbarBgChangeWhenScroll);
     }
 
     navbarBgChangeWhenScroll = () => {
         if(document.getElementById('Header')) {
-            if (this.props.status === 'Home') {
+            if (this.props.statusPage === 'Home') {
                 if (window.scrollY >= 10) {
                     document.getElementById('Header').classList.add('bg-light')
                     document.getElementById('CollapseMaCommerce').classList.remove('link-white')
@@ -51,6 +57,10 @@ class Header2 extends Component {
         } else {
             return null;
         }
+    }
+
+    userLogOut = () => {
+        this.props.userLogOut()
     }
 
     renderCart = () => {
@@ -94,26 +104,45 @@ class Header2 extends Component {
                             <span className="sr-only">Loading...</span>
                         </div>
                     :
-                        <UncontrolledDropdown nav inNavbar>
+                        <UncontrolledDropdown nav inNavbar>                            
+                            {
+                                this.props.loading ?
 
-                            <DropdownToggle nav caret>
-                                {
-                                    this.state.login ?
-                                        <FontAwesomeIcon icon={faUserCircle} className={param} />
-                                        :
-                                        <div className='bg-warning font-weight-bold rounded px-1'>
-                                            <span className='text-dark mr-2'>Login</span>
-                                            <FontAwesomeIcon icon={faUserCircle} className={param} />
+                                <DropdownToggle nav caret >
+                                        <div className="spinner-border" role="status">
+                                            <span className="sr-only">Loading...</span>
                                         </div>
+                                </DropdownToggle>
+                                :
+                                    <DropdownToggle nav caret>
+                                        {
+                                            this.props.loginChecked ?
+                                                <FontAwesomeIcon icon={faUserCircle} className={param} />
+                                                :
+                                                <div className='bg-warning font-weight-bold rounded px-1'>
+                                                    <span className='text-dark mr-2'>Login</span>
+                                                    <FontAwesomeIcon icon={faUserCircle} className={param} />
+                                                </div>
 
-                                }
+                                        }
 
-                            </DropdownToggle>
+                                    </DropdownToggle>
+                            }
                             <DropdownMenu right={true} className='px-2' id='loginDropdown'>
                                 {
-                                    this.state.login ?
-                                        <p>Selamat Datang Reza</p>
+                                    this.props.FirstName !== '' ?
+                                        
+                                        this.props.justRegister ?
+                                            <div>
+                                                <p>Selamat Bergabung di MaCommerce, {this.props.FirstName}</p>
+                                                <Link onClick={this.userLogOut}> Log Out </Link>
+                                            </div>
                                         :
+                                            <div>
+                                                <p>Selamat Datang Kembali, {this.props.FirstName}</p>
+                                                <Link onClick={this.userLogOut}> Log Out </Link>
+                                            </div>
+                                    :
                                         <div>
                                             <p>Anda belum login silahkan login <Link to='/login'>disini</Link></p>
                                             <p>Anda belum mendaftar? <Link to='/register'>Daftar</Link> Sekarang</p>
@@ -341,4 +370,13 @@ class Header2 extends Component {
     }
 }
 
-export default Header2
+const mapStateToProps = (state) => {
+    return {
+        FirstName: state.register.FirstName,
+        justRegister: state.register.justRegister,
+        loginChecked: state.register.loginChecked,
+        loading: state.register.loading
+    }
+}
+
+export default connect(mapStateToProps, {userLogOut})(Header)
