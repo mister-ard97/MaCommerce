@@ -147,6 +147,44 @@ a.card:hover {
   height: 100%;
 }
 
+/* ADMIN DASHBOARD */
+#body-row {
+    margin-left:0;
+    margin-right:0;
+}
+#sidebar-container {
+    min-height: 100vh;   
+    background-color: #333;
+    padding: 0;
+}
+
+.sidebar-expanded {
+    width: 230px;
+}
+
+#sidebar-container .list-group a {
+    height: 50px;
+    color: white;
+}
+
+#sidebar-container .list-group .sidebar-submenu a {
+    height: 45px;
+    padding-left: 30px;
+}
+.sidebar-submenu {
+    font-size: 0.9rem;
+}
+
+.sidebar-separator-title {
+    background-color: #333;
+}
+.sidebar-separator {
+    background-color: #333;
+    height: 25px;
+}
+
+/* END OF ADMIN DASHBOARD */
+
 @media only screen and (max-width: 1025px) {
   
   .navbar-brand {

@@ -8,13 +8,10 @@ import { checkBg } from '../helpers/stylefunction';
 
 class Home extends Component {
     componentDidMount() {
-        window.scrollTo(0, 0)
-        // if(localStorage.getItem('token') !== null ) {
-        //     document.getElementById('Header').classList.add('bg-light')
-        //     document.getElementById('CollapseMaCommerce').classList.remove('link-white')
-        // }
+        window.scrollTo(0, 0);
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
+        checkBg('AdminLoginPage', 'bg-dark');
     }
 
     render() {

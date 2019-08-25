@@ -4,7 +4,8 @@ import {
     AUTH_LOGIN_LOADING,
     USER_LOGOUT,
     VERIFICATION_FAILED,
-    VERIFICATION_SUCCESS
+    VERIFICATION_SUCCESS,
+    CLEAN_ERROR
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -16,6 +17,7 @@ const INITIAL_STATE = {
     status: '',
     loading: false,
     error: '',
+    role: '',
     statusVerification: '',
     justRegister: false,
     loginChecked: false
@@ -33,6 +35,8 @@ export default (state = INITIAL_STATE, action) => {
             return {...state, statusVerification:'Success', loading: false}
         case VERIFICATION_FAILED: 
             return { ...state, statusVerification:'Failed', loading: false}
+        case CLEAN_ERROR:
+            return { ...state, error: '' }
         case USER_LOGOUT:
             return INITIAL_STATE
         default:

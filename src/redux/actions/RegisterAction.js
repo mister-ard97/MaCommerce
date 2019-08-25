@@ -5,7 +5,8 @@ import {
    USER_LOGIN_SUCCESS,
    USER_LOGOUT,
    VERIFICATION_SUCCESS,
-   VERIFICATION_FAILED
+   VERIFICATION_FAILED, 
+   CLEAN_ERROR
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -63,7 +64,7 @@ export const onUserRegister = (data) => {
 
                 Axios.post(URL_API + '/user/userRegister', formData, headers)
                     .then((res) => {
-                        let {FirstName, LastName, username, email, token, status} = res.data
+                        let {FirstName, LastName, username, email, token, status, role} = res.data
                         localStorage.setItem('token', token);
                         dispatch({ type: USER_LOGIN_SUCCESS, payload: {
                                 FirstName,
@@ -72,6 +73,7 @@ export const onUserRegister = (data) => {
                                 email,
                                 token,
                                 status,
+                                role,
                                 justRegister: true,
                                 loginChecked: true,
                                 NextPage: true
@@ -100,7 +102,7 @@ export const EmailVerification = () => {
         }
         Axios.put(URL_API + '/user/userEmailVerification', { token }, options)
             .then((res) => {
-                let { FirstName, LastName, username, email, token, status } = res.data
+                let { FirstName, LastName, username, email, token, status, role } = res.data
                 localStorage.setItem('token', token);
                 dispatch({
                     type: USER_LOGIN_SUCCESS, payload: {
@@ -110,6 +112,7 @@ export const EmailVerification = () => {
                         email,
                         token,
                         status,
+                        role,
                         justRegister: true,
                         loginChecked: true
                     }
@@ -132,7 +135,7 @@ export const resendEmailVerification = (username, email) => {
             token
         })
         .then((res) => {
-            let { FirstName, LastName, username, email, token, status } = res.data
+            let { FirstName, LastName, username, email, token, status, role } = res.data
             localStorage.setItem('token', token);
             dispatch({
                 type: USER_LOGIN_SUCCESS, payload: {
@@ -142,6 +145,7 @@ export const resendEmailVerification = (username, email) => {
                     email,
                     token,
                     status,
+                    role,
                     justRegister: true,
                     loginChecked: true
                 }
@@ -162,7 +166,7 @@ export const userLogin = (username, password) => {
             username, password
         })
         .then((res) => {
-            let { FirstName, LastName, username, email, token, status } = res.data
+            let { FirstName, LastName, username, email, token, status, role } = res.data
             localStorage.setItem('token', token);
             dispatch({
                 type: USER_LOGIN_SUCCESS, payload: {
@@ -172,6 +176,7 @@ export const userLogin = (username, password) => {
                     email,
                     token,
                     status,
+                    role,
                     loginChecked: true
                 }
             })
@@ -198,8 +203,18 @@ export const KeepLogin = (req, res) => {
 
        Axios.post(URL_API + '/user/userKeepLogin', {}, options)
            .then((res) => {
-               localStorage.setItem('token', res.data.token);
-               dispatch({ type: USER_LOGIN_SUCCESS, payload: res.data })
+               let { FirstName, LastName, username, email, token, status } = res.data
+               localStorage.setItem('token', token);
+               dispatch({
+                   type: USER_LOGIN_SUCCESS, payload: {
+                       FirstName,
+                       LastName,
+                       username,
+                       email,
+                       token,
+                       status,
+                       loginChecked: true
+                   } })
            })
            .catch((err) => {
                localStorage.removeItem('token');

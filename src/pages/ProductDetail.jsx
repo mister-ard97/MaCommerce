@@ -11,6 +11,7 @@ class ProductDetail extends Component {
         document.getElementById('CollapseMaCommerce').classList.remove('link-white')
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
+        //checkBg('AdminLoginPage', 'bg-dark');
     }
 
     render() {

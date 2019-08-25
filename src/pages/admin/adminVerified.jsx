@@ -1,27 +1,25 @@
 import React, { Component } from 'react';
-import { checkBg } from '../helpers/stylefunction';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { EmailVerification } from '../redux/actions';
+import { adminEmailVerification } from '../../redux/actions';
+import { checkBg } from '../../helpers/stylefunction';
 
-
-class VerifiedPage extends Component {
+class AdminVerifiedPage extends Component {
     componentDidMount() {
-        checkBg('VerifiedPage', 'bg-light');
-        
-        this.props.EmailVerification()
+        checkBg('AdminVerifiedPage', 'bg-dark');
+
+        this.props.adminEmailVerification()
     }
-    
     render() {
-        if(localStorage.getItem('token') !== null) {
+        if (localStorage.getItem('token') !== null) {
             return (
-                <div id='VerifiedPage'>
+                <div id='AdminVerifiedPage'>
                     <div className='container py-1'>
                         <div className='row py-1'>
                             <div className="offset-2 offset-md-3 col-8 col-md-6 py-3">
                                 <div className='py-3 text-center'>
-                                    <Link to='/' className='navbar-brand text-dark'>
-                                        <span>Ma</span>Commerce
+                                    <Link to='/' className='navbar-brand text-white'>
+                                        <span>Ma</span>Commerce Admin
                                     </Link>
                                 </div>
                                 <div className="card p-3 font-weight-bold text-center">
@@ -47,7 +45,7 @@ class VerifiedPage extends Component {
                                             :
                                             null
                                     }
-                                    <p className='mt-3'><Link to='/'>Back to Home</Link></p>
+                                    <p className='mt-3'><Link to='/adminDashboard'>Go to Admin Dashboard</Link></p>
                                 </div>
                             </div>
                         </div>
@@ -69,4 +67,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {EmailVerification})(VerifiedPage);
+export default connect(mapStateToProps, { adminEmailVerification })(AdminVerifiedPage);

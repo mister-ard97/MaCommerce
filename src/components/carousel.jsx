@@ -111,10 +111,11 @@ class CarouselCustom extends Component {
             return (
                 <div className='container'>
                     <div className="row justify-content-between mt-4">
-                        <div className='col-6'>
+                        <div className='col-12 col-lg-6 order-2 order-lg-1 text-center text-sm-left'>
+                            <h5>Menu</h5>
                             <p>asdasdasdasdasd</p>
                         </div>
-                        <div className="col-6">
+                        <div className="col-12 col-lg-6 order-1 order-lg-2">
                             <div id='Carousel' className='carousel-custom-user'>
                                 <Carousel
                                     activeIndex={activeIndex}
