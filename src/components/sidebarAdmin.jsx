@@ -4,10 +4,10 @@ import { Link, Redirect } from 'react-router-dom';
 import { userLogOut } from '../redux/actions';
 
 class SideBarAdmin extends Component {
-    
     LogOutAdmin = () => {
         this.props.userLogOut()
     }
+
     render() {
         if(localStorage.getItem('token') !== null) {
             return (
@@ -17,11 +17,11 @@ class SideBarAdmin extends Component {
                             <li className="list-group-item sidebar-separator-title text-light d-block align-items-center">
                                 <small>Hai, Welcome</small>
                                 {
-                                    this.props.loading ?
-                                        <div className="spinner-border" role="status">
-                                            <span className="sr-only">Loading...</span>
-                                        </div>
-                                    :
+                                    // this.props.loading ?
+                                    //     <div className="spinner-border" role="status">
+                                    //         <span className="sr-only">Loading...</span>
+                                    //     </div>
+                                    // :
                                      <div>
                                             <p className="text-info my-3">{this.props.FirstName + ' ' + this.props.LastName}</p>
                                             <p className="text-info my-3">{this.props.role}</p>
@@ -29,8 +29,10 @@ class SideBarAdmin extends Component {
                                 }
                                 <button type="button" className="btn btn-danger" onClick={this.LogOutAdmin}>Logout &raquo;</button>
                             </li>
-                            
-                            <Link to="/adminDashboard/category" class="list-group-item list-group-item-action bg-light text-dark">
+                            <Link to="/adminDashboard" className="list-group-item list-group-item-action bg-light text-dark">
+                                <span><i class="mr-2"></i> Home </span>
+                            </Link>
+                            <Link to="/adminDashboard/category" className="list-group-item list-group-item-action bg-light text-dark">
                                 <span><i class="mr-2"></i> Category Product </span>
                             </Link>
 

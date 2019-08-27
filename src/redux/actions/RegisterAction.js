@@ -203,7 +203,7 @@ export const KeepLogin = (req, res) => {
 
        Axios.post(URL_API + '/user/userKeepLogin', {}, options)
            .then((res) => {
-               let { FirstName, LastName, username, email, token, status } = res.data
+               let { FirstName, LastName, username, email, token, status, role} = res.data
                localStorage.setItem('token', token);
                dispatch({
                    type: USER_LOGIN_SUCCESS, payload: {
@@ -213,6 +213,7 @@ export const KeepLogin = (req, res) => {
                        email,
                        token,
                        status,
+                       role,
                        loginChecked: true
                    } })
            })
@@ -228,4 +229,10 @@ export const userLogOut = () => {
         return { 
             type: USER_LOGOUT 
         };
+}
+
+export const cleanError = () => {
+    return {
+        type: CLEAN_ERROR
+    };
 }

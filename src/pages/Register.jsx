@@ -3,7 +3,7 @@ import { checkBg } from '../helpers/stylefunction';
 import { CustomInput } from 'reactstrap';
 
 import { connect } from 'react-redux';
-import { onUserRegister } from '../redux/actions';
+import { onUserRegister, cleanError } from '../redux/actions';
 
 import { Redirect, Link } from 'react-router-dom';
 
@@ -18,6 +18,7 @@ class Register extends Component {
     componentDidMount() {
         window.scrollTo(0, 0);
         checkBg('RegisterPage', 'bg-light');
+        this.props.cleanError();
     }
 
     handleSubmitRegister = (e) => {
@@ -161,4 +162,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { onUserRegister })(Register);
+export default connect(mapStateToProps, { onUserRegister, cleanError })(Register);

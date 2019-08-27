@@ -62,7 +62,8 @@ const mapStateToProps = (state) => {
     return {
         loading: state.register.loading,
         username: state.register.username,
-        FirstName: state.register.FirstName
+        FirstName: state.register.FirstName,
+        role: state.register.role
     }
 }
 

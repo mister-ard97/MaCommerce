@@ -136,6 +136,7 @@ class Header extends Component {
                                             <div>
                                                 <p>Selamat Bergabung di MaCommerce, {this.props.FirstName}</p>
                                                 <Link onClick={this.userLogOut}> Log Out </Link>
+                                               
                                             </div>
                                         :
                                             <div>

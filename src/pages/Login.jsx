@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { userLogin } from '../redux/actions';
+import { userLogin, cleanError } from '../redux/actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 import { checkBg } from '../helpers/stylefunction';
@@ -10,10 +10,12 @@ class Login extends Component {
 
     componentDidMount() {
         checkBg('LoginPage', 'bg-light')
+        this.props.cleanError();
     }
 
     handleSubmitLogin = (e) => {
         e.preventDefault();
+
         this.props.userLogin(this.Username.value, this.Password.value);
     }
 
@@ -88,4 +90,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { userLogin })(Login);
+export default connect(mapStateToProps, { userLogin, cleanError })(Login);

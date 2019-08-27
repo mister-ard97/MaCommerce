@@ -5,8 +5,8 @@ import {
     USER_LOGIN_SUCCESS,
     USER_LOGOUT,
     VERIFICATION_SUCCESS,
-    VERIFICATION_FAILED, 
-    CLEAN_ERROR
+    VERIFICATION_FAILED,
+    ALL_CATEGORY
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -146,7 +146,7 @@ export const resendAdminEmailVerification = (username, email) => {
     }
 }
 
-export const adminEmailVerification = (req, res) => {
+export const adminEmailVerification = () => {
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
         const token = localStorage.getItem('token');
@@ -181,7 +181,25 @@ export const adminEmailVerification = (req, res) => {
 }
 
 export const adminGetCategoryProduct = () => {
-
+    return (dispatch) => {
+        dispatch({ type: AUTH_LOGIN_LOADING})
+        Axios.get(URL_API + '/admin/getCategory')
+        .then((res) => {
+            dispatch({
+                type: ALL_CATEGORY, payload: {
+                   categoryProduct: res.data.categoryParent,
+                   subCategoryProduct: res.data.subcategory
+                }
+            })
+        })
+        .catch((err) => {
+            dispatch({
+                type: AUTH_LOGIN_ERROR, payload: {
+                    error: err,
+                }
+            })
+        })
+    }
 }
 
 export const adminAddCategoryProduct = () => {

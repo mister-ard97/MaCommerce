@@ -79,9 +79,10 @@ class AdminLogin extends Component {
                     </div>
                 </div>
             );
+        } else {
+            return <Redirect to='/adminDashboard' />
         }
-
-        return <Redirect to='/' />
+        
     }
 
 }
