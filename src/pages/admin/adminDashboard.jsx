@@ -5,9 +5,15 @@ import { KeepLogin } from '../../redux/actions/'
 import SidebarAdmin from '../../components/sidebarAdmin';
 import AdminHome from '../admin/adminHome';
 import AdminCategoryProduct from './feature/categoryProduct';
+import AdminProductList from './feature/productList';
+import AdminTransaction from './feature/transactionList';
  
 class AdminDashboard extends Component {
-    render() {
+    render() {        
+        if(this.props.role !== 'Admin') {
+            return <Redirect to='/' />
+        }
+
        if(localStorage.getItem('token') !== null) {
            return (
                <div className='container-fluid p-0'>
@@ -18,15 +24,13 @@ class AdminDashboard extends Component {
                        <div className="col-9 mt-5 p-0">
                            <Route path={`${this.props.match.url}`} component={AdminHome} exact />
                            <Route path={`${this.props.match.url}/category`} component={AdminCategoryProduct} exact />
+                           <Route path={`${this.props.match.url}/productlist`} component={AdminProductList} exact />
+                           <Route path={`${this.props.match.url}/transaction`} component={AdminTransaction} exact />
                        </div>
                    </div>
                </div>
            );
        }
-
-     
-
-       return <Redirect to='/' />
     }
 }
 

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { adminGetCategoryProduct } from '../../../redux/actions'
+import { adminGetCategoryProduct } from '../../../redux/actions';
+import URL_API from '../../../helpers/Url_API'
+
 
 class AdminCategoryProduct extends Component {
     state = {
@@ -37,8 +39,19 @@ class AdminCategoryProduct extends Component {
                         {val.subcategory}
                     </option>
                 )
-                
             }
+            return null
+        })
+    }
+
+    renderImage = (id) => {
+        return this.props.categoryProduct.map((val, index) => {
+            if (val.parentId === id) {
+                return ( 
+                    <image src={URL_API + val.categoryImage} /> 
+                )
+            }
+            return null
         })
     }
 
@@ -46,6 +59,12 @@ class AdminCategoryProduct extends Component {
         return (
             <div>
                 <div className="col-4">
+                    {
+                        this.state.categoryProductSelected !== null ?
+                            this.renderImage(this.state.categoryProductSelected)
+                        :
+                         null
+                    }
                     <label for="inputState">Category Product</label>
                     <select id="categoryProduct" className="form-control mb-3" onChange={this.selectedCategory}>
                         <option value='' selected>Select Category</option>
