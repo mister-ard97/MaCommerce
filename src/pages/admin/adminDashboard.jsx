@@ -8,7 +8,7 @@ import AdminCategoryProduct from './feature/categoryProduct';
  
 class AdminDashboard extends Component {
     render() {
-       if(localStorage.getItem('token') !== null) {
+       if(this.props.role === 'Admin') {
            return (
                <div className='container-fluid p-0'>
                    <div className="row" id="body-row">
@@ -22,11 +22,21 @@ class AdminDashboard extends Component {
                    </div>
                </div>
            );
-       }
+       } 
 
-     
+        if (this.props.role === 'User') {
+            return <Redirect to='/' />  
+        }
 
-       return <Redirect to='/' />
+        if (localStorage.getItem('token') === null) {
+            return <Redirect to='/adminLogin' /> 
+        }
+
+       return (
+           <div className="spinner-border text-warning" role="status">
+               <span className="sr-only">Loading...</span>
+           </div>
+       )
     }
 }
 

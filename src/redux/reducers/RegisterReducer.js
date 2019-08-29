@@ -5,7 +5,8 @@ import {
     USER_LOGOUT,
     VERIFICATION_FAILED,
     VERIFICATION_SUCCESS,
-    CLEAN_ERROR
+    CLEAN_ERROR, 
+    AUTH_LOADING_FINISHED
 } from '../actions/types'
 
 const INITIAL_STATE = {
@@ -20,21 +21,24 @@ const INITIAL_STATE = {
     role: '',
     statusVerification: '',
     justRegister: false,
-    loginChecked: false
+    loginChecked: false,
+    authChecked: false
 }
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case USER_LOGIN_SUCCESS:
-            return {...INITIAL_STATE, ...action.payload}
+            return { ...INITIAL_STATE, ...action.payload, loading: false, authChecked: true}
         case AUTH_LOGIN_LOADING:
             return {...state, loading: true, error: ''}
+        case AUTH_LOADING_FINISHED:
+            return { ...state, loading: false, error: '', authChecked: true}
         case AUTH_LOGIN_ERROR:
-            return { ...INITIAL_STATE, error: action.payload.error }
+            return { ...state, error: action.payload.error, authChecked: true, loading: false}
         case VERIFICATION_SUCCESS: 
-            return {...state, statusVerification:'Success', loading: false}
+            return { ...state, statusVerification: 'Success', loading: false, authChecked: true}
         case VERIFICATION_FAILED: 
-            return { ...state, statusVerification:'Failed', loading: false}
+            return { ...state, statusVerification: 'Failed', loading: false, authChecked: true}
         case CLEAN_ERROR:
             return { ...state, error: '' }
         case USER_LOGOUT:

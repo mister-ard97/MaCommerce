@@ -191,7 +191,7 @@ export const userLogin = (username, password) => {
     }
 }
 
-export const KeepLogin = (req, res) => {
+export const KeepLogin = () => {
    return (dispatch) => {
        dispatch({ type: AUTH_LOGIN_LOADING });
        const token = localStorage.getItem('token');

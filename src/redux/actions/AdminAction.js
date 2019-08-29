@@ -3,10 +3,14 @@ import {
     AUTH_LOGIN_ERROR,
     AUTH_LOGIN_LOADING,
     USER_LOGIN_SUCCESS,
-    USER_LOGOUT,
     VERIFICATION_SUCCESS,
     VERIFICATION_FAILED,
-    ALL_CATEGORY
+    AUTH_LOADING_FINISHED,
+    ALL_CATEGORY,
+    ADMIN_LOADING,
+    ADMIN_LOADING_FINISHED, 
+    ADMIN_LOADING_ERROR,
+    ADMIN_CLEAN
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -182,29 +186,124 @@ export const adminEmailVerification = () => {
 
 export const adminGetCategoryProduct = () => {
     return (dispatch) => {
-        dispatch({ type: AUTH_LOGIN_LOADING})
+        dispatch({ type: ADMIN_LOADING })
         Axios.get(URL_API + '/admin/getCategory')
         .then((res) => {
             dispatch({
                 type: ALL_CATEGORY, payload: {
-                   categoryProduct: res.data.categoryParent,
-                   subCategoryProduct: res.data.subcategory
+                    categoryProduct: res.data.categoryParent,
+                    subCategoryProduct: res.data.subcategory,
+                    loading: false
                 }
             })
         })
         .catch((err) => {
             dispatch({
-                type: AUTH_LOGIN_ERROR, payload: {
-                    error: err,
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: err.response.data.message,
                 }
             })
         })
     }
 }
 
-export const adminAddCategoryProduct = () => {
+export const adminAddCategoryProduct = (datacategory) => {
+    let {
+        categoryName,
+        categoryImage
+    } = datacategory
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        if (categoryName === '' & !categoryImage) {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: 'Category Name tidak boleh kosong',
+                }
+            })
+        } else if (!categoryImage) {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: 'Gambar tidak boleh kosong',
+                }
+            })
+        } else if (categoryName === '') {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: 'Category Name tidak boleh kosong',
+                }
+            })
+        } else {
 
+            let formData = new FormData();
+            let options = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            formData.append('categoryImage', categoryImage)
+
+            delete datacategory.categoryImage
+
+            formData.append('dataCategory', JSON.stringify(datacategory))
+
+            Axios.post(URL_API + '/admin/addCategory', formData, options)
+                .then((res) => {
+                    dispatch({
+                        type: ALL_CATEGORY, payload: {
+                            categoryProduct: res.data.categoryParent,
+                            success: 'Category berhasil ditambahkan',
+                            loading: false
+                        }
+                    })
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                })
+        }
+    }
 }
+
+export const adminAddSubCategoryProduct = (objSubCategory) => {
+    let {
+        parentCategoryId,
+        subCategoryName
+    } = objSubCategory
+
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        if (subCategoryName === '') {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: 'Nama Sub Category harus diisi',
+                }
+            })
+        } else {
+            Axios.post(URL_API + '/admin/addSubCategory', { parentCategoryId, subCategoryName })
+                .then((res) => {
+                    dispatch({
+                        type: ALL_CATEGORY, payload: {
+                            subCategoryProduct: res.data.subcategory,
+                            success: 'Sub Category berhasil ditambahkan',
+                            loading: false
+                        }
+                    })
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                })
+        }        
+    }
+}
+
 
 export const adminEditCategoryProduct = () => {
 
@@ -212,4 +311,10 @@ export const adminEditCategoryProduct = () => {
 
 export const adminDeleteCategoryProduct = () => {
 
+}
+
+export const cleanErrorSuccess = () => {
+    return {
+        type: ADMIN_CLEAN
+    }
 }
