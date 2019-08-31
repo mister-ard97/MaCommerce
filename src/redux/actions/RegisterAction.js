@@ -24,14 +24,6 @@ export const onUserRegister = (data) => {
 
     return (dispatch) => {
         dispatch({type: AUTH_LOGIN_LOADING});
-        if (!(password === confPassword)) {
-            dispatch({
-                type: AUTH_LOGIN_ERROR, payload: {
-                    error: 'Password dan Confirmation Password Harus Sama',
-                }
-            })
-        }
-
         if (username === '' ||
             password === '' ||
             confPassword === '' ||
@@ -45,8 +37,14 @@ export const onUserRegister = (data) => {
                     error: 'Semua Form Input Harus Diisi',
                 }})
             
+            } else if(!(password === confPassword)) {
+                dispatch({
+                    type: AUTH_LOGIN_ERROR, payload: {
+                        error: 'Password dan Confirmation Password Harus Sama',
+                    }
+                }) 
             } else {
-                
+
                 let formData = new FormData();
                 var headers = {
                     headers: {
@@ -59,14 +57,15 @@ export const onUserRegister = (data) => {
                 formData.append('imageUser', UserImage)
 
                 delete data.UserImage;
-                
+
                 formData.append('data', JSON.stringify(data))
 
                 Axios.post(URL_API + '/user/userRegister', formData, headers)
                     .then((res) => {
-                        let {FirstName, LastName, username, email, token, status, role} = res.data
+                        let { FirstName, LastName, username, email, token, status, role } = res.data
                         localStorage.setItem('token', token);
-                        dispatch({ type: USER_LOGIN_SUCCESS, payload: {
+                        dispatch({
+                            type: USER_LOGIN_SUCCESS, payload: {
                                 FirstName,
                                 LastName,
                                 username,
@@ -77,7 +76,7 @@ export const onUserRegister = (data) => {
                                 justRegister: true,
                                 loginChecked: true,
                                 NextPage: true
-                            } 
+                            }
                         })
                     })
                     .catch((err) => {
@@ -100,7 +99,7 @@ export const EmailVerification = () => {
                 'Authorization': `Bearer ${token}`,
             }
         }
-        Axios.put(URL_API + '/user/userEmailVerification', { token }, options)
+        Axios.put(URL_API + '/user/userEmailVerification', {}, options)
             .then((res) => {
                 let { FirstName, LastName, username, email, token, status, role } = res.data
                 localStorage.setItem('token', token);
@@ -128,11 +127,9 @@ export const EmailVerification = () => {
 export const resendEmailVerification = (username, email) => {
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
-        const token = localStorage.getItem('token');
         Axios.post(URL_API + '/user/userResendEmailVerification', {
             username,
             email,
-            token
         })
         .then((res) => {
             let { FirstName, LastName, username, email, token, status, role } = res.data

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { adminLogin } from '../../redux/actions';
+import { adminLogin, cleanError } from '../../redux/actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 import { checkBg } from '../../helpers/stylefunction';
@@ -10,6 +10,7 @@ class AdminLogin extends Component {
 
     componentDidMount() {
         checkBg('AdminLoginPage', 'bg-dark');
+        this.props.cleanError();
     }
 
     handleSubmitLogin = (e) => {
@@ -37,7 +38,7 @@ class AdminLogin extends Component {
                         <div className='row py-3'>
                             <div className="offset-2 offset-md-3 col-8 col-md-6 py-3">
                                 <div className='py-3 text-center'>
-                                    <Link to='/admin' className='navbar-brand text-white'>
+                                    <Link to='/adminLogin' className='navbar-brand text-white'>
                                         <span>Ma</span>Commerce Admin
                                     </Link>
                                 </div>
@@ -94,4 +95,4 @@ const mapStateToProps =  (state) => {
     }
 }
 
-export default connect(mapStateToProps, { adminLogin })(AdminLogin);
+export default connect(mapStateToProps, { adminLogin, cleanError })(AdminLogin);

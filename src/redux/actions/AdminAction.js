@@ -27,14 +27,6 @@ export const adminRegister = (data) => {
 
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
-        if (!(password === confPassword)) {
-            dispatch({
-                type: AUTH_LOGIN_ERROR, payload: {
-                    error: 'Password dan Confirmation Password Harus Sama',
-                }
-            })
-        }
-
         if (username === '' ||
             password === '' ||
             confPassword === '' ||
@@ -48,7 +40,12 @@ export const adminRegister = (data) => {
                     error: 'Semua Form Input Harus Diisi',
                 }
             })
-
+        } else if (!(password === confPassword)) {
+            dispatch({
+                type: AUTH_LOGIN_ERROR, payload: {
+                    error: 'Password dan Confirmation Password Harus Sama',
+                }
+            })
         } else {
 
             delete data.confPassword;
@@ -120,11 +117,10 @@ export const adminLogin = (username, password) => {
 export const resendAdminEmailVerification = (username, email) => {
     return (dispatch) => {
         dispatch({ type: AUTH_LOGIN_LOADING });
-        const token = localStorage.getItem('token');
+
         Axios.post(URL_API + '/admin/adminResendEmailVerification', {
             username,
-            email,
-            token
+            email
         })
             .then((res) => {
                 let { FirstName, LastName, username, email, token, status, role } = res.data
@@ -159,7 +155,7 @@ export const adminEmailVerification = () => {
                 'Authorization': `Bearer ${token}`,
             }
         }
-        Axios.put(URL_API + '/admin/adminEmailVerification', { token }, options)
+        Axios.put(URL_API + '/admin/adminEmailVerification', {}, options)
             .then((res) => {
                 let { FirstName, LastName, username, email, token, status, role } = res.data
                 localStorage.setItem('token', token);
@@ -192,7 +188,7 @@ export const adminGetCategoryProduct = () => {
             dispatch({
                 type: ALL_CATEGORY, payload: {
                     categoryProduct: res.data.categoryParent,
-                    subCategoryProduct: res.data.subcategory,
+                    subCategoryProduct: res.data.subCategory,
                     loading: false
                 }
             })
@@ -233,10 +229,12 @@ export const adminAddCategoryProduct = (datacategory) => {
                 }
             })
         } else {
-
+            const token = localStorage.getItem('token');
+            
             let formData = new FormData();
             let options = {
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             }
@@ -283,11 +281,18 @@ export const adminAddSubCategoryProduct = (objSubCategory) => {
                 }
             })
         } else {
-            Axios.post(URL_API + '/admin/addSubCategory', { parentCategoryId, subCategoryName })
+            const token = localStorage.getItem('token');
+
+            let options = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+            Axios.post(URL_API + '/admin/addSubCategory', { parentCategoryId, subCategoryName }, options)
                 .then((res) => {
                     dispatch({
                         type: ALL_CATEGORY, payload: {
-                            subCategoryProduct: res.data.subcategory,
+                            subCategoryProduct: res.data.subCategory,
                             success: 'Sub Category berhasil ditambahkan',
                             loading: false
                         }
@@ -305,12 +310,149 @@ export const adminAddSubCategoryProduct = (objSubCategory) => {
 }
 
 
-export const adminEditCategoryProduct = () => {
+export const adminEditCategoryProduct = (dataEditCategory) => {
+    let {
+        categoryId,
+        categoryImage
+    } = dataEditCategory
 
+    return(dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+
+            let formData = new FormData();
+            const token = localStorage.getItem('token');
+
+            let options = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            formData.append('categoryImage', categoryImage);
+
+            delete dataEditCategory.categoryImage
+
+            formData.append('dataCategory', JSON.stringify(dataEditCategory))
+
+            Axios.put(URL_API + '/admin/editCategory/' + categoryId, formData, options)
+                .then((res) => {
+                    dispatch({
+                        type: ALL_CATEGORY, payload: {
+                            categoryProduct: res.data.categoryParent,
+                            success: 'Category berhasil diupdate',
+                            loading: false
+                        }
+                    })
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                })     
+    }
 }
 
-export const adminDeleteCategoryProduct = () => {
+export const adminEditSubCategoryProduct = (objSubCategory) => {
+    let {subCategoryId} = objSubCategory;
 
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+
+        const token = localStorage.getItem('token');
+
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        Axios.put(URL_API + '/admin/editSubCategory/' + subCategoryId, objSubCategory, options)
+            .then((res) => {
+                dispatch({
+                    type: ALL_CATEGORY, payload: {
+                        subCategoryProduct: res.data.subCategory,
+                        success: 'Sub Category berhasil diupdate',
+                        loading: false
+                    }
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            })
+    }
+}
+
+export const adminDeleteCategoryProduct = (categoryName) => {
+    return (dispatch) => {
+
+        dispatch({ type: ADMIN_LOADING })
+        const token = localStorage.getItem('token');
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        console.log(options)
+
+        Axios.delete(URL_API + '/admin/deleteCategory/' + categoryName, options)
+        .then((res) => {
+            dispatch({
+                type: ALL_CATEGORY, payload: {
+                    categoryProduct: res.data.categoryParent,
+                    success: 'Category berhasil dihapus',
+                    loading: false
+                }
+            })
+        })
+        .catch((err) => {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: err.response.data.message,
+                }
+            })
+        })
+
+    }
+}
+
+export const adminDeleteSubCategoryProduct = (subCategoryName) => {
+
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        const token = localStorage.getItem('token');
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        Axios.delete(URL_API + '/admin/deleteSubCategory/' + subCategoryName, options)
+            .then((res) => {
+                dispatch({
+                    type: ALL_CATEGORY, payload: {
+                        subCategoryProduct: res.data.subCategory,
+                        success: 'Sub Category berhasil dihapus',
+                        loading: false
+                    }
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            })
+
+    }
 }
 
 export const cleanErrorSuccess = () => {

@@ -26,7 +26,7 @@ class ModalMaCommerce extends Component {
                   {this.props.ModalBody}
           </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={this.props.onClickModal}>
+                    <Button color={this.props.colorOnClick ? this.props.colorOnClick : "primary" } onClick={this.props.onClickModal}>
                         {
                             this.props.loading ?
                                 <div className="spinner-border text-warning" role="status">
@@ -38,8 +38,8 @@ class ModalMaCommerce extends Component {
                         }
                     </Button>{' '}
                     {
-                        this.props.cancel ?
-                            <Button color="secondary" onClick={this.props.toggle}>{this.props.cancel}</Button>
+                        this.props.cancelButton ?
+                            <Button color="danger" onClick={this.props.toggle}>{this.props.cancelButton}</Button>
                             :
                             null
                     }

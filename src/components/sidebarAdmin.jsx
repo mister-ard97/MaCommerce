@@ -17,7 +17,7 @@ class SideBarAdmin extends Component {
         if(localStorage.getItem('token') !== null) {
             return (
 
-                    <div id="sidebar-container" className="sidebar-expanded d-md-block">
+                    <div id="sidebar-container" className="sidebar-expanded d-md-block position-fixed">
                         <ul className="list-group">
                             <li className="list-group-item sidebar-separator-title text-light d-block align-items-center">
                                 <small>Hai, Welcome</small>
@@ -40,8 +40,11 @@ class SideBarAdmin extends Component {
                             <Link to="/adminDashboard" className="list-group-item list-group-item-action bg-light text-dark mb-2">
                                 <span><i className="mr-2"></i> Home </span>
                             </Link>
-                            <Link to="/adminDashboard/category" className="list-group-item list-group-item-action bg-light text-dark">
+                            <Link to="/adminDashboard/category" className="list-group-item list-group-item-action bg-light text-dark mb-2">
                                 <span><i className="mr-2"></i> Category Product </span>
+                            </Link>
+                            <Link to="/adminDashboard/productlist" className="list-group-item list-group-item-action bg-light text-dark">
+                                <span><i className="mr-2"></i> Product List </span>
                             </Link>
 
                         </ul>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { adminRegister } from '../../redux/actions';
+import { adminRegister, cleanError } from '../../redux/actions';
 import { checkBg } from '../../helpers/stylefunction';
 
 class AdminRegister extends Component {
@@ -9,6 +9,7 @@ class AdminRegister extends Component {
     componentDidMount() {
         window.scrollTo(0, 0);
         checkBg('AdminRegisterPage', 'bg-dark');
+        this.props.cleanError();
     }
 
     handleSubmitRegister = (e) => {
@@ -130,4 +131,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { adminRegister })(AdminRegister);
+export default connect(mapStateToProps, { adminRegister, cleanError })(AdminRegister);
