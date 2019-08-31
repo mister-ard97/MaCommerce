@@ -183,6 +183,22 @@ a.card:hover {
     height: 25px;
 }
 
+/* Product Section */
+.addNewProduct {
+  text-align: center;
+}
+.addNewProduct .custom-file {
+  width: 200px;
+
+}
+
+.addNewProduct .custom-file label {
+  text-align: left;
+}
+.addNewProduct .custom-file-label {
+  font-size: 12px;
+}
+
 /* END OF ADMIN DASHBOARD */
 
 @media only screen and (max-width: 1025px) {

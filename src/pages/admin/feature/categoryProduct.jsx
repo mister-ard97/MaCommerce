@@ -41,7 +41,7 @@ class AdminCategoryProduct extends Component {
     }
     
     componentDidMount() {
-        this.props.adminGetCategoryProduct();
+        // this.props.adminGetCategoryProduct();
     }
 
      // componentDidUpdate() {
@@ -187,7 +187,6 @@ class AdminCategoryProduct extends Component {
     }
 
     categoryImageChange = (e) => {
-        console.log(e.target.files)
         if (e.target.files[0]) {
             this.setState({
                 categoryImageFile: URL.createObjectURL(e.target.files[0]),
@@ -503,13 +502,13 @@ class AdminCategoryProduct extends Component {
               <div className="container-fluid">
                     <div className="col-10">
                         {this.renderModalAddCategory(this.state.modalAddCategory)}
-                        <button className="alert alert-secondary mr-3" role="alert" onClick={() => this.setState({ modalAddCategory: true})}>
+                        <button className="alert alert-secondary mr-3" onClick={() => this.setState({ modalAddCategory: true})}>
                             <p><FontAwesomeIcon icon={faPlus} /> Add New Category</p>
                         </button>
                         {this.renderModalAddSubCategory(this.state.modalAddSubCategory)}
                         {this.renderModalEdit(this.state.modalEditCategory)}
                         {this.renderModalDelete(this.state.modalDeleteCategory)}
-                        <button className="alert alert-secondary" role="alert" onClick={() => this.setState({ modalAddSubCategory: true })}>
+                        <button className="alert alert-secondary" onClick={() => this.setState({ modalAddSubCategory: true })}>
                             <p><FontAwesomeIcon icon={faPlus} /> Add New Sub Category</p>
                         </button>
                         {

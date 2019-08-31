@@ -26,7 +26,11 @@ class ModalMaCommerce extends Component {
                   {this.props.ModalBody}
           </ModalBody>
                 <ModalFooter>
-                    <Button color={this.props.colorOnClick ? this.props.colorOnClick : "primary" } onClick={this.props.onClickModal}>
+                    <Button 
+                        color={this.props.colorOnClick ? this.props.colorOnClick : "primary" } 
+                        onClick={this.props.onClickModal ? this.props.onClickModal : null}
+                        // type={this.props.type ? this.props.type : null}
+                        >
                         {
                             this.props.loading ?
                                 <div className="spinner-border text-warning" role="status">

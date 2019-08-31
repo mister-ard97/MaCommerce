@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom'; 
-import { userLogOut } from '../redux/actions';
+import { userLogOut, adminGetCategoryProduct } from '../redux/actions';
 
 class SideBarAdmin extends Component {
     
     componentDidMount() {
         document.body.classList.remove('bg-dark');
+        this.props.adminGetCategoryProduct();
     }
 
     LogOutAdmin = () => {
@@ -65,4 +66,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { userLogOut })(SideBarAdmin);
+export default connect(mapStateToProps, { userLogOut, adminGetCategoryProduct })(SideBarAdmin);

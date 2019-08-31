@@ -21,7 +21,7 @@ class AdminDashboard extends Component {
                            <Route path={`${this.props.match.url}`} component={AdminHome} exact />
                            <Route path={`${this.props.match.url}/category`} component={AdminCategoryProduct} exact />
                            <Route path={`${this.props.match.url}/productlist`} component={AdminProductList} exact />
-                           <Route path={`${this.props.match.url}/transaction`} component={AdminTransaction} exact />
+                           {/* <Route path={`${this.props.match.url}/transaction`} component={AdminTransaction} exact /> */}
                        </div>
                    </div>
                </div>
