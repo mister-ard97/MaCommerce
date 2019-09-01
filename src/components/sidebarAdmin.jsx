@@ -24,12 +24,9 @@ class SideBarAdmin extends Component {
                                 <small>Hai, Welcome</small>
                                 {
                                     this.props.loading ?
-                                       <div>
-                                           <p>Loading...</p>
-                                        <div className="spinner-border" role="status">
-                                            <span className="sr-only">Loading...</span>
-                                        </div>
-                                       </div>
+                                    <div className="spinner-border" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
                                     :
                                      <div>
                                             <p className="text-info my-3">{this.props.FirstName + ' ' + this.props.LastName}</p>

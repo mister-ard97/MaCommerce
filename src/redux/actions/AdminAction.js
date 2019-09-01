@@ -180,6 +180,8 @@ export const adminEmailVerification = () => {
     }
 }
 
+// CATEGORY ACTION CREATOR
+
 export const adminGetCategoryProduct = () => {
     return (dispatch) => {
         dispatch({ type: ADMIN_LOADING })
@@ -210,25 +212,23 @@ export const adminAddCategoryProduct = (datacategory) => {
     } = datacategory
     return (dispatch) => {
         dispatch({ type: ADMIN_LOADING })
-        if (categoryName === '' & !categoryImage) {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: 'Category Name tidak boleh kosong',
-                }
-            })
-        } else if (!categoryImage) {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: 'Gambar tidak boleh kosong',
-                }
-            })
-        } else if (categoryName === '') {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: 'Category Name tidak boleh kosong',
-                }
-            })
+        if (categoryName === '' || !categoryImage) {
+            if(categoryName === '') {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Category Name tidak boleh kosong',
+                    }
+                })
+            }
+            if(!categoryImage) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Category Name tidak boleh kosong',
+                    }
+                })
+            }
         } else {
+
             const token = localStorage.getItem('token');
             
             let formData = new FormData();
@@ -308,7 +308,6 @@ export const adminAddSubCategoryProduct = (objSubCategory) => {
         }        
     }
 }
-
 
 export const adminEditCategoryProduct = (dataEditCategory) => {
     let {
@@ -452,6 +451,134 @@ export const adminDeleteSubCategoryProduct = (subCategoryName) => {
                 })
             })
 
+    }
+}
+
+// END OF CATEGORY ACTION CREATOR 
+
+export const adminAddProduct = (objProduct) => {
+    let {
+        productName,
+        productCategory,
+        productSubCategory,
+        productPrice,
+        productCoverImageDB,
+        productImage1DB,
+        productImage2DB,
+        sizeS,
+        sizeM,
+        sizeL,
+        sizeXL
+    } = objProduct
+
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+
+        if(productName === '' || 
+            isNaN(productCategory) === true ||
+            !productCategory || 
+            isNaN(productSubCategory) === true ||
+            !productSubCategory|| 
+            isNaN(productPrice) === true ||
+            isNaN(sizeS) === true ||
+            isNaN(sizeM) === true ||
+            isNaN(sizeL) === true ||
+            isNaN(sizeXL) === true) {
+            
+            
+            if (productName === '' &&
+                (isNaN(productCategory) === true ||
+                productCategory === null) &&
+                (isNaN(productSubCategory) === true ||
+                productSubCategory === null) &&
+                isNaN(productPrice) === true) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: `
+                        Form yang tidak boleh kosong:
+                            - Product Name
+                            - Product Category
+                            - Product Sub Category
+                            - Product Price
+                    `,
+                    }
+                })
+            } else if (productName === '') {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Nama Product tidak boleh kosong',
+                    }
+                })
+            } else if (isNaN(productCategory) === true ||
+                productCategory === null) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Category Product tidak boleh kosong',
+                    }
+                })
+            } else if (isNaN(productSubCategory) === true ||
+                productSubCategory === null) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Sub Category Product tidak boleh kosong',
+                    }
+                })
+            } else if(isNaN(productPrice) === true) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Product Price tidak boleh kosong',
+                    }
+                })
+            } else if (isNaN(sizeS) === true ||
+                isNaN(sizeM) === true ||
+                isNaN(sizeL) === true ||
+                isNaN(sizeXL) === true) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Stock size harus diisi dengan angka (Stock kosong = 0)',
+                    }
+                })
+            }
+        } else {
+            console.log('Semua data yang dibutuhkan telah terisi');
+            const token = localStorage.getItem('token');
+
+            let formData = new FormData();
+            let options = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            formData.append('productImage', productCoverImageDB)
+            formData.append('productImage', productImage1DB);
+            formData.append('productImage', productImage2DB);
+
+            delete objProduct.productCoverImageDB;
+            delete objProduct.productImage1DB;
+            delete objProduct.productImage2DB;
+
+            formData.append('dataProduct', JSON.stringify(objProduct));
+
+
+            Axios.post(URL_API + '/admin/addProduct', formData, options)
+            .then((res) => {
+                dispatch({
+                    type: ALL_CATEGORY, payload: {
+                        success: res.data.success,
+                        loading: false
+                    }
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            })
+        }
     }
 }
 
