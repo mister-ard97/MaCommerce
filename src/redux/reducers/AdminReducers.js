@@ -1,15 +1,22 @@
 import {
     ALL_CATEGORY,
+    ALL_PRODUCT,
     ADMIN_LOADING, 
     ADMIN_LOADING_FINISHED,
     ADMIN_LOADING_ERROR,
     ADMIN_CLEAN
 } from '../actions/types'
+import productList from '../../pages/admin/feature/productList';
 
 const INITIAL_STATE = {
     categoryProduct: [],
     subCategoryProduct: [],
+    page: 0,
+    total_pages: 0,
+    total_product: 0,
     productList: [],
+    categoryName: '',
+    subCategoryName: '',
     loading: false,
     error: '',
     success: ''
@@ -19,6 +26,8 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case ALL_CATEGORY:
             return {...state, ...action.payload}
+        case ALL_PRODUCT:
+            return { ...state, ...action.payload }
         case ADMIN_LOADING:
             return { ...state, loading: true, error: '' , success: ''}
         case ADMIN_LOADING_FINISHED: 

@@ -10,7 +10,8 @@ import {
     ADMIN_LOADING,
     ADMIN_LOADING_FINISHED, 
     ADMIN_LOADING_ERROR,
-    ADMIN_CLEAN
+    ADMIN_CLEAN,
+    ALL_PRODUCT
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -456,6 +457,103 @@ export const adminDeleteSubCategoryProduct = (subCategoryName) => {
 
 // END OF CATEGORY ACTION CREATOR 
 
+// PRODUCT ACTION CREATOR
+
+export const getProduct = (page) => {
+    return(dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        Axios.get(URL_API + '/productMaCommerce/allProduct?page=' + page)
+        .then((res) => {
+            dispatch({
+                type: ALL_PRODUCT,
+                payload: {
+                    page: res.data.page,
+                    total_product: res.data.totalProduct,
+                    total_pages: res.data.total_pages,
+                    productList: res.data.dataProduct,
+                    loading: false
+                }
+            })
+        })
+        .catch((err) => {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: err.response.data.message,
+                }
+            })
+        })
+    }
+}
+
+export const getFilteredProduct = (objFiltered) => {
+    console.log(objFiltered)
+    let { 
+        categoryId,
+        productName,
+        subCategoryId,
+        page
+    } = objFiltered
+
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+
+        if (productName === '' && 
+            isNaN(categoryId) === true && 
+            categoryId === null && 
+            isNaN(subCategoryId) === true && 
+            subCategoryId === null
+        ) {
+            dispatch({
+                type: ADMIN_LOADING_ERROR, payload: {
+                    error: 'Untuk dapat mem-filter product, tolong isi Product Name atau pilih salah satu dari Category yang tersedia.',
+                }
+            })
+        } else {
+
+            let searchQueryFilter = ''
+
+            if(productName !== '') {
+                searchQueryFilter += `productName=${productName}&`
+            }
+            if(categoryId) {
+                searchQueryFilter += `categoryId=${categoryId}&`
+            }
+
+            if(subCategoryId) {
+                searchQueryFilter += `subCategoryId=${subCategoryId}&`
+            }
+
+            if(page) {
+                searchQueryFilter += `page=${page}`
+            }
+
+            Axios.get(URL_API + '/productMaCommerce/searchFilteredProduct?' + searchQueryFilter)
+                .then((res) => {
+                    
+                    dispatch({
+                        type: ALL_PRODUCT,
+                        payload: {
+                            page: res.data.page,
+                            total_product: res.data.totalProduct,
+                            total_pages: res.data.total_pages,
+                            productList: res.data.dataProduct,
+                            loading: false,
+                            success: 'Success'
+                        }
+                    })
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                })
+        }
+        
+    }
+}
+
 export const adminAddProduct = (objProduct) => {
     let {
         productName,
@@ -478,20 +576,14 @@ export const adminAddProduct = (objProduct) => {
             isNaN(productCategory) === true ||
             !productCategory || 
             isNaN(productSubCategory) === true ||
-            !productSubCategory|| 
-            isNaN(productPrice) === true ||
-            isNaN(sizeS) === true ||
-            isNaN(sizeM) === true ||
-            isNaN(sizeL) === true ||
-            isNaN(sizeXL) === true) {
+            !productSubCategory ) {
             
             
             if (productName === '' &&
                 (isNaN(productCategory) === true ||
                 productCategory === null) &&
                 (isNaN(productSubCategory) === true ||
-                productSubCategory === null) &&
-                isNaN(productPrice) === true) {
+                productSubCategory === null)) {
                 dispatch({
                     type: ADMIN_LOADING_ERROR, payload: {
                         error: `
@@ -521,21 +613,6 @@ export const adminAddProduct = (objProduct) => {
                 dispatch({
                     type: ADMIN_LOADING_ERROR, payload: {
                         error: 'Sub Category Product tidak boleh kosong',
-                    }
-                })
-            } else if(isNaN(productPrice) === true) {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: 'Product Price tidak boleh kosong',
-                    }
-                })
-            } else if (isNaN(sizeS) === true ||
-                isNaN(sizeM) === true ||
-                isNaN(sizeL) === true ||
-                isNaN(sizeXL) === true) {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: 'Stock size harus diisi dengan angka (Stock kosong = 0)',
                     }
                 })
             }
@@ -581,6 +658,106 @@ export const adminAddProduct = (objProduct) => {
         }
     }
 }
+
+export const adminEditProduct = (objProduct, id) => {
+    let {
+        productName,
+        productCategory,
+        productSubCategory,
+        productCoverImageDB,
+        productImage1DB,
+        productImage2DB,
+    } = objProduct
+
+    return(dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        console.log(objProduct)
+        if (productName === '' ||
+            isNaN(productCategory) === true ||
+            !productCategory ||
+            isNaN(productSubCategory) === true ||
+            !productSubCategory ) {
+
+            if (productName === '' &&
+                (isNaN(productCategory) === true ||
+                    productCategory === null) &&
+                (isNaN(productSubCategory) === true ||
+                    productSubCategory === null)) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: `
+                        Form yang tidak boleh kosong:
+                            - Product Name
+                            - Product Category
+                            - Product Sub Category
+                    `,
+                    }
+                })
+            } else if (productName === '') {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Nama Product tidak boleh kosong',
+                    }
+                })
+            } else if (isNaN(productCategory) === true ||
+                productCategory === null) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Category Product tidak boleh kosong',
+                    }
+                })
+            } else if (isNaN(productSubCategory) === true ||
+                productSubCategory === null) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: 'Sub Category Product tidak boleh kosong',
+                    }
+                })
+            }
+        } else {
+            console.log('Semua data yang dibutuhkan telah terisi');
+            const token = localStorage.getItem('token');
+
+            let formData = new FormData();
+            let options = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            formData.append('productImage', productCoverImageDB)
+            formData.append('productImage', productImage1DB);
+            formData.append('productImage', productImage2DB);
+
+            delete objProduct.productCoverImageDB;
+            delete objProduct.productImage1DB;
+            delete objProduct.productImage2DB;
+
+            formData.append('dataProduct', JSON.stringify(objProduct));
+
+
+            Axios.put(URL_API + '/admin/editProduct/' + id, formData, options)
+                .then((res) => {
+                    dispatch({
+                        type: ALL_CATEGORY, payload: {
+                            success: res.data.success,
+                            loading: false
+                        }
+                    })
+                })
+                .catch((err) => {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                })
+        }
+    }
+}
+
+// END OF PRODUCT ACTION CREATOR
 
 export const cleanErrorSuccess = () => {
     return {

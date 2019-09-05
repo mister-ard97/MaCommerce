@@ -26,23 +26,28 @@ class ModalMaCommerce extends Component {
                   {this.props.ModalBody}
           </ModalBody>
                 <ModalFooter>
-                    <Button 
-                        color={this.props.colorOnClick ? this.props.colorOnClick : "primary" } 
-                        onClick={this.props.onClickModal ? this.props.onClickModal : null
-                        
-                        }
-                        // type={this.props.type ? this.props.type : null}
-                        >
-                        {
-                            this.props.loading ?
-                                <div className="spinner-border text-warning" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            :
-                             this.props.buttonClickName
-                            
-                        }
-                    </Button>{' '}
+                    {
+                        this.props.buttonClickName ?
+                            <Button
+                                color={this.props.colorOnClick ? this.props.colorOnClick : "primary"}
+                                onClick={this.props.onClickModal ? this.props.onClickModal : null
+
+                                }
+                            // type={this.props.type ? this.props.type : null}
+                            >
+                                {
+                                    this.props.loading ?
+                                        <div className="spinner-border text-warning" role="status">
+                                            <span className="sr-only">Loading...</span>
+                                        </div>
+                                        :
+                                        this.props.buttonClickName
+
+                                }
+                            </Button>
+                            : null
+                    }
+                    {' '}
                     {
                         this.props.cancelButton ?
                             <Button color="danger" onClick={this.props.toggle}>{this.props.cancelButton}</Button>
