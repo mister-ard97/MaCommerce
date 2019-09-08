@@ -459,6 +459,29 @@ export const adminDeleteSubCategoryProduct = (subCategoryName) => {
 
 // PRODUCT ACTION CREATOR
 
+export const getAllProductUI = (limit) => {
+    return (dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+        Axios.get(URL_API + '/productMaCommerce/allProductUI?limit=' + limit)
+            .then((res) => {
+                dispatch({
+                    type: ALL_PRODUCT,
+                    payload: {
+                        productListHome: res.data.dataProduct,
+                        loading: false
+                    }
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            })
+    }
+}
+
 export const getProduct = (page) => {
     return(dispatch) => {
         dispatch({ type: ADMIN_LOADING })
@@ -467,6 +490,8 @@ export const getProduct = (page) => {
             dispatch({
                 type: ALL_PRODUCT,
                 payload: {
+                    allProduct: true,
+                    filteredProduct: '',
                     page: res.data.page,
                     total_product: res.data.totalProduct,
                     total_pages: res.data.total_pages,
@@ -491,7 +516,9 @@ export const getFilteredProduct = (objFiltered) => {
         categoryId,
         productName,
         subCategoryId,
-        page
+        page, 
+        product,
+        showData
     } = objFiltered
 
     return (dispatch) => {
@@ -511,8 +538,10 @@ export const getFilteredProduct = (objFiltered) => {
         } else {
 
             let searchQueryFilter = ''
-
-            if(productName !== '') {
+            if(product) {
+                searchQueryFilter += `product=${product}&`
+            }
+            if(productName) {
                 searchQueryFilter += `productName=${productName}&`
             }
             if(categoryId) {
@@ -523,9 +552,15 @@ export const getFilteredProduct = (objFiltered) => {
                 searchQueryFilter += `subCategoryId=${subCategoryId}&`
             }
 
+            if (showData) {
+                searchQueryFilter += `page=${page}&`
+            }
+
             if(page) {
                 searchQueryFilter += `page=${page}`
             }
+
+           
 
             Axios.get(URL_API + '/productMaCommerce/searchFilteredProduct?' + searchQueryFilter)
                 .then((res) => {
@@ -533,6 +568,8 @@ export const getFilteredProduct = (objFiltered) => {
                     dispatch({
                         type: ALL_PRODUCT,
                         payload: {
+                            filteredProduct: product,
+                            allProduct: false,
                             page: res.data.page,
                             total_product: res.data.totalProduct,
                             total_pages: res.data.total_pages,
@@ -559,14 +596,9 @@ export const adminAddProduct = (objProduct) => {
         productName,
         productCategory,
         productSubCategory,
-        productPrice,
         productCoverImageDB,
         productImage1DB,
         productImage2DB,
-        sizeS,
-        sizeM,
-        sizeL,
-        sizeXL
     } = objProduct
 
     return (dispatch) => {
@@ -591,7 +623,6 @@ export const adminAddProduct = (objProduct) => {
                             - Product Name
                             - Product Category
                             - Product Sub Category
-                            - Product Price
                     `,
                     }
                 })
@@ -644,7 +675,11 @@ export const adminAddProduct = (objProduct) => {
                 dispatch({
                     type: ALL_CATEGORY, payload: {
                         success: res.data.success,
-                        loading: false
+                        loading: false,
+                        page: 0,
+                        total_product: 0,
+                        total_pages: 0,
+                        productList: []
                     }
                 })
             })
@@ -730,19 +765,19 @@ export const adminEditProduct = (objProduct, id) => {
             formData.append('productImage', productImage1DB);
             formData.append('productImage', productImage2DB);
 
-            delete objProduct.productCoverImageDB;
-            delete objProduct.productImage1DB;
-            delete objProduct.productImage2DB;
-
             formData.append('dataProduct', JSON.stringify(objProduct));
 
 
             Axios.put(URL_API + '/admin/editProduct/' + id, formData, options)
                 .then((res) => {
                     dispatch({
-                        type: ALL_CATEGORY, payload: {
+                        type: ALL_PRODUCT, payload: {
                             success: res.data.success,
-                            loading: false
+                            loading: false,
+                            page: 0,
+                            total_product: 0,
+                            total_pages: 0,
+                            productList: []
                         }
                     })
                 })
@@ -754,6 +789,39 @@ export const adminEditProduct = (objProduct, id) => {
                     })
                 })
         }
+    }
+}
+
+export const adminDeleteProduct = (id) => {
+    return(dispatch) => {
+        dispatch({ type: ADMIN_LOADING })
+
+        const token = localStorage.getItem('token');
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+        Axios.put(URL_API + '/admin/deleteProduct/' + id, {}, options)
+            .then((res) => {
+                dispatch({
+                    type: ALL_PRODUCT, payload: {
+                        success: res.data.success,
+                        loading: false,
+                        page: 0,
+                        total_product: 0,
+                        total_pages: 0,
+                        productList: []
+                    }
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            })
     }
 }
 

@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { userLogOut } from '../redux/actions'
+import { userLogOut, adminGetCategoryProduct } from '../redux/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -29,7 +29,14 @@ class Header extends Component {
                 id: 2,
                 nama: 'Celana'
             }
-        ]
+        ],
+
+        categoryProductSelected: null,
+        categoryProductNameSelected: '',
+        subCategoryProductSelected: null,
+        subCategoryProductNameSelected: '',
+        searchLinks: '',
+        error: ''
     }
 
     componentDidMount() {
@@ -38,6 +45,7 @@ class Header extends Component {
             document.getElementById('CollapseMaCommerce').classList.remove('link-white')
         }
         window.addEventListener('scroll', this.navbarBgChangeWhenScroll);
+        this.props.adminGetCategoryProduct();
     }
 
     navbarBgChangeWhenScroll = () => {
@@ -156,36 +164,100 @@ class Header extends Component {
         )
     }
 
-    CekInputForm = (e) => {
+    CekInputForm = () => {
 
-        e.preventDefault();
+        let productName = this.filterProductNameUI.value;
+        let categoryId = this.state.categoryProductSelected
+        let subCategoryId = this.state.subCategoryProductSelected
+        let searchQueryFilter = ''
 
-        var category = document.getElementById('CategoryLg')
-        var search = document.getElementById('SearchProductLgHome');
-
-        if (category.options[category.selectedIndex].value !== '' && search.value !== '') {
-            alert('Searching = ' + search.value)
-            search.value = ''
+        if (
+            productName === '' &&
+            isNaN(categoryId) === true &&
+            categoryId === null &&
+            isNaN(subCategoryId) === true &&
+            subCategoryId === null) {
+            this.setState({
+                error: 'Untuk dapat mem-filter product, tolong isi Product Name atau pilih salah satu dari Category yang tersedia.'
+            })
         } else {
-            alert('Error');
-            search.value = ''
+           
+            searchQueryFilter += `productName=${productName}&`
+
+            searchQueryFilter += `categoryId=${categoryId}&`
+
+            searchQueryFilter += `subCategoryId=${subCategoryId}&`
+
+            searchQueryFilter += `page=1`
+
+            this.setState({
+                searchLinks: searchQueryFilter,
+                error: ''
+            })
         }
+
+        
     }
 
-    CekInputFormSm = (e) => {
+    // CekInputFormSm = (e) => {
 
-        e.preventDefault();
+    //     e.preventDefault();
 
-        var category = document.getElementById('CategorySm')
-        var search = document.getElementById('SearchProductSmHome');
+    //     var category = document.getElementById('CategorySm')
+    //     var search = document.getElementById('SearchProductSmHome');
 
-        if (category.options[category.selectedIndex].value !== '' && search.value !== '') {
-            alert('Searching = ' + search.value)
-            search.value = ''
-        } else {
-            alert('Error');
-            search.value = ''
-        }
+    //     if (category.options[category.selectedIndex].value !== '' && search.value !== '') {
+    //         alert('Searching = ' + search.value)
+    //         search.value = ''
+    //     } else {
+    //         alert('Error');
+    //         search.value = ''
+    //     }
+    // }
+
+    renderCategoryProductUI = () => {
+        return this.props.categoryProduct.map((val, index) =>
+            <option
+                key={index}
+                value={val.id} >
+                {val.name}
+            </option>
+        )
+    }
+
+    renderSubCategoryProductUI = (id) => {
+        return this.props.subCatPro.map((val, index) => {
+            if (val.parentId === id) {
+                return (
+                    <option
+                        key={index}
+                        value={parseInt(val.idsubcategory)} >
+                        {val.subcategory}
+                    </option>
+                )
+            }
+            return null
+        })
+    }
+
+    selectedCategoryUI = () => {
+        let categoryProduct = document.getElementById('categoryProductUI')
+        let selectedOptions = categoryProduct.options[categoryProduct.selectedIndex]
+        this.setState({
+            categoryProductSelected: parseInt(selectedOptions.value),
+            categoryProductNameSelected: selectedOptions.innerHTML,
+            subCategoryProductSelected: null,
+            subCategoryProductNameSelected: '',
+        })
+    }
+
+    selectedSubCategoryUI = () => {
+        let subCategoryProduct = document.getElementById('subCategoryProductUI')
+        let selectedOptions = subCategoryProduct.options[subCategoryProduct.selectedIndex]
+        this.setState({
+            subCategoryProductSelected: parseInt(selectedOptions.value),
+            subCategoryProductNameSelected: selectedOptions.innerHTML
+        })
     }
 
     renderFormSearchLgByCategories = () => {
@@ -193,7 +265,8 @@ class Header extends Component {
             <div className='container justify-content-end d-none d-lg-flex d-xl-flex mr-3'>
                 <form className='form-row' onSubmit={this.CekInputForm}>
 
-                    <div className="col-6 my-1"> 
+                    <div className="col-6 my-1 offset-1"> 
+                  
                         <Nav navbar className='SearchCategory'>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret className='searchIcon'>
@@ -201,20 +274,29 @@ class Header extends Component {
                                     <FontAwesomeIcon icon={faSearch}  />
                                 </DropdownToggle>
                                 <DropdownMenu right={true} className='px-2'>
-                                    <input type="text" className="form-control" placeholder="Product Name" id="SearchProductLgHome" />
-                                    <select className="custom-select my-3" id="CategoryLg">
-                                        <option value=''>All Categories</option>
-                                        <option value={1}>One</option>
-                                        <option value={2}>Two</option>
-                                        <option value={21} className='text-info'>&nbsp;  Two - 1</option>
-                                        <option value={22} className='tex-info'>&nbsp;  Two - 2</option>
-                                        <option value={3}>Three</option>
-                                        <option value={4}>Four</option>
-                                        <option value={5}>Five</option>
-                                        <option value={6}>Six</option>
+                                   
+                                    <input type='text' className='mb-3 form-control' ref={(filterProductNameUI) => this.filterProductNameUI = filterProductNameUI} name='searchProductName' placeholder='Search By Name' />
+                                    
+                                    <select id="categoryProductUI" className="form-control mb-3" onChange={this.selectedCategoryUI}>
+                                        <option value=''>Select Category</option>
+                                        {this.renderCategoryProductUI()}
                                     </select>
+                                    
+                                    {
+                                        this.state.categoryProductSelected !== null ?
+                                            <select id="subCategoryProductUI" className="form-control" onChange={this.selectedSubCategoryUI}>
+                                                <option value=''>Select Sub Category</option>
+                                                {this.renderSubCategoryProductUI(this.state.categoryProductSelected)}
+                                            </select>
+                                            :
+                                            <select id="subCategoryProductUI" className="form-control">
+                                                <option value=''>Select Sub Category</option>
+                                            </select>
+                                    }
                                     <DropdownItem divider />
-                                    <button type='submit'>Search</button>
+                                    <button className='btn btn-warning' type='submit'>
+                                        Search Product
+                                    </button>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                         </Nav>
@@ -224,35 +306,35 @@ class Header extends Component {
         )
     }
 
-    renderFormSearchSmByCategories = () => {
-        return (
-                <form className='form-row' onSubmit={this.CekInputFormSm}>
-                    <div className="col-6 input-group my-1">
-                            <UncontrolledDropdown nav inNavbar className='SearchCategorySm'>
-                                <DropdownToggle nav caret>
-                                    <FontAwesomeIcon icon={faSearch} className='text-secondary'/>
-                                </DropdownToggle>
-                                <DropdownMenu right={true} className='px-2'>
-                                    <input type="text" className="form-control" placeholder="Product Name" id="SearchProductSmHome" />
-                                    <select className="custom-select my-3" id="CategorySm">
-                                        <option value=''>All Categories</option>
-                                        <option value={1}>One</option>
-                                        <option value={2}>Two</option>
-                                        <option value={21} className='text-info'>&nbsp;  Two - 1</option>
-                                        <option value={22} className='tex-info'>&nbsp;  Two - 2</option>
-                                        <option value={3}>Three</option>
-                                        <option value={4}>Four</option>
-                                        <option value={5}>Five</option>
-                                        <option value={6}>Six</option>
-                                    </select>
-                                    <DropdownItem divider />
-                                    <button type='submit'>Search</button>
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
-                    </div>
-                </form>
-        )
-    }
+    // renderFormSearchSmByCategories = () => {
+    //     return (
+    //             <form className='form-row' onSubmit={this.CekInputFormSm}>
+    //                 <div className="col-6 input-group my-1">
+    //                         <UncontrolledDropdown nav inNavbar className='SearchCategorySm'>
+    //                             <DropdownToggle nav caret>
+    //                                 <FontAwesomeIcon icon={faSearch} className='text-secondary'/>
+    //                             </DropdownToggle>
+    //                             <DropdownMenu right={true} className='px-2'>
+    //                                 <input type="text" className="form-control" placeholder="Product Name" id="SearchProductSmHome" />
+    //                                 <select className="custom-select my-3" id="CategorySm">
+    //                                     <option value=''>All Categories</option>
+    //                                     <option value={1}>One</option>
+    //                                     <option value={2}>Two</option>
+    //                                     <option value={21} className='text-info'>&nbsp;  Two - 1</option>
+    //                                     <option value={22} className='tex-info'>&nbsp;  Two - 2</option>
+    //                                     <option value={3}>Three</option>
+    //                                     <option value={4}>Four</option>
+    //                                     <option value={5}>Five</option>
+    //                                     <option value={6}>Six</option>
+    //                                 </select>
+    //                                 <DropdownItem divider />
+    //                                 <button type='submit'>Search</button>
+    //                             </DropdownMenu>
+    //                         </UncontrolledDropdown>
+    //                 </div>
+    //             </form>
+    //     )
+    // }
 
     toggle = () => {
         this.setState({
@@ -261,6 +343,10 @@ class Header extends Component {
     }
 
     render() {
+        if (this.state.searchLinks) {
+            return <Redirect to= {`/searchproduct?${this.state.searchLinks}`} />
+        }
+
         return (
             <div className='sticky-top'>
                 <Navbar id='Header' expand="lg" className='navbar-light font-weight-bold'>
@@ -271,96 +357,54 @@ class Header extends Component {
                         <Link to='/' className='navbar-brand mx-auto justify-content-start d-flex d-lg-none'>
                             <span>Ma</span>Commerce
                         </Link>
-                        <Nav className='d-flex d-lg-none'>
-                            {this.renderFormSearchSmByCategories()}
-                            <div className='mt-1'>
-                                {this.renderCartAccount('text-secondary')}
-                            </div>
-                        </Nav>
+                        {/* <Nav className='d-flex d-lg-none'> */}
+                            {/* {this.renderFormSearchSmByCategories()} */}
+                            {/* <div className='mt-1'> */}
+                                {/* {this.renderCartAccount('text-secondary')} */}
+                            {/* </div>
+                        </Nav> */}
 
                         <Collapse id="CollapseMaCommerce" isOpen={this.state.isOpen} navbar className='link-white'>
-                            <Nav className="mr-auto" navbar>
+                            <Nav className="mr-auto navbar-nav-cust" navbar>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
-                                    <DropdownToggle nav caret>
-                                        All Categories
-                                </DropdownToggle>
-                                    <DropdownMenu left={1}>
-                                        <DropdownItem>
-                                            Option 1
-                                </DropdownItem>
-                                        <DropdownItem>
-                                            Option 2
-                                </DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>
-                                            Reset
-                                </DropdownItem>
-                                    </DropdownMenu>
+                                   
+                                        <DropdownToggle nav caret>
+                                        <Link to={`/searchproduct?allproduct=true&page=1`}>
+                                            All Categories
+                                            </Link>
+                                        </DropdownToggle>
+                                    
+                                    
                                 </UncontrolledDropdown>
+                                <UncontrolledDropdown nav inNavbar className='mr-4'>
 
-                                <UncontrolledDropdown nav inNavbar className='mr-4'>
                                     <DropdownToggle nav caret>
-                                        Men
-                                </DropdownToggle>
-                                    <DropdownMenu left={1}>
-                                        <DropdownItem>
-                                            Option 1
-                                </DropdownItem>
-                                        <DropdownItem>
-                                            Option 2
-                                </DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>
-                                            Reset
-                                </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
+                                        <Link to={`/searchproduct?product=Men&page=1`}>
+                                            Men
+                                            </Link>
+                                    </DropdownToggle>
 
-                                <UncontrolledDropdown nav inNavbar className='mr-4'>
-                                    <DropdownToggle nav caret>
-                                        Girls
-                                </DropdownToggle>
-                                    <DropdownMenu left={1}>
-                                        <DropdownItem>
-                                            Option 1
-                                </DropdownItem>
-                                        <DropdownItem>
-                                            Option 2
-                                </DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>
-                                            Reset
-                                </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
 
-                                <UncontrolledDropdown nav inNavbar className='mr-4'>
-                                    <DropdownToggle nav caret>
-                                        Kids
-                                </DropdownToggle>
-                                    <DropdownMenu left={1}>
-                                        <DropdownItem>
-                                            Option 1
-                                </DropdownItem>
-                                        <DropdownItem>
-                                            Option 2
-                                </DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>
-                                            Reset
-                                </DropdownItem>
-                                    </DropdownMenu>
                                 </UncontrolledDropdown>
-                                
+                                <UncontrolledDropdown nav inNavbar className='mr-4'>
+
+                                    <DropdownToggle nav caret>
+                                        <Link to={`/searchproduct?product=Women&page=1`}>
+                                            Women
+                                            </Link>
+                                    </DropdownToggle>
+
+
+                                </UncontrolledDropdown>
                             </Nav>
                             <div className='container'>
-                                <Link to='/' className='navbar-brand justify-content-lg-center justify-content-md-center d-none d-lg-flex'>
+                                <Link to='/' className='navbar-brand justify-content-end d-none d-lg-flex'>
                                     <span>Ma</span>Commerce
-                            </Link>
+                                </Link>
                             </div>
                             {/* Untuk Large Device */}
                             {this.renderFormSearchLgByCategories()}
-                            <Nav navbar className='d-none d-lg-flex'>
+                            <Nav navbar className='d-flex'>
                                 {this.renderCartAccount('text-black-50')}
                             </Nav>
                         </Collapse>
@@ -376,8 +420,14 @@ const mapStateToProps = (state) => {
         FirstName: state.register.FirstName,
         justRegister: state.register.justRegister,
         loginChecked: state.register.loginChecked,
-        loading: state.register.loading
+        loading: state.register.loading,
+
+        // category
+        categoryProduct: state.admin.categoryProduct,
+        subCatPro: state.admin.subCategoryProduct,
+        loadingAdmin: state.admin.loading,
+        error: state.admin.error,
     }
 }
 
-export default connect(mapStateToProps, {userLogOut})(Header)
+export default connect(mapStateToProps, { adminGetCategoryProduct, userLogOut})(Header)

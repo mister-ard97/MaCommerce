@@ -10,6 +10,7 @@ import {
     getFilteredProduct,
     adminAddProduct,
     adminEditProduct,
+    adminDeleteProduct,
     cleanErrorSuccess
 } from '../../../redux/actions';
 import ModalMaCommerce from '../../../components/modal';
@@ -20,6 +21,7 @@ class ProductList extends Component {
         modalAddProduct: false,
         modalDetailProduct: false,
         modalEditProduct: false,
+        modalDeleteProduct: false,
 
         categoryProductSelectedInProduct: null,
         categoryProductNameSelectedInProduct: '',
@@ -60,6 +62,8 @@ class ProductList extends Component {
     }
 
     componentDidMount() {
+        this.props.cleanErrorSuccess();
+        
         if(this.props.location.search) {
             let parsedQuery = queryString.parse(this.props.location.search)
             console.log(parsedQuery)
@@ -79,8 +83,14 @@ class ProductList extends Component {
                 this.props.getFilteredProduct(objQueryFilteredProduct)
 
             }
-
+            
         }
+    }
+
+    componentDidUpdate() {
+       if(this.props.success) {
+           this.props.cleanErrorSuccess() 
+       }
     }
 
     backToTopModal = (params, params2) => {
@@ -93,24 +103,43 @@ class ProductList extends Component {
        }
 
        if(this.state.modalAddProduct) {
+           
            if (params2) {
                this.setState({
                    successStateProduct: 'Product berhasil ditambahkan',
-                   modalAddProduct: !this.state.modalAddProduct
+                   modalAddProduct: !this.state.modalAddProduct,
+                   
+                   productCoverImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+                   productImage1File: `${URL_API}/defaultPhoto/defaultCategory.png`,
+                   productImage2File: `${URL_API}/defaultPhoto/defaultCategory.png`,
+
+                   productCoverImageName: `Select Cover Image`,
+                   productImage1Name: `Select Product Image`,
+                   productImage2Name: `Select Product Image`,
+
+                   productCoverImageDB: undefined,
+                   productImage1DB: undefined,
+                   productImage2DB: undefined
                })
            }
         } else if (this.state.modalEditProduct) {
             if (params2) {
                 this.setState({
                     successStateProduct: 'Product berhasil diupdate',
-                    modalEditProduct: !this.state.modalEditProduct
+                    modalEditProduct: !this.state.modalEditProduct,
+                    detailProductSelected: null
                 })
             }
+        } else if(this.state.modalDeleteProduct) {
+           if(params2) {
+               this.setState({
+                   successStateProduct: 'Product berhasil dihapus',
+                   modalDeleteProduct: !this.state.modalDeleteProduct,
+                   detailProductSelected: null
+               })
+           }
         }
 
-
-       
-       
        return null
     }
 
@@ -329,7 +358,7 @@ class ProductList extends Component {
 
         if(this.props.success !== '') {
             this.setState({
-                successStateGetProduct: `Pencarian Product berhasil dengan search by: Categories = `,
+                successStateGetProduct: `Pencarian Product berhasil dengan search by: Categories`,
                 errorStateProduct: '',
                 successStateProduct: ''
             })
@@ -361,10 +390,10 @@ class ProductList extends Component {
                 this.setState({
                     productDetail: res.data.dataProductDetail,
                     imageProductDetail: res.data.linkImageProduct,
-                    productCoverImageFile: '/product/' + res.data.dataProductDetail[0].coverImage,
-                    productImage1File: res.data.linkImageProduct[0].imagePath,
-                    productImage2File: res.data.linkImageProduct[1].imagePath,
-                    productCoverImageDB: '/product/' + res.data.dataProductDetail[0].coverImage,
+                    productCoverImageFile: URL_API + '/' + res.data.dataProductDetail[0].coverImage,
+                    productImage1File: URL_API + res.data.linkImageProduct[0].imagePath,
+                    productImage2File: URL_API + res.data.linkImageProduct[1].imagePath,
+                    productCoverImageDB: res.data.dataProductDetail[0].coverImage,
                     productImage1DB: res.data.linkImageProduct[0].imagePath,
                     productImage2DB: res.data.linkImageProduct[1].imagePath,
                     detailProductSelected: id,
@@ -374,6 +403,23 @@ class ProductList extends Component {
             .catch((err) => {
                 console.log(err)
             })
+        }
+    }
+
+    getDeleteProductItem = (id) => {
+        if (id) {
+            Axios.get(URL_API + '/productMaCommerce/productDetail/' + id)
+                .then((res) => {
+
+                    this.setState({
+                        productDetail: res.data.dataProductDetail,
+                        detailProductSelected: id,
+                        modalDeleteProduct: true
+                    })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         }
     }
 
@@ -411,51 +457,62 @@ class ProductList extends Component {
     }
 
     renderProductList = () => {
-        
-        return this.props.productList.map((val, index) => {
-            return (
-                <tr key={index}>
-                    <td>{val.name}</td>
-                    <td>
-                        <Button color='primary' id={`togglerCoverImage` + val.productId}>
-                            Show Image
+        if(this.props.productList.length !== 0) {
+            return this.props.productList.map((val, index) => {
+                return (
+                    <tr key={index}>
+                        <td>{val.name}</td>
+                        <td>
+                            <Button color='primary' id={`togglerCoverImage` + val.productId}>
+                                Show Image
                         </Button>
-                        <UncontrolledCollapse toggler={`#togglerCoverImage` + val.productId}>
-                            <img src={`${URL_API}/product/${val.coverImage}`} alt={`${val.name}-product`} style={{width: '150px'}} className='mt-1 rounded' />
-                        </UncontrolledCollapse>      
-                    </td>
-                    <td>
-                        {val.price}
-                    </td>
-                    <td>
-                        {val.popularCount}
-                    </td>
-                    <td>
-                        <button
-                            className='btn btn-info alert alert-info'
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title="Detail Product"
-                            onClick={() => this.detailProductById(val.productId)}
-                        >
-                            <FontAwesomeIcon icon={faBookOpen} />
-                        </button>
-                    </td>
-                    <td>
-                        <button
-                            className='btn btn-success alert alert-success'
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title="Edit Product"
-                            onClick={() => this.editProductDetail(val.productId)}
-                        >
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                    </td>
-                    <td>Delete</td>
-                </tr>
-            )
-        })
+                            <UncontrolledCollapse toggler={`#togglerCoverImage` + val.productId}>
+                                <img src={`${URL_API}${val.coverImage}`} alt={`${val.name}-product`} style={{ width: '150px' }} className='mt-1 rounded' />
+                            </UncontrolledCollapse>
+                        </td>
+                        <td>
+                            {val.price}
+                        </td>
+                        <td>
+                            {val.popularCount}
+                        </td>
+                        <td>
+                            <button
+                                className='btn btn-info alert alert-info'
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Detail Product"
+                                onClick={() => this.detailProductById(val.productId)}
+                            >
+                                <FontAwesomeIcon icon={faBookOpen} />
+                            </button>
+                        </td>
+                        <td>
+                            <button
+                                className='btn btn-success alert alert-success'
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Edit Product"
+                                onClick={() => this.editProductDetail(val.productId)}
+                            >
+                                <FontAwesomeIcon icon={faEdit} />
+                            </button>
+                        </td>
+                        <td>
+                            <button
+                                className='btn btn-danger alert alert-danger'
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Delete Button"
+                                onClick={() => this.getDeleteProductItem(val.productId)}
+                            >
+                                <FontAwesomeIcon icon={faTrashAlt} />
+                            </button>
+                        </td>
+                    </tr>
+                )
+            })
+        } 
     }
 
     handleAddProduct = (e) => {
@@ -481,6 +538,16 @@ class ProductList extends Component {
         //console.log(objAddProduct)
 
         this.props.adminAddProduct(objAddProduct)
+        this.props.history.push(`productlist?addProduct=success`)
+        
+        this.setState({
+            productCoverImageFile: '',
+            productImage1File: '',
+            productImage2File: '',
+            productCoverImageDB: undefined,
+            productImage1DB: undefined,
+            productImage2DB: undefined
+        })
     }
 
     handleEditProduct = (e) => {
@@ -568,6 +635,30 @@ class ProductList extends Component {
                      colorOnClick="success"
                      onClickModal={this.handleEditProduct}
                      cancelButton="Cancel"
+                />
+            )
+        }
+    }
+
+    renderModalDeleteProduct = (params) => {
+        if(params) {
+            return (
+                <ModalMaCommerce
+                    idModal='modalProduct'
+                    className='modal-lg'
+                    modal={this.state.modalDeleteProduct}
+                    toggle={this.toggle}
+                    succesMessage={this.props.success}
+                    errorMessage={this.props.error}
+                    ModalHeader={'Delete Product'}
+                    ModalBody={
+                        this.renderDeleteProduct()
+                    }
+                    loading={this.props.loading}
+                    buttonClickName={'Delete Product'}
+                    colorOnClick="warning"
+                    onClickModal={() => this.props.adminDeleteProduct(this.state.detailProductSelected)}
+                    cancelButton="Cancel"
                 />
             )
         }
@@ -698,7 +789,7 @@ class ProductList extends Component {
                     <div className='d-flex justify-content-around font-weight-bold mb-3 addNewProduct'>
                         <div>
                             <p>Product Cover Image</p>
-                            <img src={`${URL_API}/product/${val.coverImage}`}
+                            <img src={`${URL_API}/${val.coverImage}`}
                                 className='userImage rounded'
                                 alt='cover_product'
                             />
@@ -792,7 +883,7 @@ class ProductList extends Component {
                     <div className='d-flex font-weight-bold mb-3 addNewProduct'>
                         <div>
                             <p>Product Cover Image</p>
-                            <img src={`${URL_API}${this.state.productCoverImageFile}`}
+                            <img src={`${this.state.productCoverImageFile}`}
                                 className='userImage rounded'
                                 alt='cover_product'
                             />
@@ -806,14 +897,14 @@ class ProductList extends Component {
                         </div>
                         <div>
                             <p>Product Image 1</p>
-                            <img src={`${URL_API}${this.state.productImage1File}`}
+                            <img src={`${this.state.productImage1File}`}
                                 className='userImage rounded'
                                 alt='cover_product'
                             />
                             <CustomInput
                                 id='edit_pi1'
                                 type='file'
-                                label={`${URL_API}${this.state.productImage1Name}`}
+                                label={`${this.state.productImage1Name}`}
                                 className='mt-3'
                                 onChange={this.productImage1Change}
                             />
@@ -904,17 +995,41 @@ class ProductList extends Component {
         })
     }
 
+    renderDeleteProduct = () => {
+        return this.state.productDetail.map((val, id) => {
+            return (
+                <div>
+                    {this.backToTopModal(this.props.error, this.props.success)}
+                    <p>Apakah anda yakin akan menghapus product dengan nama <span className='font-weight-bold'>{val.name}</span> ?</p>
+                </div>
+            )
+        })
+    }
+
     toggle = () => {
-        this.props.cleanErrorSuccess();
+      
         if(this.state.modalAddProduct) {
+            
             this.setState({
                 modalAddProduct: !this.state.modalAddProduct,
                 errorStateProduct: '',
                 successStateProduct: '',
-                successStateGetProduct: ''
+                successStateGetProduct: '',
+                
+                productCoverImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+                productImage1File: `${URL_API}/defaultPhoto/defaultCategory.png`,
+                productImage2File: `${URL_API}/defaultPhoto/defaultCategory.png`,
+
+                productCoverImageName: `Select Cover Image`,
+                productImage1Name: `Select Product Image`,
+                productImage2Name: `Select Product Image`,
+
+                productCoverImageDB: undefined,
+                productImage1DB: undefined,
+                productImage2DB: undefined
+                
             })
-        }
-        if(this.state.modalDetailProduct) {
+        } else if (this.state.modalDetailProduct) {
             this.setState({
                 modalDetailProduct: !this.state.modalDetailProduct,
                 errorStateProduct: '',
@@ -923,18 +1038,30 @@ class ProductList extends Component {
                 productDetail: [],
                 linkImageProduct: []
             })
-        }
-        if(this.state.modalEditProduct) {
+        } else if (this.state.modalEditProduct) {
             this.setState({
                 modalEditProduct: !this.state.modalEditProduct,
                 errorStateProduct: '',
                 successStateProduct: '',
                 successStateGetProduct: '',
+
                 productDetail: [],
                 linkImageProduct: [],
+
                 productCoverImageFile: '',
                 productImage1File: '',
                 productImage2File: '',
+
+                productCoverImageDB: undefined,
+                productImage1DB: undefined,
+                productImage2DB: undefined
+            })
+        } else if (this.state.modalDeleteProduct) {
+            this.setState({
+                modalDeleteProduct: !this.state.modalDeleteProduct,
+                errorStateProduct: '',
+                successStateProduct: '',
+                successStateGetProduct: ''
             })
         }
     }
@@ -948,9 +1075,11 @@ class ProductList extends Component {
                         {this.renderModalAddProduct(this.state.modalAddProduct)}
                         {this.renderModalDetailProduct(this.state.modalDetailProduct)}
                         {this.renderModalEditProduct(this.state.modalEditProduct)}
+                        {this.renderModalDeleteProduct(this.state.modalDeleteProduct)}
                         {
                             this.state.successStateProduct ?
                                 <div className='alert alert-success font-weight-bold'>
+                                    
                                     {this.state.successStateProduct}
                                 </div>
                                 :
@@ -968,6 +1097,7 @@ class ProductList extends Component {
                                 {
                                     this.state.successStateGetProduct ?
                                         <div className='alert alert-success font-weight-bold mb-1'>
+                                            
                                             {this.state.successStateGetProduct}
                                         </div>
                                         :
@@ -1135,5 +1265,6 @@ export default connect(mapStateToProps, {
     adminAddProduct,
     getFilteredProduct,
     adminEditProduct,
+    adminDeleteProduct,
     cleanErrorSuccess
  })(ProductList);

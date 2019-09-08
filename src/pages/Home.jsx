@@ -45,9 +45,7 @@ class Home extends Component {
                     :
                     <div>
                             <Carousel />
-                            <PopularProduct categoryParent={'Men'} />
-                            <PopularProduct categoryParent={'Girls'} />
-                            <PopularProduct categoryParent={'Kids'} />
+                            <PopularProduct />
                     </div>
 
                 }
@@ -58,12 +56,12 @@ class Home extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({register, admin}) => {
     return {
-        loading: state.register.loading,
-        username: state.register.username,
-        FirstName: state.register.FirstName,
-        role: state.register.role
+        loading: register.loading,
+        username: register.username,
+        FirstName: register.FirstName,
+        role: register.role,
     }
 }
 

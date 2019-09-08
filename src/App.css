@@ -3,6 +3,14 @@
   cursor: pointer
 }
 
+.removeTagA {
+  text-decoration: none !important;
+}
+
+.removeTagA h5, .removeTagA .popCount {
+  color: #000000 !important
+}
+
 /* Navbar */
 .navbarContainer {
   /* background-color: #1a1a1a !important; */
