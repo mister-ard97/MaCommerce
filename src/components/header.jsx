@@ -20,27 +20,11 @@ class Header extends Component {
         isOpen: false,
         login: false,
         loadingLogin: '',
-        cart: [
-            {
-                id: 1,
-                nama: 'Sepatu'
-            },
-            {
-                id: 2,
-                nama: 'Celana'
-            }
-        ],
-
-        categoryProductSelected: null,
-        categoryProductNameSelected: '',
-        subCategoryProductSelected: null,
-        subCategoryProductNameSelected: '',
-        searchLinks: '',
-        error: ''
+        logOut: false
     }
 
     componentDidMount() {
-        if(this.props.statusPage === 'UserLogin') {
+        if(this.props.statusPage !== 'Home') {
             document.getElementById('Header').classList.add('bg-light')
             document.getElementById('CollapseMaCommerce').classList.remove('link-white')
         }
@@ -69,17 +53,44 @@ class Header extends Component {
 
     userLogOut = () => {
         this.props.userLogOut()
+        this.setState({
+            logOut: true
+        })
     }
 
     renderCart = () => {
-        return this.state.cart.map((val, id)=>{
-            return (
-                <tr key={id}>
-                    <td>{id + 1}</td>
-                    <td>{val.nama}</td>
-                </tr>
-            )
-        })
+        if(this.props.cart) {
+            if (this.props.cart.length !== 0) {
+                return this.props.cart.map((val, index) => {
+                    return (
+                        <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{val.productName}</td>
+                            <td>
+                                {val.small !== 0 ? `S` : null}
+                                {val.medium !== 0 ? ` M` : null}
+                                {val.large !== 0 ? ` L` : null}
+                                {val.xlarge !== 0 ? ` XL` : null}
+                            </td>
+                            <td className='d-flex'>
+                                {val.small !== 0 ? `Size S: ${val.small}` : null}&nbsp;
+                                {val.medium !== 0 ? ` Size M: ${val.medium}` : null}&nbsp;
+                                {val.large !== 0 ? ` Size L: ${val.large}` : null}&nbsp;
+                                {val.xlarge !== 0 ? ` Size XL: ${val.xlarge}` : null}&nbsp;                                                                                       
+                            </td>
+                            <td>Rp. {val.total_price}</td>
+                        </tr>
+                    )
+                })
+            } else {
+                return (
+                    <tr>
+                        <td colSpan='5' className='text-center'>Data Cart Kosong</td>
+                    </tr>
+                )
+            }
+        }
+        
     }
 
     renderCartAccount = (param) => {
@@ -87,7 +98,7 @@ class Header extends Component {
             <div className='navbar-nav-cust d-flex font-weight-normal'>
                 <UncontrolledDropdown nav inNavbar className='mr-2'>
                     <DropdownToggle nav caret>
-                        <FontAwesomeIcon icon={faShoppingCart} className={param}/>
+                        <FontAwesomeIcon icon={faShoppingCart} className={param}/> <span>Cart ({this.props.cartCount})</span>
                     </DropdownToggle>
                     <DropdownMenu right={true} className='px-2'>
                         <table border='1'>
@@ -95,6 +106,9 @@ class Header extends Component {
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Product</th>
+                                    <th>Size</th>
+                                    <th>Qty</th>
+                                    <th>Total Price</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,7 +116,7 @@ class Header extends Component {
                             </tbody>
                         </table>
                         <DropdownItem divider />
-                        <button type='submit'>Go To Cart</button>
+                        <Link to='/cart' className='btn btn-warning'>Go To Cart Page</Link>
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
@@ -136,7 +150,7 @@ class Header extends Component {
 
                                     </DropdownToggle>
                             }
-                            <DropdownMenu right={true} className='px-2' id='loginDropdown'>
+                            <DropdownMenu right={true} className='px-2 userDropdown' id='loginDropdown'>
                                 {
                                     this.props.FirstName !== '' ?
                                         
@@ -164,177 +178,6 @@ class Header extends Component {
         )
     }
 
-    CekInputForm = () => {
-
-        let productName = this.filterProductNameUI.value;
-        let categoryId = this.state.categoryProductSelected
-        let subCategoryId = this.state.subCategoryProductSelected
-        let searchQueryFilter = ''
-
-        if (
-            productName === '' &&
-            isNaN(categoryId) === true &&
-            categoryId === null &&
-            isNaN(subCategoryId) === true &&
-            subCategoryId === null) {
-            this.setState({
-                error: 'Untuk dapat mem-filter product, tolong isi Product Name atau pilih salah satu dari Category yang tersedia.'
-            })
-        } else {
-           
-            searchQueryFilter += `productName=${productName}&`
-
-            searchQueryFilter += `categoryId=${categoryId}&`
-
-            searchQueryFilter += `subCategoryId=${subCategoryId}&`
-
-            searchQueryFilter += `page=1`
-
-            this.setState({
-                searchLinks: searchQueryFilter,
-                error: ''
-            })
-        }
-
-        
-    }
-
-    // CekInputFormSm = (e) => {
-
-    //     e.preventDefault();
-
-    //     var category = document.getElementById('CategorySm')
-    //     var search = document.getElementById('SearchProductSmHome');
-
-    //     if (category.options[category.selectedIndex].value !== '' && search.value !== '') {
-    //         alert('Searching = ' + search.value)
-    //         search.value = ''
-    //     } else {
-    //         alert('Error');
-    //         search.value = ''
-    //     }
-    // }
-
-    renderCategoryProductUI = () => {
-        return this.props.categoryProduct.map((val, index) =>
-            <option
-                key={index}
-                value={val.id} >
-                {val.name}
-            </option>
-        )
-    }
-
-    renderSubCategoryProductUI = (id) => {
-        return this.props.subCatPro.map((val, index) => {
-            if (val.parentId === id) {
-                return (
-                    <option
-                        key={index}
-                        value={parseInt(val.idsubcategory)} >
-                        {val.subcategory}
-                    </option>
-                )
-            }
-            return null
-        })
-    }
-
-    selectedCategoryUI = () => {
-        let categoryProduct = document.getElementById('categoryProductUI')
-        let selectedOptions = categoryProduct.options[categoryProduct.selectedIndex]
-        this.setState({
-            categoryProductSelected: parseInt(selectedOptions.value),
-            categoryProductNameSelected: selectedOptions.innerHTML,
-            subCategoryProductSelected: null,
-            subCategoryProductNameSelected: '',
-        })
-    }
-
-    selectedSubCategoryUI = () => {
-        let subCategoryProduct = document.getElementById('subCategoryProductUI')
-        let selectedOptions = subCategoryProduct.options[subCategoryProduct.selectedIndex]
-        this.setState({
-            subCategoryProductSelected: parseInt(selectedOptions.value),
-            subCategoryProductNameSelected: selectedOptions.innerHTML
-        })
-    }
-
-    renderFormSearchLgByCategories = () => {
-        return (
-            <div className='container justify-content-end d-none d-lg-flex d-xl-flex mr-3'>
-                <form className='form-row' onSubmit={this.CekInputForm}>
-
-                    <div className="col-6 my-1 offset-1"> 
-                  
-                        <Nav navbar className='SearchCategory'>
-                            <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret className='searchIcon'>
-                                    <span className='showText'>Search Product </span>
-                                    <FontAwesomeIcon icon={faSearch}  />
-                                </DropdownToggle>
-                                <DropdownMenu right={true} className='px-2'>
-                                   
-                                    <input type='text' className='mb-3 form-control' ref={(filterProductNameUI) => this.filterProductNameUI = filterProductNameUI} name='searchProductName' placeholder='Search By Name' />
-                                    
-                                    <select id="categoryProductUI" className="form-control mb-3" onChange={this.selectedCategoryUI}>
-                                        <option value=''>Select Category</option>
-                                        {this.renderCategoryProductUI()}
-                                    </select>
-                                    
-                                    {
-                                        this.state.categoryProductSelected !== null ?
-                                            <select id="subCategoryProductUI" className="form-control" onChange={this.selectedSubCategoryUI}>
-                                                <option value=''>Select Sub Category</option>
-                                                {this.renderSubCategoryProductUI(this.state.categoryProductSelected)}
-                                            </select>
-                                            :
-                                            <select id="subCategoryProductUI" className="form-control">
-                                                <option value=''>Select Sub Category</option>
-                                            </select>
-                                    }
-                                    <DropdownItem divider />
-                                    <button className='btn btn-warning' type='submit'>
-                                        Search Product
-                                    </button>
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
-                        </Nav>
-                    </div>
-                </form>
-            </div>
-        )
-    }
-
-    // renderFormSearchSmByCategories = () => {
-    //     return (
-    //             <form className='form-row' onSubmit={this.CekInputFormSm}>
-    //                 <div className="col-6 input-group my-1">
-    //                         <UncontrolledDropdown nav inNavbar className='SearchCategorySm'>
-    //                             <DropdownToggle nav caret>
-    //                                 <FontAwesomeIcon icon={faSearch} className='text-secondary'/>
-    //                             </DropdownToggle>
-    //                             <DropdownMenu right={true} className='px-2'>
-    //                                 <input type="text" className="form-control" placeholder="Product Name" id="SearchProductSmHome" />
-    //                                 <select className="custom-select my-3" id="CategorySm">
-    //                                     <option value=''>All Categories</option>
-    //                                     <option value={1}>One</option>
-    //                                     <option value={2}>Two</option>
-    //                                     <option value={21} className='text-info'>&nbsp;  Two - 1</option>
-    //                                     <option value={22} className='tex-info'>&nbsp;  Two - 2</option>
-    //                                     <option value={3}>Three</option>
-    //                                     <option value={4}>Four</option>
-    //                                     <option value={5}>Five</option>
-    //                                     <option value={6}>Six</option>
-    //                                 </select>
-    //                                 <DropdownItem divider />
-    //                                 <button type='submit'>Search</button>
-    //                             </DropdownMenu>
-    //                         </UncontrolledDropdown>
-    //                 </div>
-    //             </form>
-    //     )
-    // }
 
     toggle = () => {
         this.setState({
@@ -347,6 +190,10 @@ class Header extends Component {
             return <Redirect to= {`/searchproduct?${this.state.searchLinks}`} />
         }
 
+        if(this.state.logOut) {
+            return <Redirect to={`/`} />
+        }
+
         return (
             <div className='sticky-top'>
                 <Navbar id='Header' expand="lg" className='navbar-light font-weight-bold'>
@@ -357,12 +204,6 @@ class Header extends Component {
                         <Link to='/' className='navbar-brand mx-auto justify-content-start d-flex d-lg-none'>
                             <span>Ma</span>Commerce
                         </Link>
-                        {/* <Nav className='d-flex d-lg-none'> */}
-                            {/* {this.renderFormSearchSmByCategories()} */}
-                            {/* <div className='mt-1'> */}
-                                {/* {this.renderCartAccount('text-secondary')} */}
-                            {/* </div>
-                        </Nav> */}
 
                         <Collapse id="CollapseMaCommerce" isOpen={this.state.isOpen} navbar className='link-white'>
                             <Nav className="mr-auto navbar-nav-cust" navbar>
@@ -398,12 +239,11 @@ class Header extends Component {
                                 </UncontrolledDropdown>
                             </Nav>
                             <div className='container'>
-                                <Link to='/' className='navbar-brand justify-content-end d-none d-lg-flex'>
+                                <Link to='/' className='ml-5 pl-5 navbar-brand justify-content-start d-none d-lg-flex'>
                                     <span>Ma</span>Commerce
                                 </Link>
                             </div>
                             {/* Untuk Large Device */}
-                            {this.renderFormSearchLgByCategories()}
                             <Nav navbar className='d-flex'>
                                 {this.renderCartAccount('text-black-50')}
                             </Nav>
@@ -427,6 +267,10 @@ const mapStateToProps = (state) => {
         subCatPro: state.admin.subCategoryProduct,
         loadingAdmin: state.admin.loading,
         error: state.admin.error,
+
+        //cart
+        cart: state.cart.cart,
+        cartCount: state.cart.cartCount
     }
 }
 

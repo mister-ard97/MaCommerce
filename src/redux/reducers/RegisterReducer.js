@@ -42,7 +42,7 @@ export default (state = INITIAL_STATE, action) => {
         case CLEAN_ERROR:
             return { ...state, error: '' }
         case USER_LOGOUT:
-            return INITIAL_STATE
+            return {...INITIAL_STATE, authChecked: true}
         default:
             return state
     }

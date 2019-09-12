@@ -6,7 +6,8 @@ import {
    USER_LOGOUT,
    VERIFICATION_SUCCESS,
    VERIFICATION_FAILED, 
-   CLEAN_ERROR
+   CLEAN_ERROR,
+   CLEAR_CART
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 
@@ -223,9 +224,10 @@ export const KeepLogin = () => {
 
 export const userLogOut = () => {
         localStorage.removeItem('token');
-        return { 
-            type: USER_LOGOUT 
-        };
+        return(dispatch) => {
+            dispatch({ type: USER_LOGOUT })
+            dispatch({ type: CLEAR_CART })
+        }
 }
 
 export const cleanError = () => {

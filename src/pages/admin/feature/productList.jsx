@@ -443,6 +443,7 @@ class ProductList extends Component {
                             () => this.getProductByFilter(number)
                             :
                             () => this.getAllProduct(number)
+                            
                         }><span className="page-link">{number}</span></li>
                     )
                 } else {

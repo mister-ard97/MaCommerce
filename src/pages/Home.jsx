@@ -5,6 +5,7 @@ import Footer from '../components/footer';
 import Carousel from '../components/carousel';
 import PopularProduct from '../components/popularproduct';
 import { checkBg } from '../helpers/stylefunction';
+import {showCart} from '../redux/actions'
 
 class Home extends Component {
     componentDidMount() {
@@ -12,6 +13,7 @@ class Home extends Component {
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
         checkBg('AdminLoginPage', 'bg-dark');
+        this.props.showCart()
     }
 
     render() {
@@ -65,4 +67,4 @@ const mapStateToProps = ({register, admin}) => {
     }
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, {showCart})(Home);

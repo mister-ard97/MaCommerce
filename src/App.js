@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Route, Router } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { KeepLogin } from './redux/actions';
+import { KeepLogin, showCart, getAllProductUI } from './redux/actions';
 import './App.css';
 
 import Home from './pages/Home';
 import SearchProduct from './pages/SearchProduct'
 import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import ConfirmOrder from './pages/ConfirmOrder';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import WaitingVerification from './pages/WaitingVerification';
@@ -23,6 +25,8 @@ class App extends Component {
   
   componentDidMount() {
     this.props.KeepLogin();
+    this.props.showCart();
+    this.props.getAllProductUI(6)
   }
 
   render() {
@@ -31,6 +35,8 @@ class App extends Component {
           <Route path='/' component={Home} exact />
           <Route path='/searchproduct' component={SearchProduct} />
           <Route path='/productDetail' component={ProductDetail} />
+          <Route path='/cart' component={Cart} />
+          <Route path='/confirm_order' component={ConfirmOrder} />
           <Route path='/login' component={Login} exact />
           <Route path='/register' component={Register} exact />
           <Route path='/waitingverification' component={WaitingVerification} />
@@ -47,4 +53,4 @@ class App extends Component {
   }
 } 
 
-export default connect(null, { KeepLogin })(App);
+export default connect(null, { KeepLogin, showCart, getAllProductUI })(App);

@@ -10,42 +10,34 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { URL_API } from '../helpers/Url_API'
 
 class PopularProduct extends Component {
-    state = {
-        productName: '',
-        productSelected: []
-    }
-
-    componentDidMount() {
-
-        this.props.getAllProductUI(6)
-        this.setState({
-            productSelected: this.props.productListHome
-        })
-        
-    }
-
-
-
     renderPopularProduct = () => {
-        return this.state.productSelected.map((val, index) => {
-            return (
-                <Link to={`/productDetail?productId=${val.productId}`} className='card' key={index}>
-                    <img src={`${URL_API}${val.coverImage}`} className="card-img-top img-fluid" alt={`${val.coverImage}-${val.productId}`} />
-                    <div className="card-body font-weight-bold p-2">
-                        <h5 className="card-title">{val.name}</h5>
-                        <p className="card-text text-danger">Rp. {val.price}</p>
-                        <div className='container-fluid'>
-                            <div className='row'>
-                               
-                            </div>
-                        </div>
-                        <p className="card-text mt-3">
-                            <FontAwesomeIcon icon={faHeart} className='text-danger' /> {val.popularCount}
-                        </p>
-                    </div>
-                </Link>
-            )
-        })
+        if (this.props.productListHome) {
+            return this.props.productListHome.map((val, index) => {
+               return (
+                   <Link to={`/productDetail?productId=${val.productId}`} className='card' key={index}>
+                       <img src={`${URL_API}${val.coverImage}`} className="card-img-top img-fluid" alt={`${val.coverImage}-${val.productId}`} />
+                       <div className="card-body font-weight-bold p-2">
+                           <h5 className="card-title">{val.name}</h5>
+                           <p className="card-text text-danger">Rp. {val.price}</p>
+                           <div className='container-fluid'>
+                               <div className='row'>
+
+                               </div>
+                           </div>
+                           <p className="card-text mt-3">
+                               <FontAwesomeIcon icon={faHeart} className='text-danger' /> {val.popularCount}
+                           </p>
+                       </div>
+                   </Link>
+               )
+           })
+       }
+
+       return (
+           <div className="spinner-border" role="status">
+               <span className="sr-only">Loading...</span>
+           </div>
+       )
 
     }
     render() {

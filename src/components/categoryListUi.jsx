@@ -8,7 +8,8 @@ import {
 
 class CategoryListUI extends Component {
     state = {
-        categorySelected: 0
+        categorySelected: 0,
+        categoryParent: ''
     }
     componentDidMount() {
         this.props.adminGetCategoryProduct();
@@ -25,7 +26,7 @@ class CategoryListUI extends Component {
     renderAllCategoryComponent = () => {
         return this.props.categoryProduct.map((val, index) => {
             return (
-                <Button className='btn btn-warning text-light' id={`accordionCategory-${val.id}`} key={index} onClick={() => this.setState({ categorySelected: val.id})}>
+                <Button className='btn btn-warning mr-3' id={`accordionCategory-${val.id}`} key={index} onClick={() => this.setState({ categorySelected: val.id, categoryParent: val.name})}>
                     {val.name}
                 </Button>
             )
@@ -36,7 +37,7 @@ class CategoryListUI extends Component {
         return this.props.categoryProduct.map((val, index) => {
             if(val.name === this.props.categoryName) {
                 return (
-                    <Button className='btn btn-warning' id={`accordionCategory-${val.id}`} key={index} onClick={() => this.setState({categorySelected : val.id})}>
+                    <Button className='btn btn-warning' id={`accordionCategory-${val.id}`} key={index} onClick={() => this.setState({ categorySelected: val.id, categoryParent: val.name})}>
                         {val.name}
                     </Button>
                 )
@@ -50,7 +51,7 @@ class CategoryListUI extends Component {
         return this.props.subCatPro.map((val, index) => {
             if (val.parentId === id) {
                return <Link 
-                    to={`searchproduct?product=${this.props.categoryName}&categoryId=${id}&subCategoryId=${val.idsubcategory}`} 
+                    to={`searchproduct?product=${this.props.categoryName ? this.props.categoryName : this.state.categoryParent}&categoryId=${id}&subCategoryId=${val.idsubcategory}`} 
                     className='d-block'
                     key={index}
                     >

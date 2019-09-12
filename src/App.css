@@ -80,6 +80,11 @@ ketika input button di click
 
 .dropdown .dropdown-menu {
   margin-top: 15px;
+  min-width: 35rem !important;
+}
+
+.dropdown .dropdown-menu.userDropdown {
+  margin-top: 15px;
   min-width: 20rem !important;
 }
 
@@ -222,6 +227,11 @@ a.card:hover {
 }
 
 @media only screen and (max-width: 992px) {
+  .dropdown .dropdown-menu {
+  margin-top: 15px;
+  min-width: 20rem !important;
+}
+
   .navbar-brand {
     font-size: 18px !important;
   }

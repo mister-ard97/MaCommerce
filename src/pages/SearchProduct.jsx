@@ -197,7 +197,7 @@ class SearchProduct extends Component {
                                 this.props.total_pages === 0 ?
                                     null
                                     :
-                                    <ul className="d-flex justify-content-center pagination">
+                                    <ul className="d-flex justify-content-center pagination mt-3">
                                         {
                                             this.props.page === 1 ?
                                                 <li className="page-item disabled">
@@ -237,7 +237,7 @@ class SearchProduct extends Component {
                             <div className='col-3 mt-5'>
                                 {
                                     this.props.allProduct ?
-                                        ` Anda memfilter produk berdasarkan All Product`
+                                        <CategoryListUI  />
                                         :
                                         <CategoryListUI categoryName={this.props.filteredProduct}/>
                                 }
