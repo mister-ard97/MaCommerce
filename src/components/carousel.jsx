@@ -76,6 +76,7 @@ class CarouselCustom extends Component {
     }
 
     renderCarousel = () => {
+        // renderCarousel render category with image
         return this.state.items.map((item) => {
             return (
                 <CarouselItem
@@ -112,8 +113,15 @@ class CarouselCustom extends Component {
                 <div className='container'>
                     <div className="row justify-content-between mt-4">
                         <div className='col-12 col-lg-6 order-2 order-lg-1 text-center text-sm-left'>
-                            <h5>Menu</h5>
-                            <p>asdasdasdasdasd</p>
+                            <h5>Menu User</h5>
+                            <div className='card'>
+                                <div className='card-body'>
+                                    <Link className='text-dark' to='/transaction_list'>
+                                        Transaction History
+                                    </Link>
+                                </div> 
+                            </div>
+                           
                         </div>
                         <div className="col-12 col-lg-6 order-1 order-lg-2">
                             <div id='Carousel' className='carousel-custom-user'>

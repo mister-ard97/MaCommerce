@@ -32,17 +32,18 @@ class ConfirmOrder extends Component {
             })
 
              this.props.sendCartToTransaction(obj)
-            
-            
         })
-
-        this.setState({
-            loadingProcess: false,
-            link: 'GoToTransaction'
-        })
-
-       
     }
+
+    componentDidUpdate() {
+        if(this.props.transactionUser.length !== 0) {
+            this.setState({
+                loadingProcess: false,
+                link: 'GoToPayment'
+            })
+        }
+    }
+
 
     renderOrderConfirmation = () => {
         if (this.props.cartUser) {
@@ -87,8 +88,8 @@ class ConfirmOrder extends Component {
 
     }
     render() {
-        if (this.state.link === 'GoToTransaction'){
-            return <Redirect to='/' />
+        if (this.state.link === 'GoToPayment'){
+            return <Redirect to='/payment' />
         }
         if (this.props.loading) {
             return (
@@ -161,13 +162,15 @@ class ConfirmOrder extends Component {
     }
 }
 
-const mapStateToProps = ({cart , register}) => {
+const mapStateToProps = ({cart , register, transaction}) => {
     return {
         cartUser: cart.cart,
         role: register.role,
         loading: register.loading,
         auth: register.authChecked,
-        username: register.username
+        username: register.username,
+
+        transactionUser: transaction.transaction_selected
     }
 }
 

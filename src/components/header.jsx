@@ -27,6 +27,7 @@ class Header extends Component {
         if(this.props.statusPage !== 'Home') {
             document.getElementById('Header').classList.add('bg-light')
             document.getElementById('CollapseMaCommerce').classList.remove('link-white')
+            document.getElementById('CollapseMaCommerce').classList.add('link-dark')
         }
         window.addEventListener('scroll', this.navbarBgChangeWhenScroll);
         this.props.adminGetCategoryProduct();
@@ -38,6 +39,7 @@ class Header extends Component {
                 if (window.scrollY >= 10) {
                     document.getElementById('Header').classList.add('bg-light')
                     document.getElementById('CollapseMaCommerce').classList.remove('link-white')
+                    document.getElementById('CollapseMaCommerce').classList.add('link-dark')
                 } else {
                     document.getElementById('Header').classList.remove('bg-light')
                     document.getElementById('CollapseMaCommerce').classList.add('link-white')

@@ -30,8 +30,7 @@ class ProductDetail extends Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        document.getElementById('Header').classList.add('bg-light')
-        document.getElementById('CollapseMaCommerce').classList.remove('link-white')
+        
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
 
@@ -227,13 +226,21 @@ class ProductDetail extends Component {
             slidesToScroll: 1,
         };
 
-        if(this.props.loadingProduct) {
+        if(this.props.loading) {
             return (
-                <div className='row'>
-                    <div className="col-12 mt-5 text-center">
-                        <p>Loading...</p>
-                    </div>
-                </div>
+               <div>
+                    <Header statusPage='ProductDetail' />
+                        <div className='container'>
+                            <div className='row'>
+                               <div className="col-12 text-center">
+                                    <div className="spinner-border text-warning" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                               </div>
+                            </div>
+                        </div>
+                    <Footer />
+               </div>
             )
         }
            
@@ -261,7 +268,8 @@ class ProductDetail extends Component {
 
 const mapStateToProps = ({ register }) => {
     return {
-        username: register.username
+        username: register.username,
+        loading: register.loading
     }
 }
 

@@ -88,7 +88,6 @@ class CategoryListUI extends Component {
                                     :
                                     this.renderAllCategoryComponent()
                             }
-                            {  }
                         </h2>
                     </div>
                     {

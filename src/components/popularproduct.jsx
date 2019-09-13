@@ -15,9 +15,14 @@ class PopularProduct extends Component {
             return this.props.productListHome.map((val, index) => {
                return (
                    <Link to={`/productDetail?productId=${val.productId}`} className='card' key={index}>
-                       <img src={`${URL_API}${val.coverImage}`} className="card-img-top img-fluid" alt={`${val.coverImage}-${val.productId}`} />
+                       <img src={`${URL_API}${val.coverImage}`} className="card-img-top" alt={`${val.coverImage}-${val.productId}`} style={{height: '250px'}}/>
                        <div className="card-body font-weight-bold p-2">
-                           <h5 className="card-title">{val.name}</h5>
+                           <h5 className="card-title">{
+                               val.name.length > 13 ?
+                               val.name.substr(0, 13) + '...'
+                                : 
+                                val.name
+                            }</h5>
                            <p className="card-text text-danger">Rp. {val.price}</p>
                            <div className='container-fluid'>
                                <div className='row'>

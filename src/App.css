@@ -31,6 +31,10 @@
   color: #ff9500;
 }
 
+.link-dark svg, .link-dark a {
+  color: #666666 !important;
+}
+
 .link-white svg, .link-white a {
   color: #FFFFFF !important;
 }

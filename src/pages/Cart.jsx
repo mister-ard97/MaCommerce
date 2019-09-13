@@ -119,6 +119,7 @@ class Cart extends Component {
                                     <div className='container d-flex mb-5 pb-5'>
                                         <div className='col-9 my-5 pb-5'>
                                             <div className="card">
+                                                <h4>{this.props.username}'s Cart</h4>
                                                 <div className="card-body d-flex justify-content-between">
                                                     <table class="table">
                                                         <thead class="thead-dark">

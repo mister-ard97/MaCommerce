@@ -28,9 +28,9 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case ALL_CATEGORY:
-            return {...state, ...action.payload}
+            return {...state, ...action.payload, error: ''}
         case ALL_PRODUCT:
-            return { ...state, ...action.payload }
+            return { ...state, ...action.payload, error: ''}
         case ADMIN_LOADING:
             return { ...state, loading: true, error: '' , success: ''}
         case ADMIN_LOADING_FINISHED: 

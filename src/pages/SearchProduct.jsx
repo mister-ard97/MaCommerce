@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
-import { Link } from 'react-router-dom';
+import { Link , Redirect} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
@@ -53,6 +53,7 @@ class SearchProduct extends Component {
                 subCategoryid: objFilteredProductUI.subCategoryId,
                 productFiltered: true
             })
+            
         }
     }
     
@@ -89,9 +90,14 @@ class SearchProduct extends Component {
                
                     <Link to={`/productDetail?productId=${val.productId}`} className='col-3 mt-3 removeTagA' key={index}>
                     <div className='card'>
-                        <img src={`${URL_API}${val.coverImage}`} className="card-img-top img-fluid" alt={`${val.coverImage}-${val.productId}`} />
+                        <img src={`${URL_API}${val.coverImage}`} className="card-img-top" alt={`${val.coverImage}-${val.productId}`} style={{ height: '250px' }}/>
                         <div className="card-body font-weight-bold p-2">
-                            <h5 className="card-title">{val.name}</h5>
+                            <h5 className="card-title">{
+                                val.name.length > 13 ?
+                                    val.name.substr(0, 13) + '...'
+                                    :
+                                    val.name
+                            }</h5>
                             <p className="card-text text-danger">Rp. {val.price}</p>
                             <div className='container-fluid'>
                                 <div className='row'>
@@ -159,8 +165,11 @@ class SearchProduct extends Component {
     }
 
     render() {
+        if(this.props.error) {
+            return <Redirect to='/' />
+        }
+
         return (
-            
             <div>
                 <Header statusPage='searchProduct' />
 
@@ -259,7 +268,8 @@ const mapStateToProps = ({admin}) => {
         productList: admin.productList,
         allProduct: admin.allProduct,
         filteredProduct: admin.filteredProduct,
-        success: admin.success
+        success: admin.success,
+        error: admin.error
     }
 }
 
