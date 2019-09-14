@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
@@ -42,10 +42,10 @@ class TransactionList extends Component {
                             </td>
                             <td>
                                 {
-                                    val.transactionImage === '' ?
+                                    val.transactionImage === null ?
                                     'Belum ada bukti pembayaran'
                                     :
-                                    <img src={`${URL_API}${val.transactionImage}`} className='img-fluid' />
+                                    <img src={`${URL_API}${val.transactionImage}`} className='img-fluid' alt={val.kodeTransaski+'-Slip'}/>
                                 }
                             </td>
                             <td>
@@ -57,12 +57,12 @@ class TransactionList extends Component {
                                 }
                                 {
                                     val.status === 1 ?
-                                        <p>Status: <span className='text-danger'>Menunggu Konfirmasi dari Admin</span></p>
+                                        <p>Status: <span className='text-secondary'>Menunggu Konfirmasi dari Admin</span></p>
                                         :
                                         null
                                 }
                             </td>
-                            <td>
+                            <td className='text-center'>
                                 <button
                                     className='btn btn-info alert alert-info'
                                     data-toggle="tooltip"
@@ -123,7 +123,7 @@ class TransactionList extends Component {
                                                         <th scope="col">Transaction Code</th>
                                                         <th scope="col">Payment Slip</th>
                                                         <th scope='col'>Status</th>
-                                                        <th scope='col'>Transaction Detail / Upload Payment</th>
+                                                        <th scope='col'>Transaction Detail /<br /> Upload Payment</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

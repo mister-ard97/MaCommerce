@@ -13,7 +13,7 @@ class Home extends Component {
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');
         checkBg('AdminLoginPage', 'bg-dark');
-        this.props.showCart()
+        this.props.showCart();
     }
 
     render() {

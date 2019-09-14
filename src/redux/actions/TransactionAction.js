@@ -89,6 +89,34 @@ export const getTransactionDetail = (id) => {
     }
 }
 
+export const sendPaymentSlipToAdmin = (id, paymentImage) => {
+    return(dispatch) => {
+        const token = localStorage.getItem('token');
+        let formData = new FormData()
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        formData.append('paymentImage', paymentImage);
+
+        Axios.post(URL_API + '/transaction/updatePaymentUser/' + id, formData, options)
+            .then((res) => {
+                dispatch({
+                    type: SEND_TO_TRANSACTION,
+                    payload: {
+                        transaction_selected: res.data.dataTransactionUI,
+                        transaction_detail: res.data.dataTransactionDetailUI
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+}
+
 export const cleanTransaction = () => {
     return {
         type: CLEAR_TRANSACTION

@@ -2,15 +2,74 @@ import React, { Component }  from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { UncontrolledCollapse, Button } from 'reactstrap';
+
+import {sendPaymentSlipToAdmin} from '../redux/actions';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import { URL_API } from '../helpers/Url_API';
+import { CustomInput } from 'reactstrap';
 
 class PaymentPage extends Component {
 
+    state = {
+        paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+        paymentImageName: 'Select Image',
+        paymentImageDB: undefined,
+
+        errorState: '',
+        successState: '',
+    }
+
     componentDidMount() {
-        
+        this.setState({
+            paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+            paymentImageName: 'Select Image',
+            paymentImageDB: undefined,
+
+            errorState: '',
+            successState: '',
+        })
+
         if (this.props.location.search || !this.props.transactionUserSelected) {
             return <Redirect to='/' />
+        }
+    }
+
+    paymentImageChange = (e) => {
+        if (e.target.files[0]) {
+            this.setState({
+                paymentImageFile: URL.createObjectURL(e.target.files[0]),
+                paymentImageName: e.target.files[0].name,
+                paymentImageDB: e.target.files[0]
+            })
+        } else {
+            this.setState({
+                paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+                paymentImageName: 'Select Image',
+                paymentImageDB: undefined,
+            })
+        }
+    }
+
+    componentWillReceiveProps(newProps) {
+        if(this.props.transactionUserSelected !== newProps.transactionUserSelected) {
+            this.setState({
+                errorState: '',
+                successState: 'Success Kirim Bukti Pembayaran',
+                loading: false
+            })
+        }
+    }
+
+    sendPaymentSlip = (id) => {
+        if(!this.state.paymentImageDB) {
+            this.setState({
+                errorState: 'Harap Masukkan Bukti Pembayaran'
+            })
+        } else {
+            this.setState({loading: true}, () => {
+                this.props.sendPaymentSlipToAdmin(id, this.state.paymentImageDB)
+            })
         }
     }
 
@@ -20,6 +79,22 @@ class PaymentPage extends Component {
                 return this.props.transactionUserSelected.map((val, id) => {
                     return (
                         <div className='card-body' key={id}>
+                            {
+                                this.state.errorState ?
+                                    <div className="alert alert-danger" role="alert">
+                                        {this.state.errorState}
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                this.state.successState ?
+                                    <div className="alert alert-success" role="alert">
+                                        {this.state.successState}
+                                    </div>
+                                    :
+                                    null
+                            }
                             <div className='font-weight-bold text-center'>
                                 <h5>
                                     Payment For User {this.props.username}
@@ -36,19 +111,25 @@ class PaymentPage extends Component {
                             }
                             {
                                 val.status === 1 ?
-                                    <p>Status: <span className='text-danger'>Menunggu Konfirmasi dari Admin</span></p>
+                                    <p>Status: <span className='text-info'>Menunggu Konfirmasi dari Admin</span></p>
                                     :
                                     null
                             }
                             {
                                 val.status === 2 ?
-                                    <p>Status: <span className='text-danger'>Pembayaran telah dikonfirmasi, menunggu Produk dikirim</span></p>
+                                    <p>Status: <span className='text-success'>Pembayaran telah dikonfirmasi, menunggu Produk dikirim</span></p>
                                     :
                                     null
                             }
                             {
                                 val.status === 3 ?
-                                    <p>Status: <span className='text-danger'>Produk telah dikirim, menunggu konfirmasi dari penerima produk</span></p>
+                                    <p>Status: <span className='text-secondary'>Produk telah dikirim, menunggu konfirmasi dari penerima produk</span></p>
+                                    :
+                                    null
+                            }
+                            {
+                                val.status === 9 ?
+                                    <p>Status: <span className='text-danger'>Bukti Pembayaran Anda Di Tolak, Silahkan kirim lagi bukti pembayaran.</span></p>
                                     :
                                     null
                             }
@@ -99,9 +180,41 @@ class PaymentPage extends Component {
                                     </tbody>
                                 </table>
                             </UncontrolledCollapse>
-                            <button className='btn btn-success form-control my-3'>
-                                Kirim Bukti Pembayaran
-                            </button>
+                            {
+                                val.status === 0 ?
+                                
+                                   <div>
+                                        
+                                        <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
+                                        <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
+                                        {
+                                            this.state.loading ?
+                                                <button className='btn btn-success form-control my-3' disabled>
+                                                    <div className="spinner-border" role="status">
+                                                        <span className="sr-only">Loading...</span>
+                                                    </div>
+                                                </button>
+                                            :
+                                                <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.id)}>
+                                                    Kirim Bukti Pembayaran
+                                                </button>
+                                        }
+                                   </div>
+                                : null
+                            }
+                            {
+                                val.status === 1 ?
+                                    <p>Menunggu konfirmasi dari Admin</p>
+                                    :
+                                    null
+                            }
+                            {
+                                val.status === 9 ?
+                                    <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.date_created)}>
+                                        Kirim Bukti Pembayaran
+                                    </button>
+                                    : null
+                            }
                             <small>
                                 Date Created: {val.date_created}
                             </small>
@@ -168,5 +281,5 @@ const mapStateToProps = ({ transaction, register }) => {
     }
 }
 
-export default connect(mapStateToProps)(PaymentPage);
+export default connect(mapStateToProps, { sendPaymentSlipToAdmin})(PaymentPage);
 
