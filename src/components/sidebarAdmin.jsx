@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom'; 
-import { userLogOut, adminGetCategoryProduct } from '../redux/actions';
+import { userLogOut, adminGetCategoryProduct, cleanTransaction } from '../redux/actions';
 
 class SideBarAdmin extends Component {
     
@@ -11,6 +11,7 @@ class SideBarAdmin extends Component {
     }
 
     LogOutAdmin = () => {
+        this.props.cleanTransaction()
         this.props.userLogOut()
     }
 
@@ -41,8 +42,11 @@ class SideBarAdmin extends Component {
                             <Link to="/adminDashboard/category" className="list-group-item list-group-item-action bg-light text-dark mb-2">
                                 <span><i className="mr-2"></i> Category Product </span>
                             </Link>
-                            <Link to="/adminDashboard/productlist" className="list-group-item list-group-item-action bg-light text-dark">
+                            <Link to="/adminDashboard/productlist" className="list-group-item list-group-item-action bg-light text-dark mb-2">
                                 <span><i className="mr-2"></i> Product List </span>
+                            </Link>
+                            <Link to="/adminDashboard/transaction" className="list-group-item list-group-item-action bg-light text-dark">
+                                <span><i className="mr-2"></i> Transaction List </span>
                             </Link>
 
                         </ul>
@@ -63,4 +67,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { userLogOut, adminGetCategoryProduct })(SideBarAdmin);
+export default connect(mapStateToProps, { userLogOut, adminGetCategoryProduct, cleanTransaction })(SideBarAdmin);

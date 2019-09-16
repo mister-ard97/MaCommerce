@@ -13,7 +13,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { userLogOut, adminGetCategoryProduct } from '../redux/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 class Header extends Component {
     state = {
@@ -122,12 +122,6 @@ class Header extends Component {
                     </DropdownMenu>
                 </UncontrolledDropdown>
 
-               {
-                   this.state.loadingLogin ?
-                        <div className="spinner-border" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </div>
-                    :
                         <UncontrolledDropdown nav inNavbar>                            
                             {
                                 this.props.loading ?
@@ -158,14 +152,26 @@ class Header extends Component {
                                         
                                         this.props.justRegister ?
                                             <div>
+                                                {
+                                                    this.props.status === 'Unverified' ?
+                                                    <p className='text-danger'>Anda belum verifikasi email <Link to='/waitingverification'> Klik Untuk Verification </Link></p>
+                                                    :
+                                                    null
+                                                }
                                                 <p>Selamat Bergabung di MaCommerce, {this.props.FirstName}</p>
-                                                <Link onClick={this.userLogOut}> Log Out </Link>
+                                                <Link to='/' onClick={this.userLogOut}> Log Out </Link>
                                                
                                             </div>
                                         :
                                             <div>
+                                                {
+                                                    this.props.status === 'Unverified' ?
+                                                        <p className='text-danger'>Anda belum verifikasi email <Link to='/waitingverification'> Klik Untuk Verification </Link></p>
+                                                        :
+                                                        null
+                                                }
                                                 <p>Selamat Datang Kembali, {this.props.FirstName}</p>
-                                                <Link onClick={this.userLogOut}> Log Out </Link>
+                                                <Link to='/' onClick={this.userLogOut}> Log Out </Link>
                                             </div>
                                     :
                                         <div>
@@ -175,7 +181,6 @@ class Header extends Component {
                                 }
                             </DropdownMenu>
                         </UncontrolledDropdown>
-               }
             </div>
         )
     }
@@ -210,33 +215,25 @@ class Header extends Component {
                         <Collapse id="CollapseMaCommerce" isOpen={this.state.isOpen} navbar className='link-white'>
                             <Nav className="mr-auto navbar-nav-cust" navbar>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
-                                   
-                                        <DropdownToggle nav caret>
-                                        <Link to={`/searchproduct?allproduct=true&page=1`}>
+                                
+                                        <Link to={`/searchproduct?allproduct=true&page=1`} className='dropdown-toggle nav-link'>
                                             All Categories
-                                            </Link>
-                                        </DropdownToggle>
+                                        </Link>
                                     
                                     
                                 </UncontrolledDropdown>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
 
-                                    <DropdownToggle nav caret>
-                                        <Link to={`/searchproduct?product=Men&page=1`}>
+                                    <Link to={`/searchproduct?product=Men&page=1`} className='dropdown-toggle nav-link'>
                                             Men
-                                            </Link>
-                                    </DropdownToggle>
-
+                                    </Link>
 
                                 </UncontrolledDropdown>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
 
-                                    <DropdownToggle nav caret>
-                                        <Link to={`/searchproduct?product=Women&page=1`}>
+                                    <Link to={`/searchproduct?product=Women&page=1`} className='dropdown-toggle nav-link'>
                                             Women
-                                            </Link>
-                                    </DropdownToggle>
-
+                                    </Link>
 
                                 </UncontrolledDropdown>
                             </Nav>
@@ -261,6 +258,7 @@ const mapStateToProps = (state) => {
     return {
         FirstName: state.register.FirstName,
         justRegister: state.register.justRegister,
+        status: state.register.status,
         loginChecked: state.register.loginChecked,
         loading: state.register.loading,
 

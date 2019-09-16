@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {
     showCart,
-    deleteCartProduct
+    deleteCartProduct,
+    cleanTransaction
 } from '../redux/actions';
 
 import Header from '../components/header';
@@ -24,6 +25,7 @@ class Cart extends Component {
            window.scrollTo(0, 0);
            document.getElementById('Header').classList.add('bg-light')
            document.getElementById('CollapseMaCommerce').classList.remove('link-white')
+           this.props.cleanTransaction()
        }
     }
 
@@ -121,8 +123,8 @@ class Cart extends Component {
                                             <div className="card">
                                                 <h4>{this.props.username}'s Cart</h4>
                                                 <div className="card-body d-flex justify-content-between">
-                                                    <table class="table">
-                                                        <thead class="thead-dark">
+                                                    <table className="table">
+                                                        <thead className="thead-dark">
                                                             <tr>
                                                                 <th scope="col">Product Name</th>
                                                                 <th scope="col">Product Image</th>
@@ -177,5 +179,6 @@ const mapStateToProps = ({ cart,  register}) => {
 
 export default connect(mapStateToProps, {
     showCart,
-    deleteCartProduct
+    deleteCartProduct,
+    cleanTransaction
 })(Cart);

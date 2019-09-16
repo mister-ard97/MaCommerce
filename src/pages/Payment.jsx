@@ -2,15 +2,13 @@ import React, { Component }  from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { UncontrolledCollapse, Button } from 'reactstrap';
-
-import {sendPaymentSlipToAdmin} from '../redux/actions';
+import { sendPaymentSlipToAdmin, confirmProductToAdmin, sendNotificationToAdmin} from '../redux/actions';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import { URL_API } from '../helpers/Url_API';
 import { CustomInput } from 'reactstrap';
 
 class PaymentPage extends Component {
-
     state = {
         paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
         paymentImageName: 'Select Image',
@@ -21,6 +19,7 @@ class PaymentPage extends Component {
     }
 
     componentDidMount() {
+        window.scrollTo(0,0)
         this.setState({
             paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
             paymentImageName: 'Select Image',
@@ -52,25 +51,46 @@ class PaymentPage extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if(this.props.transactionUserSelected !== newProps.transactionUserSelected) {
+        if (this.props.transactionUserSelected !== newProps.transactionUserSelected) {
+            window.scrollTo(0,0)
             this.setState({
-                errorState: '',
-                successState: 'Success Kirim Bukti Pembayaran',
                 loading: false
             })
         }
     }
 
+
     sendPaymentSlip = (id) => {
-        if(!this.state.paymentImageDB) {
+        if (!this.state.paymentImageDB) {
             this.setState({
                 errorState: 'Harap Masukkan Bukti Pembayaran'
             })
         } else {
-            this.setState({loading: true}, () => {
+            this.setState({ loading: true, errorState: '', successState: '' }, () => {
                 this.props.sendPaymentSlipToAdmin(id, this.state.paymentImageDB)
             })
+            this.setState({
+                successState: 'Success Kirim Bukti Pembayaran',
+            })
         }
+    }
+
+    confirmProduct = (id) => {
+        this.setState({ loading: true, errorState: '', successState: '' }, () => {
+            this.props.confirmProductToAdmin(id, this.state.paymentImageDB)
+        })
+        this.setState({
+            successState: 'Terima Kasih Telah Berbelanja di Toko Kami.',
+        })
+    }
+
+    sendNotificationToAdmin = (id) => {
+        this.setState({ loading: true, errorState: '', successState: '' }, () => {
+            this.props.sendNotificationToAdmin(id, this.state.paymentImageDB)
+        })
+        this.setState({
+            successState: 'Kirim Notifikasi mengenai keberadaan product berhasil, mohon untuk bersabar hingga admin mengirim ulang produk anda. Terima kasih',
+        })
     }
 
     renderTransactionHistory = () => {
@@ -97,12 +117,18 @@ class PaymentPage extends Component {
                             }
                             <div className='font-weight-bold text-center'>
                                 <h5>
-                                    Payment For User {this.props.username}
+                                    Payment For User {val.username}
                                 </h5>
                                 <p>Payment Code: {val.kodeTransaksi}</p>
                                 
                             </div>
                             <p>Nomor Rekening MaCommerce: 1234567890</p>
+                            <div className='text-center'>
+                                <h6><strong>Send Product To</strong></h6>
+                                <p>{val.firstName} {val.lastName}</p>
+                                <p>Address: {val.addressUser}</p>
+                            </div>
+                            
                             {
                                 val.status === 0 ?
                                     <p>Status: <span className='text-danger'>Belum Membayar</span></p>
@@ -137,8 +163,8 @@ class PaymentPage extends Component {
                                Transaction Detail
                             </Button>
                             <UncontrolledCollapse toggler={`#transactionUser-${val.id}`}>
-                                <table class="table">
-                                    <thead class="thead-dark">
+                                <table className="table">
+                                    <thead className="thead-dark">
                                         <tr>
                                             <th scope="col">Product Name</th>
                                             <th scope="col">Size</th>
@@ -180,11 +206,15 @@ class PaymentPage extends Component {
                                     </tbody>
                                 </table>
                             </UncontrolledCollapse>
+                            <div className='my-3 d-block'>
+                                <h4>Total Biaya</h4>
+                                <h5>Rp. {val.total_price}</h5>
+                            </div>
                             {
                                 val.status === 0 ?
-                                
-                                   <div>
-                                        
+
+                                    <div>
+
                                         <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
                                         <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
                                         {
@@ -194,25 +224,88 @@ class PaymentPage extends Component {
                                                         <span className="sr-only">Loading...</span>
                                                     </div>
                                                 </button>
-                                            :
+                                                :
                                                 <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.id)}>
                                                     Kirim Bukti Pembayaran
                                                 </button>
                                         }
-                                   </div>
-                                : null
+                                    </div>
+                                    : null
                             }
                             {
                                 val.status === 1 ?
-                                    <p>Menunggu konfirmasi dari Admin</p>
+                                    <p className='text-secondary'>Menunggu konfirmasi dari Admin</p>
                                     :
                                     null
                             }
                             {
+                                val.status === 2 ?
+                                    <p className='text-success'>Pembayaran telah dikonfirmasi oleh admin</p>
+                                    :
+                                    null
+                            }
+                            {
+                                val.status === 3 ?
+                                    <div>
+                                        {
+                                            this.state.loading ?
+                                                <div>
+                                                    <button className='btn btn-success form-control mb-3' disabled>
+                                                        <div className="spinner-border" role="status">
+                                                            <span className="sr-only">Loading...</span>
+                                                        </div>
+                                                    </button>
+                                                    <button className='btn btn-danger form-control mb-1' disabled>
+                                                        <div className="spinner-border" role="status">
+                                                            <span className="sr-only">Loading...</span>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                                :
+                                                <div>
+                                                    <Button className='btn btn-success mb-3 form-control' onClick={() => this.confirmProduct(val.id)}>
+                                                        Barang telah sampai dan diterima.
+                                                    </Button>
+                                                    <Button className='btn btn-danger mb-1 form-control' onClick={() => this.sendNotificationToAdmin(val.id)}>
+                                                        Saya belum menerima barangnya.
+                                                    </Button>
+                                                </div>
+                                        }
+                                    </div>
+                                : 
+                                null
+                            }
+                            {
+                                val.status === 4 ?
+                                    <p className='text-success'>Product telah diterima</p>
+                                    :
+                                    null
+                            }
+                            {
+                                val.status === 8 ?
+                                <p className='text-secondary'>Menunggu admin mengecek data dan mengirim ulang product</p>
+                                :
+                                null
+                            }
+                            {
                                 val.status === 9 ?
-                                    <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.date_created)}>
-                                        Kirim Bukti Pembayaran
-                                    </button>
+                                    <div>
+
+                                        <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
+                                        <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
+                                        {
+                                            this.state.loading ?
+                                                <button className='btn btn-success form-control my-3' disabled>
+                                                    <div className="spinner-border" role="status">
+                                                        <span className="sr-only">Loading...</span>
+                                                    </div>
+                                                </button>
+                                                :
+                                                <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.id)}>
+                                                    Kirim Ulang Bukti Pembayaran
+                                                </button>
+                                        }
+                                    </div>
                                     : null
                             }
                             <small>
@@ -228,8 +321,6 @@ class PaymentPage extends Component {
             }
             
         }
-
-       
     }
 
     render() {
@@ -251,6 +342,9 @@ class PaymentPage extends Component {
                             <div className='container py-3'>
                                 <div className='row py-3'>
                                     <div className="offset-2 col-8 py-3">
+                                        <Link to='/transaction_list'>
+                                            Back To Transaction List
+                                        </Link>
                                         <div className="card px-3">
                                             {this.renderTransactionHistory()}
                                         </div>
@@ -275,11 +369,10 @@ const mapStateToProps = ({ transaction, register }) => {
         role: register.role,
         loading: register.loading,
         auth: register.authChecked,
-        username: register.username,
         transactionUserSelected: transaction.transaction_selected,
         transactionDetail: transaction.transaction_detail
     }
 }
 
-export default connect(mapStateToProps, { sendPaymentSlipToAdmin})(PaymentPage);
+export default connect(mapStateToProps, { sendPaymentSlipToAdmin, confirmProductToAdmin, sendNotificationToAdmin})(PaymentPage);
 

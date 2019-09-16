@@ -6,7 +6,6 @@ import {
     ADMIN_LOADING_ERROR,
     ADMIN_CLEAN
 } from '../actions/types'
-import productList from '../../pages/admin/feature/productList';
 
 const INITIAL_STATE = {
     categoryProduct: [],

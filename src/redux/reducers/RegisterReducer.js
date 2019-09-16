@@ -19,6 +19,7 @@ const INITIAL_STATE = {
     loading: false,
     error: '',
     role: '',
+    address: '',
     statusVerification: '',
     justRegister: false,
     loginChecked: false,

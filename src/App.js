@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Router } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { KeepLogin, showCart, getAllProductUI, cleanTransaction } from './redux/actions';
+import { KeepLogin, showCart, getAllProductUI } from './redux/actions';
 import './App.css';
 
 import Home from './pages/Home';

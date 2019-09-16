@@ -132,7 +132,7 @@ class Register extends Component {
                                           <label>Profie Picture</label>
                                           <div className='form-group'>
                                               <img src={`${this.state.UserImageFile}`} alt="user-default" className='userImage my-3' />
-                                              <CustomInput type='file' label={this.state.UserImageName} onChange={this.addUserImageChange} />
+                                              <CustomInput id='up_i_u' type='file' label={this.state.UserImageName} onChange={this.addUserImageChange} />
                                           </div>
                                           {this.renderButtonRegister()}
                                       </form>

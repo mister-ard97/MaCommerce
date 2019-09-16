@@ -31,7 +31,12 @@ class ConfirmOrder extends Component {
                 obj.push(val)
             })
 
-             this.props.sendCartToTransaction(obj)
+            this.props.sendCartToTransaction(
+                obj, 
+                this.TotalPrice(), 
+                this.props.addressUser,
+                this.props.FirstName,
+                this.props.LastName)
         })
     }
 
@@ -42,6 +47,20 @@ class ConfirmOrder extends Component {
                 link: 'GoToPayment'
             })
         }
+    }
+
+    TotalPrice = () => {
+        let totalBiaya = 0
+
+        if (this.props.cartUser) {
+            this.props.cartUser.forEach((val) => {
+                totalBiaya += val.total_price
+            })
+
+            return totalBiaya
+        }
+
+        return null
     }
 
 
@@ -113,9 +132,10 @@ class ConfirmOrder extends Component {
                                             </div>
                                             <div className="card px-3">
                                                 <div className="card-body">
-                                                    <h5 className="card-title mb-3"></h5>
-                                                    <table class="table">
-                                                        <thead class="thead-dark">
+                                                    <h5 className="card-title mb-3">Name: {this.props.FirstName} {this.props.LastName}</h5>
+                                                    <h6>Address: {this.props.addressUser}</h6>
+                                                    <table className="table">
+                                                        <thead className="thead-dark">
                                                             <tr>
                                                                 <th scope="col">Product Name</th>
                                                                 <th scope="col">Size</th>
@@ -139,11 +159,11 @@ class ConfirmOrder extends Component {
                                                         </button>
                                                            
                                                         :
-                                                            <Link className='btn btn-success' onClick={() => {
+                                                            <button className='btn btn-success' onClick={() => {
                                                                 this.sendDataCartToTransaction()
                                                             }}>
                                                                 Proceed to Payment Product
-                                                        </Link>
+                                                        </button>
                                                     }
                                                    
                                                 </div>
@@ -162,13 +182,18 @@ class ConfirmOrder extends Component {
     }
 }
 
-const mapStateToProps = ({cart , register, transaction}) => {
+const mapStateToProps = ({ cart , register, transaction }) => {
     return {
+
         cartUser: cart.cart,
+        
         role: register.role,
         loading: register.loading,
         auth: register.authChecked,
         username: register.username,
+        FirstName: register.FirstName,
+        LastName: register.LastName,
+        addressUser: register.address,
 
         transactionUser: transaction.transaction_selected
     }

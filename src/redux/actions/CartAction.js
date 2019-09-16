@@ -1,9 +1,7 @@
 import Axios from 'axios';
 import {
     ADD_TO_CART,
-    DELETE_CART,
-    SEND_TO_TRANSACTION,
-    CLEAR_CART
+    DELETE_CART
 } from './types';
 import { URL_API } from '../../helpers/Url_API';
 

@@ -45,7 +45,7 @@ class TransactionList extends Component {
                                     val.transactionImage === null ?
                                     'Belum ada bukti pembayaran'
                                     :
-                                    <img src={`${URL_API}${val.transactionImage}`} className='img-fluid' alt={val.kodeTransaski+'-Slip'}/>
+                                    <img src={`${URL_API}${val.transactionImage}`} className='img-fluid' style={{width: '150px'}}  alt={`${val.kodeTransaksi}-${val.username}`}/>
                                 }
                             </td>
                             <td>
@@ -57,12 +57,42 @@ class TransactionList extends Component {
                                 }
                                 {
                                     val.status === 1 ?
-                                        <p>Status: <span className='text-secondary'>Menunggu Konfirmasi dari Admin</span></p>
+                                        <p>Status: <span className='text-info'>Menunggu Konfirmasi dari Admin</span></p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 2 ?
+                                        <p>Status: <span className='text-success'>Pembayaran telah dikonfirmasi, menunggu Produk dikirim</span></p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 3 ?
+                                        <p>Status: <span className='text-secondary'>Produk telah dikirim</span></p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 4 ?
+                                        <p>Status: <span className='text-success'>Transaksi Sukses dan Product telah diterima</span></p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 8 ?
+                                        <p>Status: <span className='text-secondary'>Menunggu Produk dikirim ulang</span></p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 9 ?
+                                        <p>Status: <span className='text-danger'>Bukti Pembayaran Anda Di Tolak, Silahkan kirim lagi bukti pembayaran.</span></p>
                                         :
                                         null
                                 }
                             </td>
-                            <td className='text-center'>
+                            <td>
                                 <button
                                     className='btn btn-info alert alert-info'
                                     data-toggle="tooltip"
@@ -114,11 +144,11 @@ class TransactionList extends Component {
 
                         this.props.role === 'User' || this.props.role === 'Admin' ?
                             <div className='container d-flex mb-5 pb-5'>
-                                <div className='offset-1 col-10 my-5 pb-5'>
+                                <div className='col-12 my-5 pb-5'>
                                     <div className="card">
                                         <div className="card-body d-flex justify-content-between">
-                                            <table class="table">
-                                                <thead class="thead-dark">
+                                            <table className="table">
+                                                <thead className="thead-dark">
                                                     <tr>
                                                         <th scope="col">Transaction Code</th>
                                                         <th scope="col">Payment Slip</th>

@@ -31,21 +31,13 @@ class VerifiedPage extends Component {
                                                 <span className="sr-only">Loading...</span>
                                             </div>
                                             :
-                                            null
-                                    }
-
-                                    {
-                                        this.props.status === 'Verified' ?
-                                            <p className='text-success'>Verification Success. Thanks for your patience :)</p>
-                                            :
-                                            null
-                                    }
-
-                                    {
-                                        this.props.status === 'Unverified' ?
-                                            <p className='text-danger'>Verification Failed. Please refresh your page</p>
-                                            :
-                                            null
+                                            this.props.status === 'Unverified' ?
+                                                <p className='text-danger'>Verification Failed. Please refresh your page</p>
+                                                :
+                                            this.props.status === 'Verified' ?
+                                                <p className='text-success'>Verification Success. Thanks for your patience :)</p>
+                                                :
+                                                null
                                     }
                                     <p className='mt-3'><Link to='/'>Back to Home</Link></p>
                                 </div>

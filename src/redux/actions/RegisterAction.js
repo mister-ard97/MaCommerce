@@ -63,7 +63,7 @@ export const onUserRegister = (data) => {
 
                 Axios.post(URL_API + '/user/userRegister', formData, headers)
                     .then((res) => {
-                        let { FirstName, LastName, username, email, token, status, role } = res.data
+                        let { FirstName, LastName, username, email, token, status, role, address } = res.data
                         localStorage.setItem('token', token);
                         dispatch({
                             type: USER_LOGIN_SUCCESS, payload: {
@@ -74,6 +74,7 @@ export const onUserRegister = (data) => {
                                 token,
                                 status,
                                 role,
+                                address,
                                 justRegister: true,
                                 loginChecked: true,
                                 NextPage: true
@@ -102,7 +103,7 @@ export const EmailVerification = () => {
         }
         Axios.put(URL_API + '/user/userEmailVerification', {}, options)
             .then((res) => {
-                let { FirstName, LastName, username, email, token, status, role } = res.data
+                let { FirstName, LastName, username, email, token, status, role, address } = res.data
                 localStorage.setItem('token', token);
                 dispatch({
                     type: USER_LOGIN_SUCCESS, payload: {
@@ -113,6 +114,7 @@ export const EmailVerification = () => {
                         token,
                         status,
                         role,
+                        address,
                         justRegister: true,
                         loginChecked: true
                     }
@@ -133,7 +135,7 @@ export const resendEmailVerification = (username, email) => {
             email,
         })
         .then((res) => {
-            let { FirstName, LastName, username, email, token, status, role } = res.data
+            let { FirstName, LastName, username, email, token, status, role, address } = res.data
             localStorage.setItem('token', token);
             dispatch({
                 type: USER_LOGIN_SUCCESS, payload: {
@@ -144,6 +146,7 @@ export const resendEmailVerification = (username, email) => {
                     token,
                     status,
                     role,
+                    address,
                     justRegister: true,
                     loginChecked: true
                 }
@@ -164,7 +167,7 @@ export const userLogin = (username, password) => {
             username, password
         })
         .then((res) => {
-            let { FirstName, LastName, username, email, token, status, role } = res.data
+            let { FirstName, LastName, username, email, token, status, role, address } = res.data
             localStorage.setItem('token', token);
             dispatch({
                 type: USER_LOGIN_SUCCESS, payload: {
@@ -175,6 +178,7 @@ export const userLogin = (username, password) => {
                     token,
                     status,
                     role,
+                    address,
                     loginChecked: true
                 }
             })
@@ -201,7 +205,7 @@ export const KeepLogin = () => {
 
        Axios.post(URL_API + '/user/userKeepLogin', {}, options)
            .then((res) => {
-               let { FirstName, LastName, username, email, token, status, role} = res.data
+               let { FirstName, LastName, username, email, token, status, role, address} = res.data
                localStorage.setItem('token', token);
                dispatch({
                    type: USER_LOGIN_SUCCESS, payload: {
@@ -212,6 +216,7 @@ export const KeepLogin = () => {
                        token,
                        status,
                        role,
+                       address,
                        loginChecked: true
                    } })
            })

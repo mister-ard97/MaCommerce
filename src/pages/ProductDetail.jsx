@@ -35,7 +35,6 @@ class ProductDetail extends Component {
         checkBg('RegisterPage', 'bg-light');
 
         let parsedQuery = queryString.parse(this.props.location.search)
-        console.log(parsedQuery)
 
         this.setState({loadingProduct: true})
         Axios.get(URL_API + '/productMaCommerce/productDetail/' + parsedQuery.productId)
@@ -53,9 +52,9 @@ class ProductDetail extends Component {
 
     addedToCart = (productId, productPrice) => {
             window.scrollTo(0, 0)
-            console.log(this.state.stockSelected)
-            console.log(this.state.stockQty)
-            console.log(Number(this.stockProduct.value))
+            // console.log(this.state.stockSelected)
+            // console.log(this.state.stockQty)
+            // console.log(Number(this.stockProduct.value))
             if (!this.state.stockSelected) {
                 console.log(true)
                 this.setState({
