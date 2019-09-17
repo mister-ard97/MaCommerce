@@ -341,6 +341,71 @@ export const sendProductToUser = (id) => {
     }
 }
 
+export const refuseTransactionUser = (id) => {
+    return (dispatch) => {
+        const token = localStorage.getItem('token');
+
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        Axios.post(URL_API + '/transaction/refuseTransactionUser/' + id, {}, options)
+            .then((res) => {
+                Axios.get(URL_API + '/transaction/getTransactionAdminDetail/' + id, options)
+                    .then((res) => {
+                        dispatch({
+                            type: SEND_TO_TRANSACTION,
+                            payload: {
+                                transaction_selected: res.data.dataTransactionUI,
+                                transaction_detail: res.data.dataTransactionDetailUI
+                            }
+                        })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+}
+
+export const acceptTransactionUser = (id) => {
+    return (dispatch) => {
+        const token = localStorage.getItem('token');
+
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        Axios.post(URL_API + '/transaction/acceptTransactionUser/' + id, {}, options)
+            .then((res) => {
+                Axios.get(URL_API + '/transaction/getTransactionAdminDetail/' + id, options)
+                    .then((res) => {
+                        dispatch({
+                            type: SEND_TO_TRANSACTION,
+                            payload: {
+                                transaction_selected: res.data.dataTransactionUI,
+                                transaction_detail: res.data.dataTransactionDetailUI
+                            }
+                        })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+}
+    
+
 export const cleanTransaction = () => {
     return {
         type: CLEAR_TRANSACTION

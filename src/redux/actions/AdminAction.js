@@ -69,11 +69,13 @@ export const adminRegister = (data) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: AUTH_LOGIN_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                    if (err.response) {
+                        dispatch({
+                            type: AUTH_LOGIN_ERROR, payload: {
+                                error: err.response.data.message,
+                            }
+                        })
+                    }
                 })
         }
     }      
@@ -103,11 +105,13 @@ export const adminLogin = (username, password) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: AUTH_LOGIN_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+                if (err.response) {
+                    dispatch({
+                        type: AUTH_LOGIN_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                }
             })
     }
 }
@@ -195,11 +199,14 @@ export const adminGetCategoryProduct = () => {
             })
         })
         .catch((err) => {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: err.response.data.message,
-                }
-            })
+            if (err.response) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            }
+            
         })
     }
 }
@@ -255,11 +262,13 @@ export const adminAddCategoryProduct = (datacategory) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: ADMIN_LOADING_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                   if(err.response) {
+                       dispatch({
+                           type: ADMIN_LOADING_ERROR, payload: {
+                               error: err.response.data.message,
+                           }
+                       })
+                   }
                 })
         }
     }
@@ -298,11 +307,13 @@ export const adminAddSubCategoryProduct = (objSubCategory) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: ADMIN_LOADING_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                    if(err.response) {
+                        dispatch({
+                            type: ADMIN_LOADING_ERROR, payload: {
+                                error: err.response.data.message,
+                            }
+                        })
+                    }
                 })
         }        
     }
@@ -344,11 +355,13 @@ export const adminEditCategoryProduct = (dataEditCategory) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: ADMIN_LOADING_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                    if(err.response) {
+                        dispatch({
+                            type: ADMIN_LOADING_ERROR, payload: {
+                                error: err.response.data.message,
+                            }
+                        })
+                    }
                 })     
     }
 }
@@ -378,11 +391,13 @@ export const adminEditSubCategoryProduct = (objSubCategory) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+               if(err.response) {
+                   dispatch({
+                       type: ADMIN_LOADING_ERROR, payload: {
+                           error: err.response.data.message,
+                       }
+                   })
+               }
             })
     }
 }
@@ -411,11 +426,13 @@ export const adminDeleteCategoryProduct = (categoryName) => {
             })
         })
         .catch((err) => {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: err.response.data.message,
-                }
-            })
+           if(err.response) {
+               dispatch({
+                   type: ADMIN_LOADING_ERROR, payload: {
+                       error: err.response.data.message,
+                   }
+               })
+           }
         })
 
     }
@@ -443,11 +460,13 @@ export const adminDeleteSubCategoryProduct = (subCategoryName) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+                if(err.response) {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                }
             })
 
     }
@@ -471,11 +490,13 @@ export const getAllProductUI = (limit) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+               if(err.response) {
+                   dispatch({
+                       type: ADMIN_LOADING_ERROR, payload: {
+                           error: err.response.data.message,
+                       }
+                   })
+               }
             })
     }
 }
@@ -499,11 +520,13 @@ export const getProduct = (page) => {
             })
         })
         .catch((err) => {
-            dispatch({
-                type: ADMIN_LOADING_ERROR, payload: {
-                    error: err.response.data.message,
-                }
-            })
+            if(err.response) {
+                dispatch({
+                    type: ADMIN_LOADING_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            }
         })
     }
 }
@@ -578,11 +601,13 @@ export const getFilteredProduct = (objFiltered) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: ADMIN_LOADING_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                  if(err.response) {
+                      dispatch({
+                          type: ADMIN_LOADING_ERROR, payload: {
+                              error: err.response.data.message,
+                          }
+                      })
+                  }
                 })
         }
         
@@ -682,11 +707,13 @@ export const adminAddProduct = (objProduct) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+                if(err.response) {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                }
             })
         }
     }
@@ -780,11 +807,13 @@ export const adminEditProduct = (objProduct, id) => {
                     })
                 })
                 .catch((err) => {
-                    dispatch({
-                        type: ADMIN_LOADING_ERROR, payload: {
-                            error: err.response.data.message,
-                        }
-                    })
+                   if(err.response) {
+                       dispatch({
+                           type: ADMIN_LOADING_ERROR, payload: {
+                               error: err.response.data.message,
+                           }
+                       })
+                   }
                 })
         }
     }
@@ -814,11 +843,13 @@ export const adminDeleteProduct = (id) => {
                 })
             })
             .catch((err) => {
-                dispatch({
-                    type: ADMIN_LOADING_ERROR, payload: {
-                        error: err.response.data.message,
-                    }
-                })
+                if(err.response) {
+                    dispatch({
+                        type: ADMIN_LOADING_ERROR, payload: {
+                            error: err.response.data.message,
+                        }
+                    })
+                }
             })
     }
 }

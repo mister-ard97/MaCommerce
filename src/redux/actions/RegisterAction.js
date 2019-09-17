@@ -82,11 +82,13 @@ export const onUserRegister = (data) => {
                         })
                     })
                     .catch((err) => {
-                        dispatch({
-                            type: AUTH_LOGIN_ERROR, payload: {
-                                error: err.response.data.message,
-                            }
-                        })
+                        if(err.response) {
+                            dispatch({
+                                type: AUTH_LOGIN_ERROR, payload: {
+                                    error: err.response.data.message,
+                                }
+                            })
+                        }
                     })
             }
     }      
@@ -184,11 +186,13 @@ export const userLogin = (username, password) => {
             })
         })
         .catch((err) => {
-            dispatch({
-                type: AUTH_LOGIN_ERROR, payload: {
-                    error: err.response.data.message,
-                }
-            })
+            if(err.response) {
+                dispatch({
+                    type: AUTH_LOGIN_ERROR, payload: {
+                        error: err.response.data.message,
+                    }
+                })
+            }
         })
     }
 }

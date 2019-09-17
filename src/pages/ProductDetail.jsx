@@ -81,8 +81,11 @@ class ProductDetail extends Component {
                 this.props.userAddProduct(objCart)
                 this.setState({
                     modalConfirmation: true,
-                    error: ''
+                    error: '',
+                    stockQty: null,
+                    stockSelected: ''
                 })
+                this.stockProduct.value = ''
             }
     }
 

@@ -49,6 +49,18 @@ class AdminTransactionList extends Component {
                             </td>
                             <td>
                                 {
+                                    val.status === 10 ?
+                                        <p className='text-secondary'>Menunggu Konfirmasi dari Admin</p>
+                                        :
+                                        null
+                                }
+                                {
+                                    val.status === 11 ?
+                                        <p className='text-danger'>Transaction Di Tolak</p>
+                                        :
+                                        null
+                                }
+                                {
                                     val.status === 0 ?
                                         <p>Status: <span className='text-danger'>User Belum Membayar</span></p>
                                         :

@@ -6,6 +6,8 @@ import {
     refusePaymentSlipFromUser, 
     acceptPaymentSlipFromUser,
     sendProductToUser,
+    refuseTransactionUser,
+    acceptTransactionUser
 } from '../../../redux/actions'
 
 class PaymentDetail extends Component {
@@ -27,6 +29,18 @@ class PaymentDetail extends Component {
                 loading: false
             })
         }
+    }
+
+    acceptTransaction = (id) => {
+        this.setState({ loading: true }, () => {
+            this.props.acceptTransactionUser(id)
+        })
+    }
+
+    refuseTransaction = (id) => {
+        this.setState({ loading: true }, () => {
+            this.props.refuseTransactionUser(id)
+        })
     }
 
     refusePayment = (id) => {
@@ -66,7 +80,45 @@ class PaymentDetail extends Component {
                                 <p>{val.firstName} {val.lastName}</p>
                                 <p>Address: {val.addressUser}</p>
                             </div>
+                            {
+                                val.status === 10 ?
+                                // Transaction diterima atau approve karena barang sesuai dengan stock yg tersedia dan menunggu user membayar(status 0)
+                                // Pembayran di tolak, dan user tidak bisa melanjutkan transactionnya (status 11)
+                                
+                                    this.state.loading ?
+                                    <div>
+                                            <button className='btn btn-success form-control mb-3' disabled>
+                                                <div className="spinner-border" role="status">
+                                                    <span className="sr-only">Loading...</span>
+                                                </div>
+                                            </button>
+                                            <button className='btn btn-danger form-control mb-1' disabled>
+                                                <div className="spinner-border" role="status">
+                                                    <span className="sr-only">Loading...</span>
+                                                </div>
+                                            </button>
+                                    </div>
 
+                                    :
+
+                                    <div>
+                                            <Button className='btn btn-success mb-3 form-control' onClick={() => this.acceptTransaction(val.id)}>
+                                                Approve Transaction ini
+                                                    </Button>
+                                            <Button className='btn btn-danger mb-1 form-control' onClick={() => this.refuseTransaction(val.id)}>
+                                                Tolak Transaction ini
+                                        </Button>
+                                    </div>
+                                
+                                :
+                                null
+                            }
+                            {
+                                val.status === 11 ?
+                                    <p className='text-danger'>Transaction dengan kode Transaction: <strong>{val.kodeTransaksi}</strong> telah ditolak oleh Admin</p>
+                                    :
+                                    null
+                            }
                             {
                                 val.status === 0 ?
                                     <p>Status: <span className='text-danger'>User Belum Membayar</span></p>
@@ -294,5 +346,7 @@ const mapStateToProps = ({transaction}) => {
 export default connect(mapStateToProps, {
     refusePaymentSlipFromUser,
     acceptPaymentSlipFromUser,
-    sendProductToUser
+    sendProductToUser,
+    refuseTransactionUser,
+    acceptTransactionUser
 })(PaymentDetail);

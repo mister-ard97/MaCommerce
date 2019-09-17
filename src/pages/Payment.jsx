@@ -128,7 +128,12 @@ class PaymentPage extends Component {
                                 <p>{val.firstName} {val.lastName}</p>
                                 <p>Address: {val.addressUser}</p>
                             </div>
-                            
+                            {
+                                val.status === 10 ?
+                                    <p className='text-secondary'>Waiting for Transaction Checking</p>
+                                    :
+                                    null
+                            }
                             {
                                 val.status === 0 ?
                                     <p>Status: <span className='text-danger'>Belum Membayar</span></p>
@@ -211,10 +216,24 @@ class PaymentPage extends Component {
                                 <h5>Rp. {val.total_price}</h5>
                             </div>
                             {
+                                val.status === 10 ?
+                                    <p className='text-secondary'>Menunggu Admin Mengkonfirmasi Transaction dan Stock Product</p>
+                                    :
+                                    null
+                            }
+
+                            {
+                                val.status === 11 ?
+                                    <p className='text-danger'>Mohon maaf Transaction dengan Kode Transaction: <strong>{val.kodeTransaksi}</strong> Telah ditolak oleh admin. (Ada beberapa kemungkinan antara product stock telah abis atau transaction ini dianggap spam). </p>
+                                :
+                                null
+                            }
+                            
+                            {
                                 val.status === 0 ?
 
                                     <div>
-
+                                        <p className='text-success mb-3'>Transaction berhasil di approve oleh admin. Silahkan untuk mengirim bukti pembayaran</p>
                                         <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
                                         <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
                                         {
