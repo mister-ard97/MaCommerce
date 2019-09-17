@@ -9,6 +9,7 @@ import {showCart} from '../redux/actions'
 
 class Home extends Component {
     componentDidMount() {
+        document.title = 'MaCommerce Online Shop'
         window.scrollTo(0, 0);
         checkBg('LoginPage', 'bg-light');
         checkBg('RegisterPage', 'bg-light');

@@ -7,6 +7,7 @@ import { EmailVerification } from '../redux/actions';
 
 class VerifiedPage extends Component {
     componentDidMount() {
+        document.title = 'Verified'
         checkBg('VerifiedPage', 'bg-light');
         
         this.props.EmailVerification()

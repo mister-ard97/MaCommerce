@@ -14,6 +14,7 @@ class ConfirmOrder extends Component {
     componentDidMount() {
 
         if (this.props.role) {
+            document.title = 'Confirm Order'
             window.scrollTo(0, 0);
             document.getElementById('Header').classList.add('bg-light')
             document.getElementById('CollapseMaCommerce').classList.remove('link-white')

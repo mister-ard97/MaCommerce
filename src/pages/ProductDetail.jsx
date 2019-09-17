@@ -29,6 +29,7 @@ class ProductDetail extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Product Detail'
         window.scrollTo(0, 0);
         
         checkBg('LoginPage', 'bg-light');

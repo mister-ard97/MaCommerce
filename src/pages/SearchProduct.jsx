@@ -27,6 +27,7 @@ class SearchProduct extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Search Product'
         window.scrollTo(0, 0);
         document.getElementById('Header').classList.add('bg-light')
         document.getElementById('CollapseMaCommerce').classList.remove('link-white')
@@ -100,9 +101,9 @@ class SearchProduct extends Component {
                             }</h5>
                             <p className="card-text text-danger">Rp. {val.price}</p>
                             <div className='container-fluid'>
-                                <div className='row'>
-
-                                </div>
+                                <p>
+                                    {val.category_product}
+                                </p>
                             </div>
                             <p className="card-text mt-3 popCount">
                                 <FontAwesomeIcon icon={faHeart} className='text-danger' /> {val.popularCount}

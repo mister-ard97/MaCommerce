@@ -16,6 +16,7 @@ class Register extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Register Page'
         window.scrollTo(0, 0);
         checkBg('RegisterPage', 'bg-light');
         this.props.cleanError();

@@ -9,6 +9,7 @@ import { checkBg } from '../helpers/stylefunction';
 class Login extends Component {
 
     componentDidMount() {
+        document.title = 'Login Page'
         checkBg('LoginPage', 'bg-light')
         this.props.cleanError();
     }

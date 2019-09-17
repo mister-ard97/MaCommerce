@@ -16,6 +16,7 @@ class TransactionList extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Transaction History'
        this.props.getUserTransaction()
     }
 

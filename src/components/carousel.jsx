@@ -7,6 +7,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { URL_API } from '../helpers/Url_API'
 
 class CarouselCustom extends Component {
     constructor(props) {
@@ -17,23 +18,9 @@ class CarouselCustom extends Component {
                 {
                     id: 1,
                     img: 'https://images.pexels.com/photos/374808/pexels-photo-374808.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                    altText: 'Slide 1',
-                    captionHeader: 'Styling with our Products',
-                    link: 'link ke all product'
-                },
-                {
-                    id: 2,
-                    img: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                    altText: 'Slide 2',
-                    captionHeader: 'All Size T-Shirt for Everyone',
-                    link: 'link ke T-Shirt Product'
-                },
-                {
-                    id: 3,
-                    img: 'https://images.pexels.com/photos/2601442/pexels-photo-2601442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                    altText: 'Slide 3',
-                    captionHeader: 'Prepare Your Winter Season!!! ',
-                    link: 'link ke all jacket product'
+                    altText: 'All Categories',
+                    captionHeader: 'All Product For Men And Women',
+                    link: '/searchproduct?allproduct=true&page=1'
                 }
             ]
         };
@@ -47,6 +34,23 @@ class CarouselCustom extends Component {
     componentDidMount() {
         if (localStorage.getItem('token') !== null) {
             document.getElementById('Header').classList.add('bg-light')
+        }
+        if(this.props.categoryProduct) {
+            let categoryList = this.props.categoryProduct.map((val) => {
+                return {
+                    id: val.id, 
+                    img: `${URL_API}${val.categoryImage}`,
+                    altText: `Product for ${val.name}`,
+                    captionHeader: `All Product For ${val.name}`,
+                    link: `/searchproduct?product=${val.name}&page=1`
+                }
+            })
+            console.log(categoryList)
+            console.log(this.state.items)
+            console.log([...this.state.items, ...categoryList])
+            this.setState({
+                items: [...this.state.items, ...categoryList]
+            })
         }
     }
 
@@ -167,7 +171,8 @@ class CarouselCustom extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        username: state.register.username
+        username: state.register.username,
+        categoryProduct: state.admin.categoryProduct
     }
 }
 

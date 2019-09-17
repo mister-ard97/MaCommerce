@@ -16,6 +16,7 @@ class PaymentDetail extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Admin Controller Pembayaran'
         window.scrollTo(0, 0)
         if (this.props.location.search || !this.props.transactionSelected) {
             return <Redirect to='/adminDashboard/transaction' />
@@ -76,7 +77,7 @@ class PaymentDetail extends Component {
                             </div>
                             <p>Nomor Rekening MaCommerce: 1234567890</p>
                             <div className='text-center'>
-                                <h6>Send Product To</h6>
+                                <h6 className='font-weight-bold'>Send Product To</h6>
                                 <p>{val.firstName} {val.lastName}</p>
                                 <p>Address: {val.addressUser}</p>
                             </div>

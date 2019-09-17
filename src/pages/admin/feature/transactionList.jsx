@@ -15,6 +15,7 @@ class AdminTransactionList extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Admin Controller Transaction History User'
         this.props.getAllUserTransaction()
     }
 

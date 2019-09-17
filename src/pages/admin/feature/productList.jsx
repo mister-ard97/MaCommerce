@@ -62,6 +62,7 @@ class ProductList extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Admin Controller List Product'
         this.props.cleanErrorSuccess();
         
         if(this.props.location.search) {

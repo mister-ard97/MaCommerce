@@ -19,6 +19,7 @@ class PaymentPage extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Pembayaran User'
         window.scrollTo(0,0)
         this.setState({
             paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
@@ -124,7 +125,7 @@ class PaymentPage extends Component {
                             </div>
                             <p>Nomor Rekening MaCommerce: 1234567890</p>
                             <div className='text-center'>
-                                <h6><strong>Send Product To</strong></h6>
+                                <h6 className='font-weight-bold'>Send Product To</h6>
                                 <p>{val.firstName} {val.lastName}</p>
                                 <p>Address: {val.addressUser}</p>
                             </div>

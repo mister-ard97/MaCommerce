@@ -3,6 +3,9 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 
 class NotFound extends Component {
+    componentDidMount() {
+        document.title = 'Not Found 404'
+    }
     render() {
         return (
             <div>

@@ -41,6 +41,7 @@ class AdminCategoryProduct extends Component {
     }
     
     componentDidMount() {
+        document.title = 'Admin Controller Category'
         // this.props.adminGetCategoryProduct();
     }
 

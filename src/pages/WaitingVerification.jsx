@@ -7,6 +7,7 @@ import { checkBg } from '../helpers/stylefunction';;
 
 class WaitingVerification extends Component {
     componentDidMount() {
+        document.title = 'Waiting Verification'
         window.scrollTo(0, 0);
         checkBg('WaitingVerPage', 'bg-light');
     }

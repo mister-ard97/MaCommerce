@@ -10,6 +10,9 @@ import AdminTransaction from './feature/transactionList';
 import AdminPaymentDetail from './feature/paymentDetail';
  
 class AdminDashboard extends Component {
+    componentDidMount() {
+        document.title = 'Admin Dashboard'
+    }
     render() {
        if(this.props.role === 'Admin') {
            return (
