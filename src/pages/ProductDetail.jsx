@@ -61,12 +61,6 @@ class ProductDetail extends Component {
         this.getProductDetail(parsedQuery.productId)
     }
 
-    componentWillReceiveProps(newProps) {
-        // if(this.state.userWishlist !== newProps.userWishlist) {
-        //     this.setState({userWishlist: newProps.userWishlist})
-        // }
-    }
-
     getProductDetail = (id) => {
         Axios.get(URL_API + '/productMaCommerce/productDetail/' + id)
             .then((res) => {
@@ -303,9 +297,17 @@ class ProductDetail extends Component {
                     className='modal-md'
                     modal={this.state.modalWishlist}
                     toggle={this.toggle}
-                    ModalHeader={'Added To Your Wishlist'}
+                    ModalHeader={
+                        this.state.userWishlist !== 0 ?
+                        'Added To Your Wishlist'
+                        :
+                        'Remove From Your Wishlist'
+                    }
                     ModalBody={
-                        'Product telah dimasukkan kedalam daftar Wishlist'
+                        this.state.userWishlist !== 0 ?
+                            'Product telah dimasukkan kedalam daftar Wishlist'
+                            :
+                            'Product telah dihapus dalam daftar Wishlist'
                     }
                     buttonClickName={'Oke'}
                     colorOnClick="success"

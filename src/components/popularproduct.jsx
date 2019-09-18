@@ -12,6 +12,10 @@ import { URL_API } from '../helpers/Url_API';
 var numeral = require('numeral')
 
 class PopularProduct extends Component {
+    componentDidMount() {
+        this.props.getAllProductUI(6)
+    }
+    
     renderPopularProduct = () => {
         if (this.props.productListHome) {
             return this.props.productListHome.map((val, index) => {

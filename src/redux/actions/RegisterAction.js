@@ -3,6 +3,7 @@ import {
    AUTH_LOGIN_ERROR,
    AUTH_LOGIN_LOADING,
    USER_LOGIN_SUCCESS,
+   USER_CHANGE_ADDRESS,
    USER_LOGOUT,
    VERIFICATION_SUCCESS,
    VERIFICATION_FAILED, 
@@ -233,6 +234,32 @@ export const KeepLogin = () => {
                localStorage.removeItem('token');
                dispatch({ type: USER_LOGOUT });
            })
+    }
+}
+
+export const changeShipmentAddress = (data) => {
+    return (dispatch) => {
+        const token = localStorage.getItem('token');
+        const options = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        }
+        
+        Axios.post(URL_API + '/user/userChangeAddress', {data}, options)
+            .then((res) => {
+                let { FirstName, LastName, address } = res.data
+                dispatch({
+                    type: USER_CHANGE_ADDRESS, payload: {
+                        FirstName,
+                        LastName,
+                        address
+                    }
+                })
+            })
+            .catch((err) => {
+               console.log(err)
+            })
     }
 }
 

@@ -10,7 +10,9 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import ConfirmOrder from './pages/ConfirmOrder';
 import Payment from './pages/Payment';
-import TransactionList from './pages/TransactionList'
+import TransactionList from './pages/TransactionList';
+import Wishlist from './pages/Wishlist';
+import ChangeAddress from './pages/ChangeAddress';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import WaitingVerification from './pages/WaitingVerification';
@@ -29,7 +31,6 @@ class App extends Component {
   componentDidMount() {
     this.props.KeepLogin();
     this.props.showCart();
-    this.props.getAllProductUI(6)
   }
 
   render() {
@@ -43,6 +44,8 @@ class App extends Component {
             <Route path='/confirm_order' component={ConfirmOrder} />
             <Route path='/payment' component={Payment} />
             <Route path='/transaction_list' component={TransactionList} />
+            <Route path='/wishlist' component={Wishlist} />
+            <Route path='/changeAddress' component={ChangeAddress} />
             <Route path='/login' component={Login} exact />
             <Route path='/register' component={Register} exact />
             <Route path='/waitingverification' component={WaitingVerification} />

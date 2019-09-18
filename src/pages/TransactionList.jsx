@@ -159,6 +159,7 @@ class TransactionList extends Component {
                             <div className='container d-flex mb-5 pb-5'>
                                 <div className='col-12 my-5 pb-5'>
                                     <div className="card">
+                                        <h4>Transaction History {this.props.username}</h4>
                                         <div className="card-body d-flex justify-content-between">
                                             <table className="table">
                                                 <thead className="thead-dark">
@@ -166,7 +167,7 @@ class TransactionList extends Component {
                                                         <th scope="col">Transaction Code</th>
                                                         <th scope="col">Payment Slip</th>
                                                         <th scope='col'>Status</th>
-                                                        <th scope='col'>Transaction Detail /<br /> Upload Payment</th>
+                                                        <th scope='col'>Transaction Detail <br /> / Upload Payment</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

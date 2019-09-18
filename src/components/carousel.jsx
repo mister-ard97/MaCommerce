@@ -117,8 +117,18 @@ class CarouselCustom extends Component {
                             <h5>Menu User</h5>
                             <div className='card'>
                                 <div className='card-body'>
+                                    <Link className='text-dark' to='/changeAddress'>
+                                        Change Address Shipment
+                                    </Link>
+                                </div> 
+                                <div className='card-body'>
                                     <Link className='text-dark' to='/transaction_list'>
                                         Transaction History
+                                    </Link>
+                                </div> 
+                                <div className='card-body'>
+                                    <Link className='text-dark' to='/wishlist'>
+                                        Wishlist User
                                     </Link>
                                 </div> 
                             </div>

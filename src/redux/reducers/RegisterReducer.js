@@ -1,5 +1,6 @@
 import {
     USER_LOGIN_SUCCESS,
+    USER_CHANGE_ADDRESS,
     AUTH_LOGIN_ERROR,
     AUTH_LOGIN_LOADING,
     USER_LOGOUT,
@@ -31,6 +32,8 @@ export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case USER_LOGIN_SUCCESS:
             return { ...INITIAL_STATE, ...action.payload, loading: false, authChecked: true}
+        case USER_CHANGE_ADDRESS: 
+            return { ...state, FirstName: action.payload.FirstName, LastName: action.payload.LastName, address: action.payload.address}
         case AUTH_LOGIN_LOADING:
             return {...state, loading: true, error: ''}
         case AUTH_LOADING_FINISHED:
