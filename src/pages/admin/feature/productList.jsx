@@ -965,19 +965,22 @@ class ProductList extends Component {
                                 <div className="form-row my-3">
                                     <div className="col">
                                         <label>Category Parent</label>
-                                        
-                                        <select id="editCategoryInProduct" className="form-control mb-3" onChange={this.selectedEditCategoryInProduct}>
+                                        <br />
+                                        <small className='mb-2'>Category Sebelumnya {val.category_name}</small>
+                                        <select id="editCategoryInProduct" className="form-control mb-3 mt-2" onChange={this.selectedEditCategoryInProduct}>
                                             <option value=''>Select Category</option>
                                             {this.renderCategoryProduct()}
                                         </select>
                                     </div>
                                     <div className="col">
                                         <label>Select Sub Category</label>
+                                        <br />
+                                        <small>Sub Category Sebelumnya {val.sub_category_name}</small>
                                         {
                                             isNaN(this.state.editCategoryProductSelectedInProduct) === true ||
                                                 this.state.editCategoryProductSelectedInProduct === null ?
 
-                                                <select id="editSubCategoryInProduct" className="form-control">
+                                                <select id="editSubCategoryInProduct" className="form-control mt-2">
                                                     <option value=''>Select Sub Category</option>
                                                 </select>
 
@@ -1015,7 +1018,7 @@ class ProductList extends Component {
                                 <label>Product Description</label>
                                 <textarea ref={(DescriptionProduct) => this.DescriptionProduct = DescriptionProduct} placeholder='Product Description' className='form-control' defaultValue={val.description}></textarea>
                                 <label>Popular Count</label>
-                                <input ref={(PopularCount) => { this.PopularCount = PopularCount}} type='number' min="0" className='form-control' placeholder='Popular Count' defaultValue={val.popularCount} />
+                                <input ref={(PopularCount) => { this.PopularCount = PopularCount}} type='number' min="0" className='form-control' placeholder='Popular Count' defaultValue={val.popularCount} disabled/>
                             </div>
                         </div>
                         <button type='submit' hidden className='align-items-end'></button>
