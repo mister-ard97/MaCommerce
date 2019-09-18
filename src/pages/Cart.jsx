@@ -13,6 +13,8 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import { URL_API } from '../helpers/Url_API';
 
+var numeral = require('numeral');
+
 
 class Cart extends Component {
     state = {
@@ -55,7 +57,7 @@ class Cart extends Component {
                             {val.xlarge !== 0 ? ` Size XL: ${val.xlarge}` : null}
                         </td>
                         <td>
-                            {val.total_price}
+                            Rp. {numeral(val.total_price).format(0,0)}
                         </td>
                         <td>
                             <button
@@ -145,7 +147,7 @@ class Cart extends Component {
                                             <div className="card">
                                                 <div className="card-body">
                                                     <p>Total Price {this.props.username}'s Cart</p>
-                                                    <h4 className='mb-3'>Rp. {this.TotalPrice()}</h4>
+                                                    <h4 className='mb-3'>Rp. {numeral(this.TotalPrice()).format(0,0)}</h4>
                                                     <Link to='/confirm_order' className='form-control btn btn-warning'>
                                                         Confirm Pemesanan
                                                     </Link>

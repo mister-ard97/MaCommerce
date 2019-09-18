@@ -7,7 +7,9 @@ import {
 } from '../redux/actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { URL_API } from '../helpers/Url_API'
+import { URL_API } from '../helpers/Url_API';
+
+var numeral = require('numeral')
 
 class PopularProduct extends Component {
     renderPopularProduct = () => {
@@ -23,7 +25,7 @@ class PopularProduct extends Component {
                                 : 
                                 val.name
                             }</h5>
-                           <p className="card-text text-danger">Rp. {val.price}</p>
+                           <p className="card-text text-danger">Rp. {numeral(val.price).format(0,0)}</p>
                            <div className='container-fluid'>
                                <div className='row'>
 

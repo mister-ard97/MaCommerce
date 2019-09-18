@@ -17,6 +17,8 @@ const INITIAL_STATE = {
     productList: [],
     allProduct: false,
     filteredProduct: '',
+    filteredProductCategory: '',
+    filteredProductSubCategory: '',
     categoryName: '',
     subCategoryName: '',
     loading: false,

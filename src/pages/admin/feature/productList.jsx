@@ -16,6 +16,8 @@ import {
 import ModalMaCommerce from '../../../components/modal';
 import { URL_API } from '../../../helpers/Url_API';
 
+var numeral = require('numeral');
+
 class ProductList extends Component {
     state = {
         modalAddProduct: false,
@@ -85,6 +87,32 @@ class ProductList extends Component {
 
             }
             
+        }
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.props.cleanErrorSuccess();
+
+        if (this.props.location.search !== newProps.location.search) {
+            let parsedQuery = queryString.parse(newProps.location.search)
+            console.log(parsedQuery)
+
+            if (parsedQuery.allproduct) {
+                this.getAllProduct(parsedQuery.page)
+            }
+
+            if (parsedQuery.productFilter) {
+                let objQueryFilteredProduct = {
+                    productName: parsedQuery.productName,
+                    categoryId: parsedQuery.categoryId,
+                    subCategoryId: parsedQuery.subCategoryId,
+                    page: parsedQuery.page
+                }
+
+                this.props.getFilteredProduct(objQueryFilteredProduct)
+
+            }
+
         }
     }
 
@@ -336,7 +364,7 @@ class ProductList extends Component {
     getProductByFilter = (page) => {
         this.setState({productFiltered: true})
         let objFilteredProduct = {
-            productName: this.filterProductName.value,
+            productName: this.filterProductName.value ? this.filterProductName.value : 'undefined',
             categoryId: this.state.searchCategoryProductSelectedInProduct,
             categoryName: this.state.searchCategoryProductNameSelectedInProduct,
             subCategoryId: this.state.searchSubCategoryProductSelectedInProduct,
@@ -473,7 +501,7 @@ class ProductList extends Component {
                             </UncontrolledCollapse>
                         </td>
                         <td>
-                            {val.price}
+                            Rp. {numeral(val.price).format(0,0)}
                         </td>
                         <td>
                             {val.popularCount}
@@ -982,7 +1010,7 @@ class ProductList extends Component {
                                         <input type='number' ref={(SizeXL) => { this.SizeXL = SizeXL }} min="0" className='form-control' onKeyDown={(e) => this.checkInput(e)} placeholder='Size XL' defaultValue={val.xlarge}/>
                                     </div>
                                 </div>
-                                <label>Price</label>
+                                <label>Price (in Rupiah)</label>
                                 <input type='number' ref={(ProductPrice) => { this.ProductPrice = ProductPrice }} min="0" className='form-control text-right mb-3' onKeyDown={(e) => this.checkInput(e)} placeholder='Product Price' defaultValue={val.price}/>
                                 <label>Product Description</label>
                                 <textarea ref={(DescriptionProduct) => this.DescriptionProduct = DescriptionProduct} placeholder='Product Description' className='form-control' defaultValue={val.description}></textarea>

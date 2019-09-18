@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import { Link , Redirect} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { UncontrolledCollapse, Button } from 'reactstrap'
 
 import {
     getFilteredProduct,
@@ -14,7 +15,9 @@ import Header from '../components/header';
 import CategoryListUI from '../components/categoryListUi';
 import Footer from '../components/footer';
 
-import { URL_API } from '../helpers/Url_API'
+import { URL_API } from '../helpers/Url_API';
+
+var numeral = require('numeral')
 
 
 class SearchProduct extends Component {
@@ -40,6 +43,7 @@ class SearchProduct extends Component {
         } else {
             let objFilteredProductUI = {
                 product: parsedQuery.product,
+                productName: parsedQuery.productName,
                 page: parsedQuery.page,
                 categoryId: parsedQuery.categoryId,
                 subCategoryId: parsedQuery.subCategoryId,
@@ -63,24 +67,21 @@ class SearchProduct extends Component {
         if (this.props.location.search !== newProps.location.search) {
             window.scrollTo(0, 0);
             let parsedQuery = queryString.parse(newProps.location.search)
-            console.log(newProps.allProduct)
-            console.log(parsedQuery)
             if (parsedQuery.allproduct) {
-                console.log(parsedQuery.allproduct)
                 this.props.getProduct(parsedQuery.page);
-               
             } else {
-                console.log(parsedQuery.allproduct)
                 let objFilteredProductUI = {
                     product: parsedQuery.product,
+                    productName: parsedQuery.productName,
                     page: parsedQuery.page,
                     categoryId: parsedQuery.categoryId,
                     subCategoryId: parsedQuery.subCategoryId,
                 }
 
-                console.log(objFilteredProductUI)
-
                 this.props.getFilteredProduct(objFilteredProductUI)
+                this.setState({
+                    productName: objFilteredProductUI.productName,
+                })
             }
         }
     }
@@ -99,12 +100,8 @@ class SearchProduct extends Component {
                                     :
                                     val.name
                             }</h5>
-                            <p className="card-text text-danger">Rp. {val.price}</p>
-                            <div className='container-fluid'>
-                                <p>
-                                    {val.category_product}
-                                </p>
-                            </div>
+                            <p className="card-text text-danger">Rp. {numeral(val.price).format(0,0)}</p>
+                            <p className='text-warning'>{val.category_product} > {val.sub_category}</p>
                             <p className="card-text mt-3 popCount">
                                 <FontAwesomeIcon icon={faHeart} className='text-danger' /> {val.popularCount}
                             </p>
@@ -165,9 +162,25 @@ class SearchProduct extends Component {
         }
     }
 
+    searchProductByName = () => {
+        let objFilteredProductUI = {
+            productName: this.filterProductNameUI.value ? this.filterProductNameUI.value : 'undefined',
+            page: 1
+        }
+
+        this.props.history.push(`searchproduct?productName=${objFilteredProductUI.productName}`)
+
+        console.log(objFilteredProductUI)
+
+        this.props.getFilteredProduct(objFilteredProductUI)
+        this.setState({
+            productName: objFilteredProductUI.productName,
+        })
+    }
+
     render() {
         if(this.props.error) {
-            return <Redirect to='/' />
+            return <Redirect to='/notfound' />
         }
 
         return (
@@ -184,11 +197,14 @@ class SearchProduct extends Component {
                                                 this.props.allProduct ?
                                                     ` Anda memfilter produk berdasarkan All Product`
                                                     :
-                                                    ` Anda memfilter produk berdasarkan Product ${this.props.filteredProduct}`
+                                                    ` Anda memfilter produk berdasarkan Product 
+                                                    ${this.props.filteredProduct ? this.props.filteredProduct : ''}  
+                                                    ${this.props.subCategoryName ? `Sub Category ${this.props.subCategoryName}`: ''}
+                                                    ${this.state.productName ? `yang mengandung keyword '${this.state.productName}'` : ''}`
                                             }
                                         </div>
                                         <div className=''>
-                                            {this.props.page} of {this.props.total_pages}
+                                            {this.props.page !== 0 ? this.props.page : null} of {this.props.total_pages !== 0 ? this.props.total_pages : null}
                                             {
                                                 this.props.total_pages > 1 ?
                                                     `pages`
@@ -245,6 +261,21 @@ class SearchProduct extends Component {
                                 </div>
                             </div>
                             <div className='col-3 mt-5'>
+                               <div className='card'>
+                                    <Button className='btn btn-warning' id='searchProductByName'>
+                                        Search By Name
+                                        </Button>
+                                    <UncontrolledCollapse toggler='searchProductByName' >
+                                        <div className="card-body">
+                                            <label>Product Name: </label>
+                                            <input type='text' ref={(filterProductNameUI) => this.filterProductNameUI = filterProductNameUI} name='searchProductByName' />
+                                            <button className='btn btn-warning mt-3' onClick={this.searchProductByName}>
+                                                Search Product By Name
+                                            </button>
+                                        </div>
+                                    </UncontrolledCollapse>
+                               </div>
+
                                 {
                                     this.props.allProduct ?
                                         <CategoryListUI  />
@@ -269,6 +300,8 @@ const mapStateToProps = ({admin}) => {
         productList: admin.productList,
         allProduct: admin.allProduct,
         filteredProduct: admin.filteredProduct,
+        categoryName: admin.filteredProductCategory,
+        subCategoryName: admin.filteredProductSubCategory,
         success: admin.success,
         error: admin.error
     }

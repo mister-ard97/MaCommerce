@@ -51,7 +51,7 @@ class CategoryListUI extends Component {
         return this.props.subCatPro.map((val, index) => {
             if (val.parentId === id) {
                return <Link 
-                    to={`searchproduct?product=${this.props.categoryName ? this.props.categoryName : this.state.categoryParent}&categoryId=${id}&subCategoryId=${val.idsubcategory}`} 
+                    to={`searchproduct?product=${this.props.categoryName ? this.props.categoryName : this.state.categoryParent}&subCategoryId=${val.idsubcategory}`} 
                     className='d-block'
                     key={index}
                     >

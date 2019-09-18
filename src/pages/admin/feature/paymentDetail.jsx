@@ -8,7 +8,9 @@ import {
     sendProductToUser,
     refuseTransactionUser,
     acceptTransactionUser
-} from '../../../redux/actions'
+} from '../../../redux/actions';
+
+var numeral = require('numeral')
 
 class PaymentDetail extends Component {
     state = {
@@ -194,7 +196,7 @@ class PaymentDetail extends Component {
                                                             {val2.small + val2.medium + val2.large + val2.xlarge}
                                                         </td>
                                                         <td>
-                                                            {val2.total_price}
+                                                            Rp. {numeral(val2.total_price).format(0,0)}
                                                         </td>
                                                     </tr>
                                                 )
@@ -205,7 +207,7 @@ class PaymentDetail extends Component {
                             </UncontrolledCollapse>
                             <div className='my-3 d-block'>
                                 <h4>Total Biaya</h4>
-                                <h5>Rp. {val.total_price}</h5>
+                                <h5>Rp. {numeral(val.total_price).format(0,0)}</h5>
                             </div>
                             {
                                 val.status === 0 ?

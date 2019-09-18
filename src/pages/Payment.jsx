@@ -8,6 +8,8 @@ import Footer from '../components/footer';
 import { URL_API } from '../helpers/Url_API';
 import { CustomInput } from 'reactstrap';
 
+var numeral = require('numeral')
+
 class PaymentPage extends Component {
     state = {
         paymentImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
@@ -203,7 +205,7 @@ class PaymentPage extends Component {
                                                             {val2.small + val2.medium + val2.large + val2.xlarge}
                                                         </td>
                                                         <td>
-                                                            {val2.total_price}
+                                                            Rp. {numeral(val2.total_price).format(0,0)}
                                                         </td>
                                                     </tr>
                                                 )
@@ -214,7 +216,7 @@ class PaymentPage extends Component {
                             </UncontrolledCollapse>
                             <div className='my-3 d-block'>
                                 <h4>Total Biaya</h4>
-                                <h5>Rp. {val.total_price}</h5>
+                                <h5>Rp. {numeral(val.total_price).format(0,0)}</h5>
                             </div>
                             {
                                 val.status === 10 ?

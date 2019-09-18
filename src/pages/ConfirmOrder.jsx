@@ -5,6 +5,8 @@ import {sendCartToTransaction } from '../redux/actions'
 import Header from '../components/header';
 import Footer from '../components/footer';
 
+var numeral = require('numeral');
+
 class ConfirmOrder extends Component {
     state = {
         link: '', 
@@ -86,7 +88,7 @@ class ConfirmOrder extends Component {
                                {val.xlarge !== 0 ? ` Size XL: ${val.xlarge}` : null}
                            </td>
                            <td>
-                               {val.total_price}
+                               Rp. {numeral(val.total_price).format(0,0)}
                            </td>
                        </tr>
                    )

@@ -17,9 +17,13 @@ import {
 import { URL_API } from '../helpers/Url_API';
 import ModalMaCommerce from '../components/modal';
 
+var numeral = require('numeral')
+
 class ProductDetail extends Component {
     state = {
         modalConfirmation: '', 
+        modalWishlist: '',
+        userWishlist: 0,
         productDetail: null,
         imageProductDetail: null,
         loadingProduct: null,
@@ -38,7 +42,33 @@ class ProductDetail extends Component {
         let parsedQuery = queryString.parse(this.props.location.search)
 
         this.setState({loadingProduct: true})
-        Axios.get(URL_API + '/productMaCommerce/productDetail/' + parsedQuery.productId)
+
+        const token = localStorage.getItem('token');
+        const options = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        }
+
+        Axios.get(URL_API + '/user/userWishlistProduct/' + parsedQuery.productId,  options)
+            .then((res) => {
+                this.setState({ userWishlist: res.data.wishlistUser })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
+        this.getProductDetail(parsedQuery.productId)
+    }
+
+    componentWillReceiveProps(newProps) {
+        // if(this.state.userWishlist !== newProps.userWishlist) {
+        //     this.setState({userWishlist: newProps.userWishlist})
+        // }
+    }
+
+    getProductDetail = (id) => {
+        Axios.get(URL_API + '/productMaCommerce/productDetail/' + id)
             .then((res) => {
                 this.setState({
                     productDetail: res.data.dataProductDetail,
@@ -49,6 +79,33 @@ class ProductDetail extends Component {
             .catch((err) => {
                 console.log(err)
             })
+    }
+
+    ToWishlist = (id) => {
+        const token = localStorage.getItem('token');
+        const options = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        }
+
+        Axios.post(URL_API + '/user/userToggleWishlist/' + id, {}, options)
+        .then((res) => {
+            console.log(res.data.wishlistUser)
+            this.getProductDetail(id)
+            this.setState({ userWishlist: res.data.wishlistUser, modalWishlist: true, loadingProduct: true })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
+    addedToWishlist = (id) => {
+        this.ToWishlist(id)
+    } 
+
+    removeFromWishlist = (id) => {
+        this.ToWishlist(id)
     }
 
     addedToCart = (productId, productPrice) => {
@@ -113,6 +170,16 @@ class ProductDetail extends Component {
             return this.state.productDetail.map((val, index) => {
                 return (
                     <div key={index} className='ml-5 col-12 col-md-8 mt-3'>
+                        <small>
+                            <Link to={`/searchproduct?product=${val.category_name}`}>
+                                {val.category_name}
+                            </Link> >  
+                            <Link to={`/searchproduct?product=${val.category_name}&subCategoryId=${val.id_sub_category}`}>
+                                 {val.sub_category_name}
+                            </Link> >
+                             {val.name}
+                            </small>
+                        <hr/>
                         {
                             this.state.error ?
                                 <div className='alert alert-danger font-weight-bold'>
@@ -122,11 +189,25 @@ class ProductDetail extends Component {
                                 null
                         }
                         <h3>{val.name}</h3>
+                        
                         <p>
                             <FontAwesomeIcon icon={faHeart} className='text-danger' /> {val.popularCount}
                         </p>
+                        {
+                            this.props.username !== '' ?
+                                this.state.userWishlist === 0 ?
+                                    <button className='badge badge-danger btn' onClick={() => this.addedToWishlist(val.id)}>
+                                        <FontAwesomeIcon icon={faHeart} className='text-warning' /> Added to Your Wishlist
+                                    </button>
+                                    :
+                                    <button className='badge badge-info btn' onClick={() => this.removeFromWishlist(val.id)}>
+                                        <FontAwesomeIcon icon={faHeart} className='white' /> Remove From Wishlist
+                                    </button>
+                                :
+                                null
+                        }
                         <hr />
-                        <h4 className='text-danger'>Rp. {val.price}</h4>
+                        <h4 className='text-danger'>Rp. {numeral(val.price).format(0,0)}</h4>
                         <hr />
                         <h5>Size Product</h5>
                         <div className='d-flex'>
@@ -214,10 +295,38 @@ class ProductDetail extends Component {
         }
     }
 
+    renderModalWishlist = (params) => {
+        if(params) {
+            return (
+                <ModalMaCommerce
+                    idModal='modalWishlist'
+                    className='modal-md'
+                    modal={this.state.modalWishlist}
+                    toggle={this.toggle}
+                    ModalHeader={'Added To Your Wishlist'}
+                    ModalBody={
+                        'Product telah dimasukkan kedalam daftar Wishlist'
+                    }
+                    buttonClickName={'Oke'}
+                    colorOnClick="success"
+                    onClickModal={() => this.setState({ modalWishlist: false })}
+                />
+            )
+        }
+    }
+
     toggle = () => {
-        this.setState({
-            modalConfirmation: !this.state.modalConfirmation
-        })
+        if(this.state.modalConfirmation) {
+            this.setState({
+                modalConfirmation: !this.state.modalConfirmation
+            })
+        }
+        if(this.state.modalWishlist) {
+            this.setState({
+                modalWishlist: !this.state.modalWishlist
+            })
+        }
+         
     }
 
     render() {
@@ -252,6 +361,7 @@ class ProductDetail extends Component {
                 <Header statusPage='ProductDetail' />
                 <div className='container mt-3'>
                     {this.renderModalConfirmation(this.state.modalConfirmation)}
+                    {this.renderModalWishlist(this.state.modalWishlist)}
                     <div className='row'>
                         <div className="col-12 col-md-3">
                             <Slider {...settings}>

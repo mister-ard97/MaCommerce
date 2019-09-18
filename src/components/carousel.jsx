@@ -45,9 +45,6 @@ class CarouselCustom extends Component {
                     link: `/searchproduct?product=${val.name}&page=1`
                 }
             })
-            console.log(categoryList)
-            console.log(this.state.items)
-            console.log([...this.state.items, ...categoryList])
             this.setState({
                 items: [...this.state.items, ...categoryList]
             })

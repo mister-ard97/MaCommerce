@@ -539,7 +539,7 @@ export const getFilteredProduct = (objFiltered) => {
         subCategoryId,
         page, 
         product,
-        showData
+        // showData
     } = objFiltered
 
     return (dispatch) => {
@@ -573,9 +573,9 @@ export const getFilteredProduct = (objFiltered) => {
                 searchQueryFilter += `subCategoryId=${subCategoryId}&`
             }
 
-            if (showData) {
-                searchQueryFilter += `page=${page}&`
-            }
+            // if (showData) {
+            //     searchQueryFilter += `page=${page}&`
+            // }
 
             if(page) {
                 searchQueryFilter += `page=${page}`
@@ -595,6 +595,8 @@ export const getFilteredProduct = (objFiltered) => {
                             total_product: res.data.totalProduct,
                             total_pages: res.data.total_pages,
                             productList: res.data.dataProduct,
+                            filteredProductCategory: res.data.categoryName,
+                            filteredProductSubCategory: res.data.subCategoryName,
                             loading: false,
                             success: 'Success'
                         }

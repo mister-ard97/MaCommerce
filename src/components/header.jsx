@@ -11,9 +11,12 @@ import {
 } from 'reactstrap';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { userLogOut, adminGetCategoryProduct } from '../redux/actions'
+import { userLogOut, adminGetCategoryProduct, cleanTransaction, cleanDetailAndSelectedTransaction, cleanErrorSuccess } from '../redux/actions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { URL_API } from '../helpers/Url_API'
+
+var numeral = require('numeral')
 
 class Header extends Component {
     state = {
@@ -54,7 +57,10 @@ class Header extends Component {
     }
 
     userLogOut = () => {
-        this.props.userLogOut()
+        this.props.userLogOut();
+        this.props.cleanTransaction()
+        this.props.cleanDetailAndSelectedTransaction()
+        this.props.cleanErrorSuccess()
         this.setState({
             logOut: true
         })
@@ -80,7 +86,7 @@ class Header extends Component {
                                 {val.large !== 0 ? ` Size L: ${val.large}` : null}&nbsp;
                                 {val.xlarge !== 0 ? ` Size XL: ${val.xlarge}` : null}&nbsp;                                                                                       
                             </td>
-                            <td>Rp. {val.total_price}</td>
+                            <td>Rp. {numeral(val.total_price).format(0,0)}</td>
                         </tr>
                     )
                 })
@@ -135,7 +141,9 @@ class Header extends Component {
                                     <DropdownToggle nav caret>
                                         {
                                             this.props.loginChecked ?
-                                                <FontAwesomeIcon icon={faUserCircle} className={param} />
+                                                <div style={{width: 40}}>
+                                                    <img src={`${URL_API}${this.props.UserImage}`} alt={'User' + this.props.username} className='img-fluid' style={{borderRadius: 40}}/>
+                                                </div>
                                                 :
                                                 <div className='bg-warning font-weight-bold rounded px-1'>
                                                     <span className='text-dark mr-2'>Login</span>
@@ -238,7 +246,7 @@ class Header extends Component {
                                 </UncontrolledDropdown>
                             </Nav>
                             <div className='container'>
-                                <Link to='/' className='ml-5 pl-5 navbar-brand justify-content-start d-none d-lg-flex'>
+                                <Link to='/' className='col-6 offset-3 ml-5 pl-5 navbar-brand justify-content-start d-none d-lg-flex'>
                                     <span>Ma</span>Commerce
                                 </Link>
                             </div>
@@ -257,7 +265,9 @@ class Header extends Component {
 const mapStateToProps = (state) => {
     return {
         FirstName: state.register.FirstName,
+        username: state.register.username,
         justRegister: state.register.justRegister,
+        UserImage: state.register.UserImage,
         status: state.register.status,
         loginChecked: state.register.loginChecked,
         loading: state.register.loading,
@@ -274,4 +284,9 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { adminGetCategoryProduct, userLogOut})(Header)
+export default connect(mapStateToProps, { 
+    adminGetCategoryProduct, 
+    userLogOut, 
+    cleanTransaction, 
+    cleanDetailAndSelectedTransaction, 
+    cleanErrorSuccess})(Header)

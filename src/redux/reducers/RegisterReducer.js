@@ -17,6 +17,7 @@ const INITIAL_STATE = {
     token: '',
     status: '',
     loading: false,
+    UserImage: '',
     error: '',
     role: '',
     address: '',
