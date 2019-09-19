@@ -90,31 +90,31 @@ class ProductList extends Component {
         }
     }
 
-    componentWillReceiveProps(newProps) {
-        this.props.cleanErrorSuccess();
+    // componentWillReceiveProps(newProps) {
+    //     this.props.cleanErrorSuccess();
 
-        if (this.props.location.search !== newProps.location.search) {
-            let parsedQuery = queryString.parse(newProps.location.search)
-            console.log(parsedQuery)
+    //     if (this.props.location.search !== newProps.location.search) {
+    //         let parsedQuery = queryString.parse(newProps.location.search)
+    //         console.log(parsedQuery)
 
-            if (parsedQuery.allproduct) {
-                this.getAllProduct(parsedQuery.page)
-            }
+    //         if (parsedQuery.allproduct) {
+    //             this.getAllProduct(parsedQuery.page)
+    //         }
 
-            if (parsedQuery.productFilter) {
-                let objQueryFilteredProduct = {
-                    productName: parsedQuery.productName,
-                    categoryId: parsedQuery.categoryId,
-                    subCategoryId: parsedQuery.subCategoryId,
-                    page: parsedQuery.page
-                }
+    //         if (parsedQuery.productFilter) {
+    //             let objQueryFilteredProduct = {
+    //                 productName: parsedQuery.productName,
+    //                 categoryId: parsedQuery.categoryId,
+    //                 subCategoryId: parsedQuery.subCategoryId,
+    //                 page: parsedQuery.page
+    //             }
 
-                this.props.getFilteredProduct(objQueryFilteredProduct)
+    //             this.props.getFilteredProduct(objQueryFilteredProduct)
 
-            }
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
     componentDidUpdate() {
        if(this.props.success) {
@@ -565,15 +565,13 @@ class ProductList extends Component {
             subCategoryName: this.state.subCategoryProductNameSelectedInProduct
         }
 
-        //console.log(objAddProduct)
-
         this.props.adminAddProduct(objAddProduct)
         this.props.history.push(`productlist?addProduct=success`)
         
         this.setState({
-            productCoverImageFile: '',
-            productImage1File: '',
-            productImage2File: '',
+            productCoverImageFile: `${URL_API}/defaultPhoto/defaultCategory.png`,
+            productImage1File: `${URL_API}/defaultPhoto/defaultCategory.png`,
+            productImage2File: `${URL_API}/defaultPhoto/defaultCategory.png`,
             productCoverImageDB: undefined,
             productImage1DB: undefined,
             productImage2DB: undefined
@@ -795,7 +793,7 @@ class ProductList extends Component {
                                 </div>
                                 <div className="col">
                                     <label>Size XL</label>
-                                    <input type='number' ref={(SizeXL) => { this.SizeXL = SizeXL }} min="0" className='form-control' onKeyDown={(e) => this.checkInput(e)} placeholder='Size L' />
+                                    <input type='number' ref={(SizeXL) => { this.SizeXL = SizeXL }} min="0" className='form-control' onKeyDown={(e) => this.checkInput(e)} placeholder='Size XL' />
                                 </div>
                             </div>
                             <label>Price</label>

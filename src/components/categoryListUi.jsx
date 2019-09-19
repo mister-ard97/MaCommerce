@@ -94,6 +94,12 @@ class CategoryListUI extends Component {
                         this.state.categorySelected ?
                             <UncontrolledCollapse toggler={`#accordionCategory-${this.state.categorySelected}`}>
                                 <div className="card-body">
+                                    <Link
+                                        to={`searchproduct?product=${this.props.categoryName ? this.props.categoryName : this.state.categoryParent}&page=1`}
+                                        className='d-block'
+                                    >
+                                        All Product {this.props.categoryName}
+                                    </Link>
                                     {this.renderSubCategoryComponent(this.state.categorySelected)}
                                 </div>
                             </UncontrolledCollapse>

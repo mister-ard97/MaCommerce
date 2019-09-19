@@ -607,11 +607,12 @@ export const adminAddProduct = (objProduct) => {
         productImage1DB,
         productImage2DB,
     } = objProduct
+    console.log(objProduct)
 
     return (dispatch) => {
         dispatch({ type: ADMIN_LOADING })
 
-        if(productName === '' || 
+        if(!productImage2DB || !productImage1DB || !productCoverImageDB || productName === '' || 
             isNaN(productCategory) === true ||
             !productCategory || 
             isNaN(productSubCategory) === true ||
@@ -627,6 +628,7 @@ export const adminAddProduct = (objProduct) => {
                     type: ADMIN_LOADING_ERROR, payload: {
                         error: `
                         Form yang tidak boleh kosong:
+                            - Cover Image 
                             - Product Name
                             - Product Category
                             - Product Sub Category
