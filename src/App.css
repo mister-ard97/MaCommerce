@@ -47,6 +47,10 @@
   color: #007bff !important;
 }
 
+.link-white .dropdown-item {
+  color: black !important;
+}
+
 /* 
 Untuk mengganti background select
 .navbar-brand span, .custom-select {

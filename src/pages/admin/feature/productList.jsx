@@ -90,31 +90,31 @@ class ProductList extends Component {
         }
     }
 
-    // componentWillReceiveProps(newProps) {
-    //     this.props.cleanErrorSuccess();
+    componentWillReceiveProps(newProps) {
+        // this.props.cleanErrorSuccess();
 
-    //     if (this.props.location.search !== newProps.location.search) {
-    //         let parsedQuery = queryString.parse(newProps.location.search)
-    //         console.log(parsedQuery)
+        if (this.props.location.search !== newProps.location.search) {
+            let parsedQuery = queryString.parse(newProps.location.search)
+            console.log(parsedQuery)
 
-    //         if (parsedQuery.allproduct) {
-    //             this.getAllProduct(parsedQuery.page)
-    //         }
+            if (parsedQuery.allproduct) {
+                this.getAllProduct(parsedQuery.page)
+            }
 
-    //         if (parsedQuery.productFilter) {
-    //             let objQueryFilteredProduct = {
-    //                 productName: parsedQuery.productName,
-    //                 categoryId: parsedQuery.categoryId,
-    //                 subCategoryId: parsedQuery.subCategoryId,
-    //                 page: parsedQuery.page
-    //             }
+            if (parsedQuery.productFilter) {
+                let objQueryFilteredProduct = {
+                    productName: parsedQuery.productName,
+                    categoryId: parsedQuery.categoryId,
+                    subCategoryId: parsedQuery.subCategoryId,
+                    page: parsedQuery.page
+                }
 
-    //             this.props.getFilteredProduct(objQueryFilteredProduct)
+                this.props.getFilteredProduct(objQueryFilteredProduct)
 
-    //         }
+            }
 
-    //     }
-    // }
+        }
+    }
 
     componentDidUpdate() {
        if(this.props.success) {
@@ -905,7 +905,7 @@ class ProductList extends Component {
     renderFormEditProduct = () => {
         return this.state.productDetail.map((val, id) => {
             return (
-                <form key={id} onSubmit={this.handleEditProduct} id='formEditProduct'>
+                <form key={id} onSubmit={this.handleEditProduct} id='formEditProduct' onClick={() => this.props.cleanErrorSuccess()}>
                     {this.backToTopModal(this.props.error, this.props.success)}
                     <h4 className='text-info'>Product Image</h4>
                     <div className='d-flex font-weight-bold mb-3 addNewProduct'>

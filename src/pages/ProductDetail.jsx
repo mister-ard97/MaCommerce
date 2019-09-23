@@ -159,6 +159,12 @@ class ProductDetail extends Component {
         }
     }
 
+    protectString = (e) => {
+        if (e.keyCode === 69 || e.keyCode === 189) {
+            e.preventDefault();
+        }
+    }
+
     renderDetailProduct = () => {
         if(this.state.productDetail) {
             return this.state.productDetail.map((val, index) => {
@@ -242,7 +248,7 @@ class ProductDetail extends Component {
                         } </p>
 
                         <div className='col-6 m-0 p-0'>
-                            <input type="number" min='0' max={this.state.stockQty} className='form-control' ref={(stockProduct) => { this.stockProduct = stockProduct} }/>
+                            <input type="number" min='0' max={this.state.stockQty} className='form-control' ref={(stockProduct) => { this.stockProduct = stockProduct} } onKeyDown={(e) => this.protectString(e)}/>
                         </div>
                         <hr />
                         <button className='alert alert-info' id="togglerDescription" style={{ marginBottom: '1rem' }}>

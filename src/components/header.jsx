@@ -193,6 +193,19 @@ class Header extends Component {
         )
     }
 
+    renderCategory = () => {
+        console.log(this.props.categoryProduct)
+        if(this.props.categoryProduct) {
+            return this.props.categoryProduct.map((val, id) => {
+                return (
+                    <a href={`/searchproduct?product=${val.name}&page=1`} className='dropdown-item text-dark' key={id}>
+                        {val.name}
+                    </a>
+                )
+            })
+        }
+    }
+
 
     toggle = () => {
         this.setState({
@@ -224,29 +237,22 @@ class Header extends Component {
                             <Nav className="mr-auto navbar-nav-cust" navbar>
                                 <UncontrolledDropdown nav inNavbar className='mr-4'>
                                 
-                                        <Link to={`/searchproduct?allproduct=true&page=1`} className='dropdown-toggle nav-link'>
-                                            All Categories
-                                        </Link>
+                                       
+                                        <DropdownToggle nav caret>
+                                            Categories
+                                        </DropdownToggle>
+                                        <DropdownMenu left='true' onBlur={this.state.isOpen}>
+                                            <a href={`/searchproduct?allproduct=true&page=1`} className='dropdown-item text-dark'>
+                                                All Product
+                                            </a>
+                                            {this.renderCategory()}
+                                        </DropdownMenu>
                                     
-                                    
                                 </UncontrolledDropdown>
-                                <UncontrolledDropdown nav inNavbar className='mr-4'>
-
-                                    <Link to={`/searchproduct?product=Men&page=1`} className='dropdown-toggle nav-link'>
-                                            Men
-                                    </Link>
-
-                                </UncontrolledDropdown>
-                                <UncontrolledDropdown nav inNavbar className='mr-4'>
-
-                                    <Link to={`/searchproduct?product=Women&page=1`} className='dropdown-toggle nav-link'>
-                                            Women
-                                    </Link>
-
-                                </UncontrolledDropdown>
+                               
                             </Nav>
                             <div className='container'>
-                                <Link to='/' className='col-6 offset-3 ml-5 pl-5 navbar-brand justify-content-start d-none d-lg-flex'>
+                                <Link to='/' className='col-4 offset-4 navbar-brand justify-content-end d-none d-lg-flex'>
                                     <span>Ma</span>Commerce
                                 </Link>
                             </div>
