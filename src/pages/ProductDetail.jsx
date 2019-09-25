@@ -289,7 +289,11 @@ class ProductDetail extends Component {
                     }
                     buttonClickName={'Oke'}
                     colorOnClick="success"
-                    onClickModal={() => this.setState({modalConfirmation: false})}
+                    onClickModal={
+                        () => this.setState({modalConfirmation: false}, () => {
+                            window.scrollTo(0,0)
+                        })
+                    }
                 />
             )
         }

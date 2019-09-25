@@ -4,51 +4,60 @@ import { Link, Redirect } from 'react-router-dom';
 import {sendCartToTransaction } from '../redux/actions'
 import Header from '../components/header';
 import Footer from '../components/footer';
+import ModalMaCommerce from '../components/modal';
 
 var numeral = require('numeral');
 
 class ConfirmOrder extends Component {
     state = {
         link: '', 
-        loadingProcess: false
+        loadingProcess: false,
+        FirstName: '',
+        LastName: '',
+        Address: '',
+        error: '',
+        modalNewAddress: false
     }
 
     componentDidMount() {
-
+        document.title = 'Confirm Order'
         if (this.props.role) {
-            document.title = 'Confirm Order'
             window.scrollTo(0, 0);
             document.getElementById('Header').classList.add('bg-light')
             document.getElementById('CollapseMaCommerce').classList.remove('link-white')
         }
     }
 
-    sendDataCartToTransaction = () => {
-        let obj = []
-        // make callback function for make loadingProcess true
-        // make promise to make action creator run first then our setState to move page automatically
-        this.setState({loadingProcess: true} , () => {
-
-            // forEach is a syncronous, which means the code will run until forEach process completed
-            this.props.cartUser.forEach((val, id) => {
-                obj.push(val)
-            })
-
-            this.props.sendCartToTransaction(
-                obj, 
-                this.TotalPrice(), 
-                this.props.addressUser,
-                this.props.FirstName,
-                this.props.LastName)
-        })
-    }
-
     componentDidUpdate() {
-        if(this.props.transactionUser.length !== 0) {
+        if (this.props.transactionUser.length !== 0) {
             this.setState({
                 loadingProcess: false,
                 link: 'GoToPayment'
             })
+        }
+    }
+
+    sendDataCartToTransaction = () => {
+        if(this.state.Address || this.state.FirstName || this.state.LastName) {
+            let obj = []
+            // make callback function for make loadingProcess true
+            // make promise to make action creator run first then our setState to move page automatically
+            this.setState({ loadingProcess: true, error: '' }, () => {
+
+                // forEach is a syncronous, which means the code will run until forEach process completed
+                this.props.cartUser.forEach((val, id) => {
+                    obj.push(val)
+                })
+
+                this.props.sendCartToTransaction(
+                    obj,
+                    this.TotalPrice(),
+                    this.state.Address,
+                    this.state.FirstName,
+                    this.state.LastName)
+            })
+        } else {
+            this.setState({error: 'Harap memilih untuk menggunakan alamat yang mana'})
         }
     }
 
@@ -109,6 +118,62 @@ class ConfirmOrder extends Component {
         )
 
     }
+
+    addNewAddress = () => {
+        if (this.FirstName.value || this.LastName.value || this.Address.value) {
+            this.setState({
+                modalNewAddress: false,
+                FirstName: this.FirstName.value,
+                LastName: this.LastName.value,
+                Address: this.Address.value,
+                errorModal: ''
+            })
+        } else {
+            this.setState({
+                errorModal: 'Firstname, Lastname atau Address tidak boleh kosong'
+            })
+        }
+    }
+
+    renderModalNewAddress = (params) => {
+        if(params) {
+            return (
+                <ModalMaCommerce 
+                    idModal='modalNewAddress'
+                    className='modal-md'
+                    modal={this.state.modalNewAddress}
+                    errorMessage={this.state.errorModal}
+                    toggle={this.toggle}
+                    ModalHeader={'Input New Address Shipment'}
+                    ModalBody={
+                        <form onSubmit={this.addNewAddress}>
+                            <div className='form-group'>
+                                <label>FirstName</label>
+                                <input ref={(FirstName) => this.FirstName = FirstName} type="text" className="form-control" placeholder="Enter Your Firstname" required />
+                                <label>LastName</label>
+                                <input ref={(LastName) => this.LastName = LastName} type="text" className="form-control" placeholder="Enter Your Lastname" maxLength='16' minLength='6' required />
+                                <label>Address</label>
+                                <textarea ref={(Address) => this.Address = Address} className='form-control' placeholder='Enter New Address' required></textarea>
+                            </div>
+                        </form>
+                    }
+                    buttonClickName={'Save'}
+                    colorOnClick="success"
+                    onClickModal={this.addNewAddress}
+                />
+            )
+        }
+    }
+
+    toggle = () => {
+        this.setState({
+            modalNewAddress: !this.state.modalNewAddress,
+            error: '',
+            errorModal: ''
+        })
+    }
+
+
     render() {
         if (this.state.link === 'GoToPayment'){
             return <Redirect to='/payment' />
@@ -135,8 +200,51 @@ class ConfirmOrder extends Component {
                                             </div>
                                             <div className="card px-3">
                                                 <div className="card-body">
-                                                    <h5 className="card-title mb-3">Name: {this.props.FirstName} {this.props.LastName}</h5>
-                                                    <h6>Address: {this.props.addressUser}</h6>
+                                                    {
+                                                        this.state.error ?
+                                                            <div className="alert alert-danger" role="alert">
+                                                                {window.scrollTo(0, 0)}
+                                                                {this.state.error}
+                                                            </div>
+                                                        :
+                                                        null
+                                                    }
+                                                    <div className='mb-3'>
+
+                                                        <button className='btn btn-warning' onClick={() => this.setState({
+                                                            FirstName: this.props.FirstName,
+                                                            LastName: this.props.LastName,
+                                                            Address: this.props.addressUser,
+                                                            error: '',
+                                                            
+                                                        })}>
+                                                                Gunakan Nama dan Alamat Utama
+                                                        </button>
+
+                                                        <button className='btn btn-warning ml-3' onClick={() => this.setState({ 
+                                                            modalNewAddress: true, 
+                                                            Address: '', 
+                                                            FirstName: '', 
+                                                            LastName: '',
+                                                            error: '',
+                                                            })}
+                                                        >
+                                                                Gunakan Nama dan Alamat Baru
+                                                        </button>
+                                                        {this.renderModalNewAddress(this.state.modalNewAddress)}
+                                                    </div>
+                                                    {
+                                                        this.state.Address ?
+                                                            <div className='font-weight-bold'>
+                                                                <hr/>
+                                                                <h6 className='text-center'>Address Shipment</h6>
+                                                                <p>Alamat : {this.state.Address}</p>
+                                                                <p>Receiver: {this.state.FirstName} {this.state.LastName}</p>
+                                                                <hr/>
+                                                            </div>
+                                                            :
+                                                            null
+                                                    }
                                                     <table className="table">
                                                         <thead className="thead-dark">
                                                             <tr>

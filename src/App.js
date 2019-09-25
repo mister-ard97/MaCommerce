@@ -35,7 +35,7 @@ class App extends Component {
 
   render() {
     return (
-        <div>
+        <div className='MaCommerce'>
           <Switch>
             <Route path='/' component={Home} exact />
             <Route path='/searchproduct' component={SearchProduct} />

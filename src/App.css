@@ -227,6 +227,33 @@ a.card:hover {
 
 /* END OF ADMIN DASHBOARD */
 
+@media only screen and (min-width: 2016px) , (min-width: 2659px), (min-width: 4500px) {
+  .MaCommerce {
+  position: relative;
+  min-height: 100vh;
+}
+
+  #Footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1900px) {
+  .MaCommerce {
+    position: static;
+    min-height: 0;
+  }
+
+  #Footer {
+    position: static;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+
 @media only screen and (max-width: 1025px) {
   
   .navbar-brand {
