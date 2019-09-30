@@ -307,7 +307,7 @@ class PaymentDetail extends Component {
                                     : null
                             }
                             <small>
-                                Date Created: {val.date_created}
+                                Date Created: {new Date(val.date_created).toLocaleDateString('id-IND', { dateStyle: 'full', timeStyle: 'medium' }).replace(/[.]/g, ':')}
                             </small>
                             <p><small>Note: Jika direfresh anda akan kembali ke halaman home, namun data transaksi telah tersimpan di menu transaksi user</small></p>
                         </div>

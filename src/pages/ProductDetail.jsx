@@ -7,6 +7,7 @@ import Axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { UncontrolledCollapse, CardBody, Card } from 'reactstrap';
+import ScrollspyNav from 'react-scrollspy-nav';
 
 import Header from '../components/header';
 import Footer from '../components/footer';
@@ -27,9 +28,18 @@ class ProductDetail extends Component {
         productDetail: null,
         imageProductDetail: null,
         loadingProduct: null,
+        loadingComment: null,
+        loadingReply: false,
         stockQty: null,
         stockSelected: '',
-        error: ''
+        error: '',
+        errorComment: '',
+        commentProduct: null,
+        replyCommentProduct: null,
+        showButtonReply: false,
+        commentSelected: null,
+        errorReplyComment: null,
+        rowsTextArea: 1
     }
 
     componentDidMount() {
@@ -69,6 +79,16 @@ class ProductDetail extends Component {
                     imageProductDetail: res.data.linkImageProduct,
                     loadingProduct: false
                 })
+                Axios.get(URL_API + '/productMaCommerce/commentProduct/' + id)
+                .then((res) => {
+                   this.setState({
+                       commentProduct: res.data.dataComment,
+                       replyCommentProduct: res.data.dataReply
+                   })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             })
             .catch((err) => {
                 console.log(err)
@@ -102,11 +122,129 @@ class ProductDetail extends Component {
         this.ToWishlist(id)
     }
 
+    addUserComment = () => {
+        if(this.props.role !== '') {
+            this.setState({ loadingComment: true })
+            if (this.Comment.value !== '') {
+                this.setState({
+                    errorComment: ''
+                })
+
+                let parsedQuery = queryString.parse(this.props.location.search)
+
+                const token = localStorage.getItem('token');
+                const options = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                }
+
+                let dataComment = {
+                    productId: Number(parsedQuery.productId),
+                    comment: this.Comment.value
+                }
+
+                Axios.post(URL_API + '/user/userComment', { dataComment }, options)
+                    .then((res) => {
+                        console.log(res.data.commentResults)
+                        console.log(res.data)
+                        this.setState({
+                            loadingComment: false,
+                            commentProduct: res.data.dataComment,
+                            replyCommentProduct: res.data.dataReply
+                        })
+                        this.Comment.value = ''
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+
+            } else {
+                this.setState({
+                    errorComment: 'Kolom pertanyaan tidak boleh dikirim kosong. Harap isi terlebih dahulu',
+                    loadingComment: false
+                })
+            }
+        } 
+       
+    }
+
+    btnReplyComment = (id) => {
+        console.log(this.replyComment.value)
+        if(this.replyComment.value !== '') {
+            this.setState({ loadingReply: true, errorReplyComment: '' })
+            
+            let parsedQuery = queryString.parse(this.props.location.search)
+
+            const token = localStorage.getItem('token');
+            const options = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }
+
+            let dataReply = {
+                productId: Number(parsedQuery.productId),
+                comment: this.replyComment.value,
+                commentId: id
+            }
+
+            console.log(dataReply)
+
+            Axios.post(URL_API + '/user/userReplyComment', { dataReply }, options)
+                .then((res) => {
+                    this.setState({
+                        loadingReply: false,
+                        commentProduct: res.data.dataComment,
+                        replyCommentProduct: res.data.dataReply
+                    })
+                    this.replyComment.value = ''
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            this.setState({
+                errorReplyComment: 'Harap masukkan minimal 5 karakter untuk membalas pertanyaan'
+            })
+        }
+    }
+
+    renderReplyComment = (dataReply, commentId) => {
+        if(dataReply.length !== 0) {
+            return dataReply.map((val, id) => {
+                if(val.commentId === commentId) {
+                    return (
+                        <div className='row' key={id}>
+                            <div className='col-1'></div>
+                            <div className="col-1">
+                                <img src={`${URL_API}${val.UserImage}`} alt={`${val.username}-${val.UserImage}`} className='img-fluid rounded-circle' />
+                            </div>
+                            <div className='col-9'>
+                                <p className='font-weight-bold'>{val.username} ({val.role}) - <small>{new Date(val.date_created).toLocaleDateString('id-IND', { dateStyle: 'full', timeStyle: 'medium' }).replace(/[.]/g, ':')}</small></p>
+                                <p>{val.comment}</p>
+                                <hr />
+                            </div>
+                        </div>
+                    )
+                }
+
+                return null
+            })
+        }
+        return null
+    }
+
+    clearError = (e) => {
+        if(e.target.value !== '') {
+            this.setState({
+                errorReplyComment: ''
+            })
+        }
+    }
+
     addedToCart = (productId, productPrice) => {
-            window.scrollTo(0, 0)
-            // console.log(this.state.stockSelected)
-            // console.log(this.state.stockQty)
-            // console.log(Number(this.stockProduct.value))
+            
             if (!this.state.stockSelected) {
                 console.log(true)
                 this.setState({
@@ -169,7 +307,7 @@ class ProductDetail extends Component {
         if(this.state.productDetail) {
             return this.state.productDetail.map((val, index) => {
                 return (
-                    <div key={index} className='ml-5 col-12 col-md-8 mt-3'>
+                    <div key={index} className='ml-5 col-12 col-md-6 mt-3'>
                         <small>
                             <Link to={`/searchproduct?product=${val.category_name}`}>
                                 {val.category_name}
@@ -268,7 +406,7 @@ class ProductDetail extends Component {
                             :
                             <button className='btn btn-warning' onClick={() => this.addedToCart(val.id, val.price)}>Added To Cart</button>
                         }
-                        
+                       
                     </div>
                 )
             })
@@ -327,6 +465,137 @@ class ProductDetail extends Component {
         }
     }
 
+    renderCommentProduct = () => {
+        if(this.state.commentProduct) {
+            if(this.state.commentProduct.length !== 0) {
+               return this.state.commentProduct.map((val, id) => {
+                   if(val.commentId === null) {
+                       return (
+                           <div className='card mt-3'>
+                               <div className='card-body'>
+                                   <div className='row'>
+                                       <div className="col-1">
+                                           <img src={`${URL_API}${val.UserImage}`} alt={`${val.username}-${val.UserImage}`} className='img-fluid rounded-circle' />
+                                       </div>
+                                       <div className='col-9'>
+                                           <p className='font-weight-bold'>{val.username} ({val.role}) - <small>{new Date(val.date_created).toLocaleDateString('id-IND', { dateStyle: 'full', timeStyle: 'medium' }).replace(/[.]/g, ':')}</small></p>
+                                           <p>{val.comment}</p>
+                                       </div>
+                                       <div className='col-2'>
+                                           {/* {
+                                           val.wishlistUser === val.userId ?
+                                               <small>User ini me-Wishlist product ini</small>
+                                               :
+                                               <small>User ini tidak menambahkan product ini ke daftar Wishlistnya.</small>
+                                       } */}
+                                           {/* {
+                                           this.props.username === val.username ?
+                                               <p>Edit Pertanyaan Ini</p>
+                                               :
+                                               null
+                                       } */}
+                                       </div>
+                                   </div>
+                                   <hr />
+                                    {
+                                        this.renderReplyComment(this.state.replyCommentProduct, val.id)
+                                    }
+                                   {
+                                       this.props.username ?
+                                       
+                                           <div className='row'>
+                                               <div className='col-1'></div>
+                                               <div className='col-1'>
+                                                   <img src={`${URL_API}${this.props.UserImage}`} alt={`${this.props.username}-${this.props.UserImage}`} className='img-fluid rounded-circle' />
+                                               </div>
+                                               <div className='col-10'>
+                                                   
+                                                   {
+                                                       this.props.username ?
+                                                           <div>
+                                                               {
+                                                                  console.log(val.commentId)
+                                                               }
+                                                               {
+                                                                   this.state.commentSelected === val.id ?
+                                                                       this.state.errorReplyComment ?
+                                                                           <div className='alert alert-danger'>
+                                                                               {this.state.errorReplyComment}
+                                                                           </div>
+                                                                           :
+                                                                           null
+                                                                       :
+                                                                       null
+                                                               }
+                                                               
+                                                               <textarea
+                                                                   className='form-control'
+                                                                   placeholder='Balas Pertanyaan ini'
+                                                                   rows={
+                                                                       this.state.commentSelected === val.id ?
+                                                                           this.state.rowsTextArea : 2
+                                                                   }
+                                                                   ref={
+                                                                       this.state.commentSelected === val.id ?
+                                                                           (replyComment) => this.replyComment = replyComment
+                                                                           :
+                                                                           null
+                                                                   }
+                                                                   onClick={() => this.setState({ showButtonReply: true, commentSelected: val.id, rowsTextArea: 3 })} onChange={this.clearError} />
+                                                               {
+                                                                   this.state.commentSelected === val.id ?
+                                                                       this.state.loadingReply ?
+                                                                           <button className='float-right btn btn-warning mt-3' disabled>
+                                                                               <div className="spinner-border text-white" role="status">
+                                                                                   <span className="sr-only">Loading...</span>
+                                                                               </div>
+                                                                           </button>
+                                                                           :
+
+                                                                           <button className='float-right btn btn-warning mt-3' onClick={() => this.btnReplyComment(val.id)}>
+                                                                               Balas Pertanyaan
+                                                                        </button>
+                                                                       :
+                                                                       null
+                                                               }
+                                                           </div>
+                                                           :
+                                                           null
+                                                   }
+                                               </div>
+                                           </div>
+
+                                           :
+
+                                           null
+                                   }
+                               </div>
+                           </div>
+                       )
+                   }
+
+                   return null
+               })
+            } else {
+                return (
+                    <div className='card mt-3 bg-light'>
+                        <div className='card-body'>
+                            <div className='row'>
+                                <div className='col-12 text-center'>
+                                    <p>Kolom pertanyaan untuk product ini kosong</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        } 
+
+        return (
+            <p>Loading...</p>
+        )
+    }
+
     toggle = () => {
         if(this.state.modalConfirmation) {
             this.setState({
@@ -382,7 +651,92 @@ class ProductDetail extends Component {
                             </Slider>
                         </div>
                         {this.renderDetailProduct()}
+                       
+                        {
+                            !this.state.loadingProduct ?
+                                <div className='col-12 col-md-10 mt-3'>
+                                    <hr />
+                                    <h5>Komentar mengenai Product</h5>
+
+                                    <div className='card mt-3'>
+                                        <div className='card-body'>
+                                            <div className='row'>
+                                                <div className="col-10">
+                                                    Ingin menulis pertanyaan mengenai product ini?
+                                        </div>
+                                                <div className='col-2 font-weight-bold'>
+                                                    <ScrollspyNav
+                                                        scrollTargetIds={
+                                                            ["kolomAskProduct"]
+                                                        }
+                                                        scrollDuration="1000"
+                                                        headerBackground="false"
+                                                    >
+                                                        <a className='btn btn-warning' href='#kolomAskProduct' >
+                                                            Tulis pertanyaan
+                                                </a>
+                                                    </ScrollspyNav>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    {this.renderCommentProduct()}
+
+                                </div>
+
+                                :
+
+                                null
+                        }
                     </div>
+
+                   {
+                       !this.state.loadingProduct ?
+                            <div id='kolomAskProduct' className='row'>
+                                <div className="col-10">
+                                    <div className='card mt-5'>
+
+                                        <div className='card-body'>
+                                            {
+                                                this.state.errorComment ?
+                                                    <div className='alert alert-danger'>
+                                                        {this.state.errorComment}
+                                                    </div>
+                                                    :
+                                                    null
+                                            }
+                                            <textarea ref={(Comment) => this.Comment = Comment} className='form-control' placeholder='Apa yang ingin anda tanyakan mengenai produk ini? (maks 500 huruf)' maxLength='500'></textarea>
+                                            {
+                                                this.state.loadingComment ?
+                                                    <button className='float-right btn btn-success mt-3' disabled>
+                                                        <div className="spinner-border text-white" role="status">
+                                                            <span className="sr-only">Loading...</span>
+                                                        </div>
+                                                    </button>
+                                                    :
+
+                                                    this.props.role !== '' ?
+
+                                                        <button className='float-right btn btn-success mt-3' onClick={this.addUserComment}>
+                                                            Kirim Pertanyaan
+                                                        </button>
+                                                        :
+                                                        <Link className='float-right btn btn-success mt-3' to='/login'>
+                                                            Kirim Pertanyaan
+                                                        </Link>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            :
+
+                            null
+                   }
+                    
                 </div>
                 <Footer />
             </div>
@@ -393,8 +747,10 @@ class ProductDetail extends Component {
 
 const mapStateToProps = ({ register }) => {
     return {
+        UserImage: register.UserImage,
         username: register.username,
-        loading: register.loading
+        loading: register.loading,
+        role: register.role
     }
 }
 
