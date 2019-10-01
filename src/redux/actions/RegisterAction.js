@@ -202,6 +202,35 @@ export const userLogin = (username, password) => {
     }
 }
 
+export const userLoginWithGoogle = (data) => {
+    return (dispatch) => {
+        dispatch({ type: AUTH_LOGIN_LOADING });
+
+        Axios.post(URL_API + '/user/userLoginWithGoogle', {data})
+            .then((res) => {
+                let { FirstName, LastName, username, email, token, status, role, address, UserImage } = res.data
+                localStorage.setItem('token', token);
+                dispatch({
+                    type: USER_LOGIN_SUCCESS, payload: {
+                        FirstName,
+                        LastName,
+                        username,
+                        email,
+                        token,
+                        status,
+                        role,
+                        address,
+                        UserImage,
+                        loginChecked: true
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+}
+
 export const KeepLogin = () => {
    return (dispatch) => {
        dispatch({ type: AUTH_LOGIN_LOADING });

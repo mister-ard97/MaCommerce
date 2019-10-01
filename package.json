@@ -14,15 +14,16 @@
     "query-string": "^6.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-google-login": "^5.0.5",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
+    "react-scrollspy-nav": "^1.2.1",
     "react-slick": "^0.25.2",
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
-    "slick-carousel": "^1.8.1",
-    "react-scrollspy-nav": "^1.2.1"
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",

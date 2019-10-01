@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import GoogleLogin from 'react-google-login';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { userLogin, cleanError } from '../redux/actions';
+import { userLogin, cleanError, userLoginWithGoogle } from '../redux/actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 import { checkBg } from '../helpers/stylefunction';
+
 
 class Login extends Component {
 
@@ -30,6 +32,43 @@ class Login extends Component {
         }
 
         return <button type="submit" className="btn btn-primary form-control">Login</button>
+    }
+
+    renderButtonGmail = () => {
+        if (this.props.loading) {
+            return (
+                <div className="spinner-border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            )
+        }
+
+        return (
+            <div className='form-group'>
+                <GoogleLogin
+                    clientId="686002546266-r9d3q25b6e8qb4egc1fttf62ll63h7dv.apps.googleusercontent.com"
+                    buttonText="Login"
+                    onSuccess={this.loginWithGoogle}
+                    onFailure={this.loginWithGoogle}
+                    render={renderProps => (
+                        <button onClick={renderProps.onClick} className='btn btn-white text-danger mt-3 form-control border'>Login with Gmail</button>
+                    )}
+                />
+            </div>
+        )
+    }
+
+    loginWithGoogle = (response) => {
+        console.log(response)
+        console.log(response.profileObj)
+        let dataGoogle = {
+            email: response.profileObj.email,
+            FirstName: response.profileObj.givenName,
+            LastName: response.profileObj.familyName,
+            googleId: response.profileObj.googleId,
+            username: response.profileObj.email.split('@')[0]
+        }
+        this.props.userLoginWithGoogle(dataGoogle)
     }
 
     render() {
@@ -67,7 +106,7 @@ class Login extends Component {
                                             </div>
                                             {this.renderButtonLogin()}
                                         </form>
-
+                                        {this.renderButtonGmail()}
                                         <hr />
                                         <p className='mt-3'>Belum Register?  <Link to='/register'>Register Now!</Link></p>
                                     </div>
@@ -91,4 +130,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { userLogin, cleanError })(Login);
+export default connect(mapStateToProps, { userLogin, cleanError, userLoginWithGoogle })(Login);
