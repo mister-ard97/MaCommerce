@@ -7,6 +7,7 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import { URL_API } from '../helpers/Url_API';
 import { CustomInput } from 'reactstrap';
+import Axios from 'axios';
 
 var numeral = require('numeral')
 
@@ -18,6 +19,30 @@ class PaymentPage extends Component {
 
         errorState: '',
         successState: '',
+
+        tokenMidtrans: '',
+        clientKeyMidtrans: ''
+    }
+
+    // Midtrans Snap Coba Coba
+    getTokenForSnapMidTrans = (totalPrice) => {
+        const token = localStorage.getItem('token');
+
+        let options = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }
+
+        Axios.post(`${URL_API}/transaction/simple_checkout_with_midtrans` , {total_price:  totalPrice} , options)
+        .then((res) => {
+          window.snap.pay(res.data.token, {
+              
+          })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
     }
 
     componentDidMount() {
@@ -31,6 +56,9 @@ class PaymentPage extends Component {
             errorState: '',
             successState: '',
         })
+
+        console.log(this.state.clientKeyMidtrans);
+        console.log(this.state.tokenMidtrans)
 
         if (this.props.location.search || !this.props.transactionUserSelected) {
             return <Redirect to='/' />
@@ -143,6 +171,7 @@ class PaymentPage extends Component {
                                     : 
                                     null
                             }
+
                             {
                                 val.status === 1 ?
                                     <p>Status: <span className='text-info'>Menunggu Konfirmasi dari Admin</span></p>
@@ -237,20 +266,28 @@ class PaymentPage extends Component {
 
                                     <div>
                                         <p className='text-success mb-3'>Transaction berhasil di approve oleh admin. Silahkan untuk mengirim bukti pembayaran</p>
-                                        <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
-                                        <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
+                                        {/* Total Pembayaran */}
                                         {
-                                            this.state.loading ?
-                                                <button className='btn btn-success form-control my-3' disabled>
-                                                    <div className="spinner-border" role="status">
-                                                        <span className="sr-only">Loading...</span>
-                                                    </div>
-                                                </button>
-                                                :
-                                                <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.id)}>
-                                                    Kirim Bukti Pembayaran
-                                                </button>
+                                            /* 
+                                            <CustomInput id='psend_a' type='file' label={this.state.paymentImageName} onChange={this.paymentImageChange} />
+                                            <img src={`${this.state.paymentImageFile}`} alt="payment-user" className='userImage my-3' />
+                                            {
+                                                this.state.loading ?
+                                                    <button className='btn btn-success form-control my-3' disabled>
+                                                        <div className="spinner-border" role="status">
+                                                            <span className="sr-only">Loading...</span>
+                                                        </div>
+                                                    </button>
+                                                    :
+                                                    <button className='btn btn-success form-control my-3' onClick={() => this.sendPaymentSlip(val.id)}>
+                                                        Kirim Bukti Pembayaran
+                                                    </button>
+                                            }
+                                            
+                                            */
                                         }
+                                        <input type="text" className='form-control' disabled value={val.total_price}/>
+                                        <input type="button" onClick={() => this.getTokenForSnapMidTrans(val.total_price)}/>
                                     </div>
                                     : null
                             }
