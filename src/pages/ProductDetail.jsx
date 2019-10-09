@@ -433,35 +433,57 @@ class ProductDetail extends Component {
                                     }}
                                 >
                                     <DropdownItem>
-                                        <FacebookShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                        <FacebookShareButton 
+                                            url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            quote={val.name}
+                                            hashtag={`#ProductFor${val.category_name}`}
+                                            >
                                             <div className='d-flex'>
                                                 <FacebookIcon size={20}/> <span>&nbsp;Share To Facebook</span>
                                             </div>
                                         </FacebookShareButton>
                                     </DropdownItem>
                                     <DropdownItem>
-                                        <TwitterShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                        <TwitterShareButton 
+                                            url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            title={val.name}
+                                            via='lalala'
+                                            hashtags={[`ProductFor${val.category_name}`, `ThisIs${val.sub_category_name}`]}
+                                            >
                                             <div className='d-flex'>
                                                 <TwitterIcon size={20}/> <span>&nbsp;Share To Twitter</span>
                                             </div>
                                         </TwitterShareButton>
                                     </DropdownItem>
                                     <DropdownItem>
-                                        <WhatsappShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                        <WhatsappShareButton 
+                                            url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            title={val.name}
+                                            separator='-'
+                                            >
                                             <div className='d-flex'>
                                                 <WhatsappIcon size={20}/> <span>&nbsp;Share To Whatsapp</span>
                                             </div>
                                         </WhatsappShareButton>
                                     </DropdownItem>
                                     <DropdownItem>
-                                        <LineShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                        <LineShareButton 
+                                            url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            title={val.name}
+                                            >
                                             <div className='d-flex'>
                                                 <LineIcon size={20}/> <span>&nbsp;Share To Line</span>
                                             </div>
                                         </LineShareButton>
                                     </DropdownItem>
                                     <DropdownItem>
-                                        <EmailShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                        <EmailShareButton 
+                                            url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            subject = {val.name}
+                                            body={`ProductFor${val.category_name}`}
+                                            separator = '-'
+                                            openWindow={true}
+                                            >
                                             <div className='d-flex'>
                                                 <EmailIcon size={20}/> <span>&nbsp;Share To Email</span>
                                             </div>
