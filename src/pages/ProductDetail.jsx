@@ -328,7 +328,7 @@ class ProductDetail extends Component {
                             <meta property="og:title" content={`Product ${val.name}`} />
                             <meta property="og:url" content={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`} />
                             <meta property="og:description" content={val.description} />
-                            <meta property="og:image" content={`${URL_API}${val.coverImage}`} />
+                            <meta property="og:image" content='https://www.outbrain.com/techblog/wp-content/uploads/2017/05/road-sign-361513_960_720.jpg' />
                         </MetaTags>
                         <small>
                             <Link to={`/searchproduct?product=${val.category_name}`}>
