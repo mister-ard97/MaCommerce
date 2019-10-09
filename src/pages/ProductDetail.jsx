@@ -29,6 +29,9 @@ import {
     EmailShareButton,
     EmailIcon
   } from 'react-share';
+  import MetaTags from 'react-meta-tags';
+
+
 
 var numeral = require('numeral')
 
@@ -321,6 +324,12 @@ class ProductDetail extends Component {
             return this.state.productDetail.map((val, index) => {
                 return (
                     <div key={index} className='ml-5 col-12 col-md-6 mt-3'>
+                        <MetaTags>
+                            <meta property="og:title" content={`Product ${val.name}`} />
+                            <meta property="og:url" content={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`} />
+                            <meta property="og:description" content={val.description} />
+                            <meta property="og:image" content={`${URL_API}${val.coverImage}`} />
+                        </MetaTags>
                         <small>
                             <Link to={`/searchproduct?product=${val.category_name}`}>
                                 {val.category_name}
@@ -446,6 +455,7 @@ class ProductDetail extends Component {
                                     <DropdownItem>
                                         <TwitterShareButton 
                                             url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}
+                                            
                                             title={val.name}
                                             via='lalala'
                                             hashtags={[`ProductFor${val.category_name}`, `ThisIs${val.sub_category_name}`]}
@@ -746,6 +756,7 @@ class ProductDetail extends Component {
            
         return (
             <div>
+                
                 <Header statusPage='ProductDetail' />
                 <div className='container mt-3'>
                     {this.renderModalConfirmation(this.state.modalConfirmation)}
