@@ -5,8 +5,8 @@ import queryString from 'query-string';
 import Slider from 'react-slick';
 import Axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { UncontrolledCollapse, CardBody, Card } from 'reactstrap';
+import { faHeart, faShare } from '@fortawesome/free-solid-svg-icons';
+import { UncontrolledCollapse, CardBody, Card, Dropdown, DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap';
 import ScrollspyNav from 'react-scrollspy-nav';
 
 import Header from '../components/header';
@@ -17,6 +17,18 @@ import {
 } from '../redux/actions'
 import { URL_API } from '../helpers/Url_API';
 import ModalMaCommerce from '../components/modal';
+import {
+    FacebookShareButton,
+    FacebookIcon,
+    TwitterShareButton,
+    TwitterIcon,
+    WhatsappShareButton,
+    WhatsappIcon,
+    LineShareButton,
+    LineIcon,
+    EmailShareButton,
+    EmailIcon
+  } from 'react-share';
 
 var numeral = require('numeral')
 
@@ -24,6 +36,7 @@ class ProductDetail extends Component {
     state = {
         modalConfirmation: '', 
         modalWishlist: '',
+        isOpen: false,
         userWishlist: 0,
         productDetail: null,
         imageProductDetail: null,
@@ -389,9 +402,76 @@ class ProductDetail extends Component {
                             <input type="number" min='0' max={this.state.stockQty} className='form-control' ref={(stockProduct) => { this.stockProduct = stockProduct} } onKeyDown={(e) => this.protectString(e)}/>
                         </div>
                         <hr />
-                        <button className='alert alert-info' id="togglerDescription" style={{ marginBottom: '1rem' }}>
-                            Show Description
-                        </button>
+                        <div className='row'>
+                            <div className="container">
+                            <div className='col-6'>
+                                <button className='alert alert-info' id="togglerDescription" style={{ marginBottom: '1rem' }}>
+                                    Show Description
+                                </button>
+                            </div>
+                            <div className='col-6'>
+                                <Dropdown isOpen={this.state.isOpen} toggle={this.toggledrop}>
+                                <DropdownToggle>
+                                    Dropdown <FontAwesomeIcon icon={faShare}/>
+                                </DropdownToggle>
+                                <DropdownMenu
+                                    modifiers={{
+                                    setMaxHeight: {
+                                        enabled: true,
+                                        order: 890,
+                                        fn: (data) => {
+                                        return {
+                                            ...data,
+                                            styles: {
+                                            ...data.styles,
+                                            overflow: 'auto',
+                                            maxHeight: 100,
+                                            },
+                                        };
+                                        },
+                                    },
+                                    }}
+                                >
+                                    <DropdownItem>
+                                        <FacebookShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                            <div className='d-flex'>
+                                                <FacebookIcon size={20}/> <span>&nbsp;Share To Facebook</span>
+                                            </div>
+                                        </FacebookShareButton>
+                                    </DropdownItem>
+                                    <DropdownItem>
+                                        <TwitterShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                            <div className='d-flex'>
+                                                <TwitterIcon size={20}/> <span>&nbsp;Share To Twitter</span>
+                                            </div>
+                                        </TwitterShareButton>
+                                    </DropdownItem>
+                                    <DropdownItem>
+                                        <WhatsappShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                            <div className='d-flex'>
+                                                <WhatsappIcon size={20}/> <span>&nbsp;Share To Whatsapp</span>
+                                            </div>
+                                        </WhatsappShareButton>
+                                    </DropdownItem>
+                                    <DropdownItem>
+                                        <LineShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                            <div className='d-flex'>
+                                                <LineIcon size={20}/> <span>&nbsp;Share To Line</span>
+                                            </div>
+                                        </LineShareButton>
+                                    </DropdownItem>
+                                    <DropdownItem>
+                                        <EmailShareButton url={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`}>
+                                            <div className='d-flex'>
+                                                <EmailIcon size={20}/> <span>&nbsp;Share To Email</span>
+                                            </div>
+                                        </EmailShareButton>
+                                    </DropdownItem>
+                                </DropdownMenu>
+                                </Dropdown>
+                            </div>
+                            </div>
+                        </div>
                         <UncontrolledCollapse toggler="#togglerDescription">
                             <Card>
                                 <CardBody>
@@ -607,7 +687,12 @@ class ProductDetail extends Component {
                 modalWishlist: !this.state.modalWishlist
             })
         }
-         
+    }
+
+    toggledrop = () => {
+        this.setState({
+            isOpen: !this.state.isOpen
+        })
     }
 
     render() {
@@ -663,7 +748,7 @@ class ProductDetail extends Component {
                                             <div className='row'>
                                                 <div className="col-10">
                                                     Ingin menulis pertanyaan mengenai product ini?
-                                        </div>
+                                                </div>
                                                 <div className='col-2 font-weight-bold'>
                                                     <ScrollspyNav
                                                         scrollTargetIds={
@@ -674,7 +759,7 @@ class ProductDetail extends Component {
                                                     >
                                                         <a className='btn btn-warning' href='#kolomAskProduct' >
                                                             Tulis pertanyaan
-                                                </a>
+                                                        </a>
                                                     </ScrollspyNav>
                                                 </div>
                                             </div>
