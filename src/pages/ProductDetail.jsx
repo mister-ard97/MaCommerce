@@ -417,6 +417,7 @@ class ProductDetail extends Component {
                                 <button className='alert alert-info' id="togglerDescription" style={{ marginBottom: '1rem' }}>
                                     Show Description
                                 </button>
+                                <a href={`https://testingshare-app.herokuapp.com/productDetail?productId=${val.id}`} target="_blank">WA</a>
                             </div>
                             <div className='col-6'>
                                 <Dropdown isOpen={this.state.isOpen} toggle={this.toggledrop}>
